@@ -1,0 +1,1300 @@
+#VRML_SIM R2025a utf8
+# Butler hotel + restaurant. Indoor floor the ServeBots can walk.
+# Box/Plane architecture, shared appearances, no shadow casters.
+
+EXTERNPROTO "../assets/webots/projects/objects/floors/protos/Floor.proto"
+EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
+EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
+EXTERNPROTO "../assets/webots/projects/objects/tables/protos/Desk.proto"
+EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/WoodenChair.proto"
+EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/Chair.proto"
+EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Sofa.proto"
+EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Armchair.proto"
+EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Carpet.proto"
+EXTERNPROTO "../assets/webots/projects/objects/bedroom/protos/Bed.proto"
+EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Worktop.proto"
+EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Plate.proto"
+EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Glass.proto"
+EXTERNPROTO "../assets/webots/projects/objects/factory/containers/protos/CardboardBox.proto"
+EXTERNPROTO "../protos/ButlerServe.proto"
+EXTERNPROTO "../protos/HotelDoor.proto"
+
+WorldInfo {
+  info [
+    "Butler hotel and restaurant. Three ButlerServe bodies. Select servebot-1 to drive. Select butler_supervisor and press 1-5 to open doors."
+  ]
+  title "Butler Hotel"
+  basicTimeStep 32
+  FPS 30
+  defaultDamping Damping {
+    linear 0.5
+    angular 0.5
+  }
+  contactProperties [
+    ContactProperties {
+      material1 "default"
+      material2 "default"
+      coulombFriction 1
+      bounce 0
+      bounceVelocity 0.01
+      softCFM 0.0001
+      bumpSound ""
+      rollSound ""
+      slideSound ""
+    }
+  ]
+}
+Viewpoint {
+  orientation -0.3 0.2 0.93 1.4
+  position 6 -14 8
+}
+Background {
+  skyColor [
+    0.62 0.72 0.82
+  ]
+}
+DirectionalLight {
+  ambientIntensity 1
+  direction 0.4 -0.5 -1
+  intensity 1.6
+  castShadows FALSE
+}
+Floor {
+  size 22 16
+  name "hotel floor"
+}
+Solid {
+  translation 0 0 2.4
+  rotation 1 0 0 3.14159
+  children [
+    Shape {
+      appearance Roughcast {
+        textureTransform TextureTransform {
+          scale 10 10
+        }
+      }
+      geometry Plane {
+        size 22 16
+      }
+      castShadows FALSE
+    }
+  ]
+  name "hotel ceiling"
+}
+
+# Walls are Solids + Boxes, same trick as jetbot_collision_avoidance.wbt.
+Solid {
+  translation 0 -8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance DEF HOTEL_WALL Roughcast {
+        textureTransform TextureTransform {
+          scale 2.4 1
+        }
+      }
+      geometry Box {
+        size 0.2 22 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "south wall"
+  boundingObject Box {
+    size 0.2 22 2.4
+  }
+}
+Solid {
+  translation 0 8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 22 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "north wall"
+  boundingObject Box {
+    size 0.2 22 2.4
+  }
+}
+Solid {
+  translation -11 -6.5 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 3 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "west wall south"
+  boundingObject Box {
+    size 0.2 3 2.4
+  }
+}
+Solid {
+  translation -11 2.5 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 11 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "west wall north"
+  boundingObject Box {
+    size 0.2 11 2.4
+  }
+}
+Solid {
+  translation 11 -6.5 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 3 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "east wall south"
+  boundingObject Box {
+    size 0.2 3 2.4
+  }
+}
+Solid {
+  translation 11 2.5 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 11 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "east wall north"
+  boundingObject Box {
+    size 0.2 11 2.4
+  }
+}
+Solid {
+  translation -9.45 -0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 3.1 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor south west"
+  boundingObject Box {
+    size 0.2 3.1 2.4
+  }
+}
+Solid {
+  translation -1.5 -0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 9.2 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor south mid"
+  boundingObject Box {
+    size 0.2 9.2 2.4
+  }
+}
+Solid {
+  translation 7.95 -0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 6.1 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor south east"
+  boundingObject Box {
+    size 0.2 6.1 2.4
+  }
+}
+Solid {
+  translation -9.5 0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 3 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor north west"
+  boundingObject Box {
+    size 0.2 3 2.4
+  }
+}
+Solid {
+  translation -3.6 0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 5.6 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor north mid west"
+  boundingObject Box {
+    size 0.2 5.6 2.4
+  }
+}
+Solid {
+  translation 3.6 0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 5.6 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor north mid east"
+  boundingObject Box {
+    size 0.2 5.6 2.4
+  }
+}
+Solid {
+  translation 9.5 0.8 1.2
+  rotation 0 0 1 1.5708
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 3 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "corridor north east"
+  boundingObject Box {
+    size 0.2 3 2.4
+  }
+}
+Solid {
+  translation -3 -4.4 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 7.2 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "lobby restaurant split"
+  boundingObject Box {
+    size 0.2 7.2 2.4
+  }
+}
+Solid {
+  translation -3.6 4.4 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 7.2 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "room 1204 1205 split"
+  boundingObject Box {
+    size 0.2 7.2 2.4
+  }
+}
+Solid {
+  translation 3.6 4.4 1.2
+  children [
+    Shape {
+      appearance USE HOTEL_WALL
+      geometry Box {
+        size 0.2 7.2 2.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "room 1205 1206 split"
+  boundingObject Box {
+    size 0.2 7.2 2.4
+  }
+}
+
+DEF LOBBY_DOOR HotelDoor {
+  translation -7 -0.8 0
+  rotation 0 0 1 1.5708
+  name "lobby corridor door"
+  size 0.2 1.76 2.4
+  leafRotation 0 0 1 1.45
+}
+DEF RESTAURANT_DOOR HotelDoor {
+  translation 4 -0.8 0
+  rotation 0 0 1 1.5708
+  name "restaurant corridor door"
+  size 0.2 1.76 2.4
+  leafRotation 0 0 1 1.45
+}
+DEF ROOM_1204_DOOR HotelDoor {
+  translation -7.2 0.8 0
+  rotation 0 0 1 -1.5708
+  name "room-1204 door"
+  size 0.2 1.56 2.4
+  leafRotation 0 0 1 1.45
+}
+DEF ROOM_1205_DOOR HotelDoor {
+  translation 0 0.8 0
+  rotation 0 0 1 -1.5708
+  name "room-1205 door"
+  size 0.2 1.56 2.4
+  leafRotation 0 0 1 1.45
+}
+DEF ROOM_1206_DOOR HotelDoor {
+  translation 7.2 0.8 0
+  rotation 0 0 1 -1.5708
+  name "room-1206 door"
+  size 0.2 1.56 2.4
+  leafRotation 0 0 1 1.45
+}
+
+Solid {
+  translation -11 -4 1.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.72 0.82
+        transparency 0.55
+        roughness 0.08
+        metalness 0
+      }
+      geometry Box {
+        size 0.08 2 1.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "lobby window"
+}
+Solid {
+  translation 11 -4 1.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.55 0.72 0.82
+        transparency 0.55
+        roughness 0.08
+        metalness 0
+      }
+      geometry Box {
+        size 0.08 2 1.4
+      }
+      castShadows FALSE
+    }
+  ]
+  name "restaurant window"
+}
+
+# --- Lobby ---
+Carpet {
+  translation -7.2 -3.6 0
+  name "lobby carpet"
+}
+Desk {
+  translation -8.8 -2.0 0
+  rotation 0 0 1 1.5708
+  name "front desk"
+}
+WoodenChair {
+  translation -9.6 -2.0 0
+  name "front desk chair"
+}
+Sofa {
+  translation -6.4 -3.8 0
+  rotation 0 0 1 1.5708
+  name "lobby sofa"
+}
+Armchair {
+  translation -4.6 -2.8 0
+  name "lobby armchair"
+}
+Solid {
+  translation -5.2 -2.2 0
+  name "lobby lamp"
+  children [
+    PointLight {
+      location 0 0 1.5
+      intensity 0.7
+      radius 8
+      attenuation 0 0 1
+      castShadows FALSE
+    }
+    Pose {
+      translation 0 0 0.8
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.85 0.85 0.82
+            roughness 0.45
+            metalness 0.15
+          }
+          geometry Cylinder {
+            height 1.6
+            radius 0.03
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+
+# --- Restaurant (cylinder tables, same idea as Seronet station primitives) ---
+Solid {
+  translation 1.6 -4.6 0
+  name "restaurant table 1"
+  children [
+    Pose {
+      translation 0 0 0.74
+      children [
+        Shape {
+          appearance DEF TABLE_WOOD VarnishedPine {
+            textureTransform TextureTransform {
+              scale 4 4
+            }
+          }
+          geometry Cylinder {
+            height 0.04
+            radius 0.7
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation 0 0 0.36
+      children [
+        Shape {
+          appearance USE TABLE_WOOD
+          geometry Cylinder {
+            height 0.72
+            radius 0.08
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+  boundingObject Pose {
+    translation 0 0 0.74
+    children [
+      Cylinder {
+        height 0.04
+        radius 0.7
+      }
+    ]
+  }
+}
+WoodenChair {
+  translation 1.6 -2.8 0
+  name "restaurant chair 1a"
+}
+WoodenChair {
+  translation 1.6 -6.4 0
+  rotation 0 0 1 3.1416
+  name "restaurant chair 1b"
+}
+Plate {
+  translation 1.45 -4.45 0.77
+  name "table1 plate"
+  mass 0
+}
+Glass {
+  translation 1.75 -4.35 0.77
+  name "table1 glass"
+  mass 0
+}
+
+Solid {
+  translation 4.6 -4.6 0
+  name "restaurant table 2"
+  children [
+    Pose {
+      translation 0 0 0.74
+      children [
+        Shape {
+          appearance USE TABLE_WOOD
+          geometry Cylinder {
+            height 0.04
+            radius 0.7
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation 0 0 0.36
+      children [
+        Shape {
+          appearance USE TABLE_WOOD
+          geometry Cylinder {
+            height 0.72
+            radius 0.08
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+  boundingObject Pose {
+    translation 0 0 0.74
+    children [
+      Cylinder {
+        height 0.04
+        radius 0.7
+      }
+    ]
+  }
+}
+WoodenChair {
+  translation 4.6 -2.8 0
+  name "restaurant chair 2a"
+}
+WoodenChair {
+  translation 4.6 -6.4 0
+  rotation 0 0 1 3.1416
+  name "restaurant chair 2b"
+}
+Plate {
+  translation 4.45 -4.45 0.77
+  name "table2 plate"
+  mass 0
+}
+Glass {
+  translation 4.75 -4.35 0.77
+  name "table2 glass"
+  mass 0
+}
+
+# --- Kitchen (east restaurant): island, sink run, oven, fridge, cookware ---
+Solid {
+  translation 10.45 -7.35 0.9
+  name "restaurant fridge"
+  children [
+    Shape {
+      appearance DEF STEEL PBRAppearance {
+        baseColor 0.82 0.84 0.86
+        roughness 0.28
+        metalness 0.7
+      }
+      geometry Box {
+        size 0.7 0.68 1.8
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation -0.37 0.18 0.1
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.7 0.7 0.72
+            roughness 0.3
+            metalness 0.8
+          }
+          geometry Cylinder {
+            height 0.16
+            radius 0.016
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+  boundingObject Box {
+    size 0.7 0.68 1.8
+  }
+}
+
+Solid {
+  translation 10.45 -6.45 0.4
+  name "oven body"
+  children [
+    Shape {
+      appearance USE STEEL
+      geometry Box {
+        size 0.62 0.58 0.8
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation -0.32 0 0.05
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.12 0.12 0.13
+            roughness 0.2
+            metalness 0.1
+          }
+          geometry Box {
+            size 0.02 0.42 0.42
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation -0.34 0 0.32
+      rotation 1 0 0 1.5708
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.25 0.25 0.26
+            roughness 0.4
+            metalness 0.6
+          }
+          geometry Cylinder {
+            height 0.36
+            radius 0.012
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+  boundingObject Box {
+    size 0.62 0.58 0.8
+  }
+}
+
+Solid {
+  translation 10.4 -4.2 0.44
+  name "east cabinets"
+  children [
+    Shape {
+      appearance DEF CABINET PBRAppearance {
+        baseColor 0.28 0.2 0.14
+        roughness 0.7
+        metalness 0
+      }
+      geometry Box {
+        size 0.62 3.6 0.88
+      }
+      castShadows FALSE
+    }
+  ]
+  boundingObject Box {
+    size 0.62 3.6 0.88
+  }
+}
+Worktop {
+  translation 10.4 -4.2 0.91
+  name "east worktop"
+  size 0.66 3.6 0.06
+}
+
+Solid {
+  translation 10.25 -3.35 0.97
+  name "sink basin"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.72 0.74 0.76
+        roughness 0.22
+        metalness 0.85
+      }
+      geometry Box {
+        size 0.42 0.5 0.12
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation 0 0 0.04
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.45 0.48 0.5
+            roughness 0.3
+            metalness 0.7
+          }
+          geometry Box {
+            size 0.34 0.4 0.08
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+Solid {
+  translation 10.08 -3.12 1.12
+  name "faucet"
+  children [
+    Shape {
+      appearance USE STEEL
+      geometry Cylinder {
+        height 0.28
+        radius 0.016
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation -0.1 0 0.13
+      rotation 0 1 0 1.2
+      children [
+        Shape {
+          appearance USE STEEL
+          geometry Cylinder {
+            height 0.2
+            radius 0.012
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+
+Solid {
+  translation 10.35 -5.15 1.08
+  name "microwave"
+  children [
+    Shape {
+      appearance USE STEEL
+      geometry Box {
+        size 0.32 0.48 0.28
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation -0.165 0.04 0
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.08 0.08 0.09
+            roughness 0.25
+            metalness 0.05
+          }
+          geometry Box {
+            size 0.01 0.28 0.18
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+
+Solid {
+  translation 8.15 -6.05 0.44
+  name "island cabinets"
+  children [
+    Shape {
+      appearance USE CABINET
+      geometry Box {
+        size 1.7 0.9 0.88
+      }
+      castShadows FALSE
+    }
+  ]
+  boundingObject Box {
+    size 1.7 0.9 0.88
+  }
+}
+Worktop {
+  translation 8.15 -6.05 0.91
+  name "island top"
+  size 1.78 0.96 0.06
+}
+
+Solid {
+  translation 8.15 -6.05 0.96
+  name "hot plate"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.08 0.08 0.09
+        roughness 0.35
+        metalness 0.15
+      }
+      geometry Box {
+        size 0.62 0.52 0.04
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation -0.14 -0.1 0.025
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.25 0.18 0.12
+            roughness 0.5
+            metalness 0.4
+          }
+          geometry Cylinder {
+            height 0.008
+            radius 0.09
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation 0.14 -0.1 0.025
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.25 0.18 0.12
+            roughness 0.5
+            metalness 0.4
+          }
+          geometry Cylinder {
+            height 0.008
+            radius 0.08
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation -0.14 0.12 0.025
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.25 0.18 0.12
+            roughness 0.5
+            metalness 0.4
+          }
+          geometry Cylinder {
+            height 0.008
+            radius 0.07
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation 0.14 0.12 0.025
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.25 0.18 0.12
+            roughness 0.5
+            metalness 0.4
+          }
+          geometry Cylinder {
+            height 0.008
+            radius 0.06
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+
+Solid {
+  translation 8.15 -6.05 1.85
+  name "range hood"
+  children [
+    Shape {
+      appearance USE STEEL
+      geometry Box {
+        size 0.7 0.55 0.12
+      }
+      castShadows FALSE
+    }
+    Pose {
+      translation 0 0 0.28
+      children [
+        Shape {
+          appearance USE STEEL
+          geometry Box {
+            size 0.22 0.22 0.45
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+
+Solid {
+  translation 8.01 -6.15 1.03
+  name "island pot"
+  children [
+    Shape {
+      appearance USE STEEL
+      geometry Cylinder {
+        height 0.08
+        radius 0.09
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation 8.32 -5.95 1.01
+  name "island pan"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.28 0.28 0.3
+        roughness 0.45
+        metalness 0.7
+      }
+      geometry Cylinder {
+        height 0.04
+        radius 0.1
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation 8.6 -5.72 0.95
+  name "island utensils"
+  children [
+    Pose {
+      translation 0 0 0
+      children [
+        Shape {
+          appearance USE STEEL
+          geometry Box {
+            size 0.16 0.016 0.004
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+    Pose {
+      translation 0.02 -0.03 0
+      children [
+        Shape {
+          appearance USE STEEL
+          geometry Box {
+            size 0.14 0.012 0.004
+          }
+          castShadows FALSE
+        }
+      ]
+    }
+  ]
+}
+Plate {
+  translation 7.45 -5.75 0.95
+  name "island plate stack"
+  mass 0
+}
+Plate {
+  translation 7.45 -5.75 0.96
+  name "island plate 2"
+  mass 0
+}
+Glass {
+  translation 7.65 -5.7 0.95
+  name "island glass"
+  mass 0
+}
+Solid {
+  translation 7.5 -6.35 1.05
+  name "island carafe"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.75 0.85 0.9
+        transparency 0.35
+        roughness 0.1
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.2
+        radius 0.04
+      }
+      castShadows FALSE
+    }
+  ]
+}
+
+Worktop {
+  translation 9.2 -1.6 0.87
+  rotation 0 0 1 1.5708
+  name "pickup counter"
+  size 1.6 0.7 0.08
+}
+Solid {
+  translation 9.2 -1.6 0.4
+  name "pickup cabinets"
+  children [
+    Shape {
+      appearance USE CABINET
+      geometry Box {
+        size 0.7 1.6 0.8
+      }
+      castShadows FALSE
+    }
+  ]
+  boundingObject Box {
+    size 0.7 1.6 0.8
+  }
+}
+Plate {
+  translation 9.0 -1.45 0.92
+  name "counter plate 1"
+  mass 0
+}
+Plate {
+  translation 8.75 -1.45 0.93
+  name "counter plate 2"
+  mass 0
+}
+Glass {
+  translation 9.35 -1.35 0.92
+  name "counter glass 1"
+  mass 0
+}
+Glass {
+  translation 9.5 -1.35 0.92
+  name "counter glass 2"
+  mass 0
+}
+CardboardBox {
+  translation 9.15 -1.75 0.95
+  name "pizza box"
+  size 0.32 0.32 0.06
+  mass 0
+  locked TRUE
+}
+
+# --- Rooms ---
+Bed {
+  translation -8.6 5.4 0
+  rotation 0 0 1 1.5708
+  name "room-1204 bed"
+}
+Desk {
+  translation -5.2 3.2 0
+  name "room-1204 desk"
+}
+Chair {
+  translation -5.2 4.0 0
+  name "room-1204 chair"
+}
+Plate {
+  translation -5.2 3.2 0.73
+  name "room-1204 plate"
+  mass 0
+}
+Glass {
+  translation -4.95 3.05 0.73
+  name "room-1204 glass"
+  mass 0
+}
+
+Bed {
+  translation 0 5.4 0
+  rotation 0 0 1 -1.5708
+  name "room-1205 bed"
+}
+Desk {
+  translation 2.2 3.2 0
+  name "room-1205 desk"
+}
+Chair {
+  translation 2.2 4.0 0
+  name "room-1205 chair"
+}
+Plate {
+  translation 2.2 3.2 0.73
+  name "room-1205 plate"
+  mass 0
+}
+Glass {
+  translation 2.45 3.05 0.73
+  name "room-1205 glass"
+  mass 0
+}
+
+Bed {
+  translation 8.6 5.4 0
+  rotation 0 0 1 -1.5708
+  name "room-1206 bed"
+}
+Desk {
+  translation 5.2 3.2 0
+  name "room-1206 desk"
+}
+Chair {
+  translation 5.2 4.0 0
+  name "room-1206 chair"
+}
+Plate {
+  translation 5.2 3.2 0.73
+  name "room-1206 plate"
+  mass 0
+}
+Glass {
+  translation 5.45 3.05 0.73
+  name "room-1206 glass"
+  mass 0
+}
+
+Solid {
+  translation 8.4 -1.1 0.05
+  name "counter"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.8 0.3
+        transparency 0.7
+        metalness 0
+        roughness 1
+      }
+      geometry Sphere {
+        radius 0.08
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation 1.6 -4.6 0.05
+  name "restaurant-table-1"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.2 0.4 0.9
+        transparency 0.7
+        metalness 0
+        roughness 1
+      }
+      geometry Sphere {
+        radius 0.08
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation -5.2 2.4 0.05
+  name "room-1204"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.5 0.1
+        transparency 0.7
+        metalness 0
+        roughness 1
+      }
+      geometry Sphere {
+        radius 0.08
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation 2.2 2.4 0.05
+  name "room-1205"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.5 0.1
+        transparency 0.7
+        metalness 0
+        roughness 1
+      }
+      geometry Sphere {
+        radius 0.08
+      }
+      castShadows FALSE
+    }
+  ]
+}
+Solid {
+  translation 5.2 2.4 0.05
+  name "room-1206"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.5 0.1
+        transparency 0.7
+        metalness 0
+        roughness 1
+      }
+      geometry Sphere {
+        radius 0.08
+      }
+      castShadows FALSE
+    }
+  ]
+}
+
+# One live Hey5 ServeBot. Docked fleet keeps body+tray, no arm/hand joints.
+ButlerServe {
+  translation -9.6 -7.15 0.095
+  rotation 0 0 1 1.5708
+  name "servebot-1"
+  controller "butler_serve"
+  window ""
+  synchronization FALSE
+}
+ButlerServe {
+  translation -7.5 -7.15 0.095
+  rotation 0 0 1 1.5708
+  name "servebot-2"
+  controller "<none>"
+  window ""
+  synchronization FALSE
+  locked TRUE
+  docked TRUE
+}
+ButlerServe {
+  translation -5.4 -7.15 0.095
+  rotation 0 0 1 1.5708
+  name "servebot-3"
+  controller "<none>"
+  window ""
+  synchronization FALSE
+  locked TRUE
+  docked TRUE
+}
+
+Robot {
+  name "butler_supervisor"
+  supervisor TRUE
+  controller "butler_supervisor"
+  window ""
+  translation 0 0 0.5
+}
