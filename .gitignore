@@ -1,0 +1,42 @@
+# Secrets
+.env
+.env.*
+!.env.example
+config/wallets.json
+*.pem
+*.key
+recovery.json
+**/*entity*secret*
+**/*turnkey*
+**/*webhook*secret*
+.pinata*
+*PINATA*
+
+# Planning docs (local only)
+docs/PLAN.md
+docs/scope/
+docs/specs/
+*.plan.md
+.cursor/
+
+# Editor / agents
+.vscode/
+.idea/
+agent-transcripts/
+
+# Webots / sim
+*.wbproj
+*.wbt.bak
+install/
+log/
+
+# Build
+node_modules/
+dist/
+out/
+.foundry/
+cache/
+broadcast/
+build/
+**/__pycache__/
+*.pyc
