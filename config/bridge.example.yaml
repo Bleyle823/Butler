@@ -1,0 +1,13 @@
+host: 127.0.0.1
+port: 8787
+secret: change-me
+keeperhub:
+  pickup_webhook: ""
+  delivery_webhook: ""
+rooms:
+  - room-1204
+  - room-1205
+  - room-1206
+pickup: counter
+dwell_sec: 8
+wallets_path: config/wallets.json

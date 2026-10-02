@@ -1,0 +1,20 @@
+{
+  "network": {
+    "arc": { "chainId": 5042002, "name": "ARC-TESTNET" },
+    "peaq": { "chainId": 3338, "name": "peaq mainnet" }
+  },
+  "escrow": {
+    "address": "0xREPLACE_AFTER_DEPLOY",
+    "usdc": "0x3600000000000000000000000000000000000000"
+  },
+  "actors": [
+    { "label": "guest-bob", "circleWalletId": "", "arcAddress": "", "peaqMachineId": null },
+    { "label": "servebot-1", "circleWalletId": "", "arcAddress": "", "peaqMachineId": "" },
+    { "label": "servebot-2", "circleWalletId": "", "arcAddress": "", "peaqMachineId": "" },
+    { "label": "servebot-3", "circleWalletId": "", "arcAddress": "", "peaqMachineId": "" },
+    { "label": "vending", "circleWalletId": "", "arcAddress": "", "peaqMachineId": "" },
+    { "label": "operator", "circleWalletId": "", "arcAddress": "", "peaqMachineId": null },
+    { "label": "manufacturer", "circleWalletId": "", "arcAddress": "", "peaqMachineId": null },
+    { "label": "settler", "circleWalletId": "", "arcAddress": "", "peaqMachineId": null }
+  ]
+}
