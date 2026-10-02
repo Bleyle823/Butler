@@ -1,0 +1,145 @@
+#VRML_SIM R2025a utf8
+# license: Apache License 2.0
+# Static door that fills a wall gap. No Robot, no hinge physics.
+# Supervisor sets leafRotation to open (0 0 1 1.45) or close (0 0 1 0).
+# template language: javascript
+
+EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
+EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
+
+PROTO HotelDoor [
+  field SFVec3f    translation   0 0 0
+  field SFRotation rotation      0 0 1 0
+  field SFString   name          "door"
+  field SFVec3f    size          0.2 1.6 2.4
+  field SFFloat    doorThickness 0.04
+  field SFFloat    frameWidth    0.08
+  field SFFloat    frameHeight   2.12
+  field SFBool     jointAtLeft   TRUE
+  field SFRotation leafRotation  0 0 1 0
+]
+{
+  %<
+    let size = fields.size.value;
+    let doorThickness = fields.doorThickness.value;
+    if (doorThickness <= 0)
+      doorThickness = fields.doorThickness.defaultValue;
+    let frameWidth = fields.frameWidth.value;
+    if (frameWidth <= 0)
+      frameWidth = fields.frameWidth.defaultValue;
+    let frameHeight = fields.frameHeight.value;
+    if (frameHeight <= 0 || frameHeight > size.z)
+      frameHeight = Math.min(size.z, fields.frameHeight.defaultValue);
+    const mirror = fields.jointAtLeft.value ? -1 : 1;
+    const leafWidth = size.y - 2 * frameWidth - 0.02;
+    const leafHeight = frameHeight - 0.02;
+    const hingeY = mirror * (0.5 * size.y - frameWidth);
+    const lintelH = size.z - frameHeight;
+  >%
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    children [
+      Solid {
+        translation 0 %<= -0.5 * size.y + 0.5 * frameWidth >% %<= 0.5 * frameHeight >%
+        children [
+          Shape {
+            appearance Roughcast {
+            }
+            geometry Box {
+              size %<= size.x >% %<= frameWidth >% %<= frameHeight >%
+            }
+            castShadows FALSE
+          }
+        ]
+        name "left jamb"
+        boundingObject Box {
+          size %<= size.x >% %<= frameWidth >% %<= frameHeight >%
+        }
+      }
+      Solid {
+        translation 0 %<= 0.5 * size.y - 0.5 * frameWidth >% %<= 0.5 * frameHeight >%
+        children [
+          Shape {
+            appearance Roughcast {
+            }
+            geometry Box {
+              size %<= size.x >% %<= frameWidth >% %<= frameHeight >%
+            }
+            castShadows FALSE
+          }
+        ]
+        name "right jamb"
+        boundingObject Box {
+          size %<= size.x >% %<= frameWidth >% %<= frameHeight >%
+        }
+      }
+      %< if (lintelH > 0.01) { >%
+      Solid {
+        translation 0 0 %<= frameHeight + 0.5 * lintelH >%
+        children [
+          Shape {
+            appearance Roughcast {
+            }
+            geometry Box {
+              size %<= size.x >% %<= size.y >% %<= lintelH >%
+            }
+            castShadows FALSE
+          }
+        ]
+        name "lintel"
+        boundingObject Box {
+          size %<= size.x >% %<= size.y >% %<= lintelH >%
+        }
+      }
+      %< } >%
+      Solid {
+        translation 0 %<= hingeY >% %<= 0.5 * leafHeight >%
+        rotation IS leafRotation
+        children [
+          Pose {
+            translation %<= -0.5 * doorThickness >% %<= -hingeY >% 0
+            children [
+              Shape {
+                appearance VarnishedPine {
+                }
+                geometry Box {
+                  size %<= doorThickness >% %<= leafWidth >% %<= leafHeight >%
+                }
+                castShadows FALSE
+              }
+            ]
+          }
+          Pose {
+            translation %<= -doorThickness - 0.02 >% %<= -hingeY - mirror * 0.38 * leafWidth >% -0.05
+            rotation 1 0 0 1.5708
+            children [
+              Shape {
+                appearance PBRAppearance {
+                  baseColor 0.72 0.62 0.28
+                  roughness 0.35
+                  metalness 0.65
+                }
+                geometry Cylinder {
+                  height 0.08
+                  radius 0.018
+                }
+                castShadows FALSE
+              }
+            ]
+          }
+        ]
+        name "leaf"
+        boundingObject Pose {
+          translation %<= -0.5 * doorThickness >% %<= -hingeY >% 0
+          children [
+            Box {
+              size %<= doorThickness >% %<= leafWidth >% %<= leafHeight >%
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

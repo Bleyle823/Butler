@@ -1,0 +1,182 @@
+#VRML_SIM R2025a utf8
+# license: Apache License 2.0
+# Chest tray for ButlerServe. Mates with TiagoBody frontArmSlot (type "tiago front arm").
+# Offset puts the plate in front of the torso column, not on the unused third-arm shoulder.
+# Item fields take a Plate, Glass, Wineglass, or CardboardBox. Empty wells stay visible.
+
+PROTO ButlerTray [
+  field  SFVec3f     translation    0.04 0.32 -0.22
+  field  SFRotation  rotation       0 0 1 1.5708
+  field  SFString    name           "butler tray"
+  field  SFNode      plateSlot      NULL
+  field  SFNode      glassSlot      NULL
+  field  SFNode      wineglassSlot  NULL
+  field  SFNode      boxSlot        NULL
+]
+{
+  Slot {
+    type "tiago front arm"
+    endPoint Solid {
+      translation IS translation
+      rotation IS rotation
+      name IS name
+      children [
+        Pose {
+          translation -0.12 0 -0.04
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.78 0.78 0.8
+                roughness 0.35
+                metalness 0.45
+              }
+              geometry Box {
+                size 0.18 0.08 0.05
+              }
+            }
+          ]
+        }
+        Pose {
+          translation -0.2 0 -0.1
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.78 0.78 0.8
+                roughness 0.35
+                metalness 0.45
+              }
+              geometry Box {
+                size 0.06 0.08 0.16
+              }
+            }
+          ]
+        }
+        Pose {
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.82 0.74 0.58
+                roughness 0.55
+                metalness 0
+              }
+              geometry Box {
+                size 0.35 0.25 0.018
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 0 0.12 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.55 0.42 0.28
+                roughness 0.7
+                metalness 0
+              }
+              geometry Box {
+                size 0.33 0.012 0.03
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 0 -0.12 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.55 0.42 0.28
+                roughness 0.7
+                metalness 0
+              }
+              geometry Box {
+                size 0.33 0.012 0.03
+              }
+            }
+          ]
+        }
+        Pose {
+          translation 0.07 0.04 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.55 0.55 0.55
+                roughness 0.4
+                metalness 0.2
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.055
+              }
+            }
+            Slot {
+              type "butler plate"
+              endPoint IS plateSlot
+            }
+          ]
+        }
+        Pose {
+          translation -0.08 0.05 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.7 0.85 0.9
+                transparency 0.35
+                roughness 0.1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.03
+              }
+            }
+            Slot {
+              type "butler glass"
+              endPoint IS glassSlot
+            }
+          ]
+        }
+        Pose {
+          translation -0.08 -0.05 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.75 0.8 0.85
+                transparency 0.4
+                roughness 0.1
+                metalness 0
+              }
+              geometry Cylinder {
+                height 0.004
+                radius 0.028
+              }
+            }
+            Slot {
+              type "butler wineglass"
+              endPoint IS wineglassSlot
+            }
+          ]
+        }
+        Pose {
+          translation 0.08 -0.06 0.02
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.72 0.58 0.38
+                roughness 0.8
+                metalness 0
+              }
+              geometry Box {
+                size 0.12 0.12 0.004
+              }
+            }
+            Slot {
+              type "butler box"
+              endPoint IS boxSlot
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
