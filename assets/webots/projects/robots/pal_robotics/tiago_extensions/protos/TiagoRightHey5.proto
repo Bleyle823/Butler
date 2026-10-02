@@ -20,6 +20,67 @@ PROTO TiagoRightHey5 [
       rotation IS rotation
       name IS name
       children [
+        # Straight suction slide, same idea as the vacuum-gripper sample:
+        # the pad moves in a line until it collides with the box.
+        SliderJoint {
+          jointParameters JointParameters {
+            axis 1 0 0
+          }
+          device [
+            LinearMotor {
+              name "suction slide"
+              maxVelocity 0.08
+              minPosition 0
+              maxPosition 0.22
+              maxForce 40
+            }
+            PositionSensor {
+              name "suction slide sensor"
+            }
+          ]
+          endPoint VacuumGripper {
+            translation 0.1 0.005 0.02
+            name "palm vacuum"
+            contactPoints 1
+            children [
+              Pose {
+                translation 0.03 0 0
+                rotation 0 1 0 1.5708
+                children [
+                  Shape {
+                    appearance MattePaint {
+                      baseColor 0.15 0.15 0.15
+                    }
+                    geometry Cylinder {
+                      height 0.012
+                      radius 0.028
+                    }
+                  }
+                ]
+              }
+            ]
+            boundingObject Pose {
+              translation 0.035 0 0
+              children [
+                Box {
+                  size 0.07 0.14 0.045
+                }
+              ]
+            }
+            physics Physics {
+              density -1
+              mass 0.04
+            }
+          }
+        }
+        DistanceSensor {
+          translation 0.145 0.005 0.025
+          name "palm range"
+          lookupTable [
+            0 0 0
+            0.22 0.22 0
+          ]
+        }
         DEF HAND_RIGHT_PALM_SHAPE Shape {
           appearance MattePaint {
             baseColor 0.133333 0.133333 0.133333

@@ -1,10 +1,8 @@
 #VRML_SIM R2025a utf8
 # license: Apache License 2.0
-# Static door that fills a wall gap. No Robot, no hinge physics.
-# Supervisor sets leafRotation to open (0 0 1 1.45) or close (0 0 1 0).
+# Open doorway frame. The wooden leaf is omitted so the robot can pass.
 # template language: javascript
 
-EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
 EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
 
 PROTO HotelDoor [
@@ -94,52 +92,6 @@ PROTO HotelDoor [
         }
       }
       %< } >%
-      Solid {
-        translation 0 %<= hingeY >% %<= 0.5 * leafHeight >%
-        rotation IS leafRotation
-        children [
-          Pose {
-            translation %<= -0.5 * doorThickness >% %<= -hingeY >% 0
-            children [
-              Shape {
-                appearance VarnishedPine {
-                }
-                geometry Box {
-                  size %<= doorThickness >% %<= leafWidth >% %<= leafHeight >%
-                }
-                castShadows FALSE
-              }
-            ]
-          }
-          Pose {
-            translation %<= -doorThickness - 0.02 >% %<= -hingeY - mirror * 0.38 * leafWidth >% -0.05
-            rotation 1 0 0 1.5708
-            children [
-              Shape {
-                appearance PBRAppearance {
-                  baseColor 0.72 0.62 0.28
-                  roughness 0.35
-                  metalness 0.65
-                }
-                geometry Cylinder {
-                  height 0.08
-                  radius 0.018
-                }
-                castShadows FALSE
-              }
-            ]
-          }
-        ]
-        name "leaf"
-        boundingObject Pose {
-          translation %<= -0.5 * doorThickness >% %<= -hingeY >% 0
-          children [
-            Box {
-              size %<= doorThickness >% %<= leafWidth >% %<= leafHeight >%
-            }
-          ]
-        }
-      }
     ]
   }
 }

@@ -14,7 +14,9 @@ DOOR_DEFS = (
     "ROOM_1206_DOOR",
 )
 CLOSED = [0, 0, 1, 0]
-OPEN = [0, 0, 1, 1.45]
+# South-wall doors swing into the corridor (-1.57). Room doors swing with +1.45.
+OPEN_SOUTH = [0, 0, 1, -1.57]
+OPEN_NORTH = [0, 0, 1, 1.45]
 
 
 class ButlerSupervisor:
@@ -26,6 +28,11 @@ class ButlerSupervisor:
         self._door_open = {name: True for name in DOOR_DEFS}
         print("butler_supervisor: keys 1-5 toggle doors. Robot still holds no chain keys.")
 
+    def _open_rotation(self, def_name):
+        if def_name in ("LOBBY_DOOR", "RESTAURANT_DOOR"):
+            return OPEN_SOUTH
+        return OPEN_NORTH
+
     def set_door(self, def_name, open_door):
         node = self.robot.getFromDef(def_name)
         if node is None:
@@ -33,7 +40,7 @@ class ButlerSupervisor:
         field = node.getField("leafRotation")
         if field is None:
             return
-        field.setSFRotation(OPEN if open_door else CLOSED)
+        field.setSFRotation(self._open_rotation(def_name) if open_door else CLOSED)
         self._door_open[def_name] = open_door
 
     def toggle_door(self, def_name):
