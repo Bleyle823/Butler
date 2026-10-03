@@ -1,7 +1,7 @@
 #VRML_SIM R2025a utf8
 # license: Apache License 2.0
-# ButlerServe: TIAGo++ service body with Hey5 hands, the hotel sensor suite,
-# and a spill-proof chest tray. Docked fleet omits arms and sensors.
+# ButlerServe: TIAGo base and body plus a spill-proof chest tray.
+# A kitchen staff pedestrian loads the tray. Docked fleet is body+tray only.
 # Sensors match the official TIAGo++ Webots model (Astra RGB-D, Hokuyo
 # URG-04LX-UG01) plus GPS/compass for indoor jobs and front sonars the
 # base proto only models visually. IMU, gyro, accelerometer, bumper, and
@@ -10,10 +10,6 @@
 
 EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_base/protos/TiagoBase.proto"
 EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoBody.proto"
-EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoRightArm.proto"
-EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoLeftArm.proto"
-EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoRightHey5.proto"
-EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoLeftHey5.proto"
 EXTERNPROTO "../assets/webots/projects/devices/orbbec/protos/Astra.proto"
 EXTERNPROTO "../assets/webots/projects/devices/hokuyo/protos/HokuyoUrg04lxug01.proto"
 EXTERNPROTO "ButlerTray.proto"
@@ -35,8 +31,6 @@ PROTO ButlerServe [
                                              translation -0.028 -0.035 -0.009
                                              rotation 1 0 0 -1.5708
                                            }
-  field  SFNode      endEffectorRightSlot  TiagoRightHey5 { name "right" }
-  field  SFNode      endEffectorLeftSlot   TiagoLeftHey5 { name "left" }
   field  MFNode      lidarSlot             [
                                              HokuyoUrg04lxug01 {
                                                resolution 180
@@ -96,12 +90,6 @@ PROTO ButlerServe [
       TiagoBody {
         %< if (!fields.docked.value) { >%
         cameraSlot IS cameraSlot
-        rightArmSlot TiagoRightArm {
-          endEffectorSlot IS endEffectorRightSlot
-        }
-        leftArmSlot TiagoLeftArm {
-          endEffectorSlot IS endEffectorLeftSlot
-        }
         %< } >%
         frontArmSlot ButlerTray {
           plateSlot IS plateSlot

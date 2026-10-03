@@ -1,4 +1,4 @@
-"""ButlerServe: sensors, folded idle arms, autonomous pickup and delivery.
+"""ButlerServe: sensors, chest tray, autonomous wait-for-staff then delivery.
 
 Webots never talks to peaq or Circle. This process publishes pose, battery,
 pickup, and delivery on the robot customData field and accepts a job through
@@ -9,13 +9,12 @@ Select servebot-1:
   Q               stop
   Shift+arrows    faster
   G               print pose
-  J               start / restart the room-1204 pizza job
+  J               start / restart the room-1204 bottle job
   T               toggle teleop
 """
 
 from __future__ import annotations
 
-import ctypes
 import json
 import math
 import sys
@@ -29,69 +28,50 @@ WHEEL_SEP = 0.4044
 SHIFT = Keyboard.SHIFT
 CTRL_MASK = Keyboard.SHIFT | Keyboard.CONTROL | Keyboard.ALT
 
-# Rest: both arms face back and hang down, elbows bent so the hands stay off the floor.
-# Positive shoulder pitch lowers the arm. The old negative pitch held them up.
+# Head and torso only. Kitchen staff loads the tray; this robot has no arm.
 IDLE_POSE = {
     "head_1_joint": 0.0,
     "head_2_joint": -0.12,
-    "torso_lift_joint": 0.16,
-    "arm_right_1_joint": 1.35,
-    "arm_right_2_joint": 1.15,
-    "arm_right_3_joint": 0.0,
-    "arm_right_4_joint": 1.75,
-    "arm_right_5_joint": 0.2,
-    "arm_right_6_joint": 0.0,
-    "arm_right_7_joint": 0.0,
-    "arm_left_1_joint": 1.45,
-    "arm_left_2_joint": 1.15,
-    "arm_left_3_joint": 0.1,
-    "arm_left_4_joint": 1.75,
-    "arm_left_5_joint": -0.2,
-    "arm_left_6_joint": 0.0,
-    "arm_left_7_joint": 0.0,
+    "torso_lift_joint": 0.22,
 }
+_ARM_JOINTS = ()
+_FINGERS = ()
+_FINGER_OPEN = ()
+_FINGER_CLOSE = ()
 
-# Right arm only. Left arm stays folded in IDLE_POSE so it cannot block a turn.
-# Same sequence as the p-rob3 and vacuum-gripper samples: reach, close, lift, place.
-_RIGHT_JOINTS = (
-    "arm_right_1_joint",
-    "arm_right_2_joint",
-    "arm_right_3_joint",
-    "arm_right_4_joint",
-    "arm_right_5_joint",
-    "arm_right_6_joint",
-    "arm_right_7_joint",
-)
-# Side reach. Joint 1 near 0 points the right arm out to the robot's right,
-# where the pedestal sits. A large negative joint 1 left the hand behind the body.
-REACH_RIGHT = (0.15, 0.35, 0.0, 0.70, 0.10, 0.0, 0.0)
-LIFT_RIGHT = (0.12, 0.05, 0.10, 1.05, 0.45, 0.15, 0.0)
-TRAY_RIGHT = (0.02, -0.45, 0.22, 1.95, 1.20, 0.55, 0.0)
-
-# Pizza is on the pedestal at (7.55, -4.05), south of the lane. The stance is
-# beside it, not against it. Plate and glass stay on the counter for later.
+# Open drink stand at (9.18, -2.72). The robot stops south of it and waits
+# while kitchen staff places the pizza and drink on the chest tray.
+COUNTER_STANCE = (8.98, -3.18)
+COUNTER_YAW = math.pi / 2.0
+LOAD_ITEMS = ("PIZZA_BOX", "DRINK_BOTTLE")
 PICKS = (
-    ("PIZZA_BOX", 7.50, -3.25),
+    ("DRINK_BOTTLE", 8.98, -3.18),
 )
 
 
-def _right_pose(joints, head=0.05, torso=0.22):
+def _arm_pose(head=0.05, torso=0.26):
     pose = dict(IDLE_POSE)
     pose["head_2_joint"] = head
     pose["torso_lift_joint"] = torso
-    for name, value in zip(_RIGHT_JOINTS, joints):
-        pose[name] = value
     return pose
+
+
+_GRASP_UP = 0.07
+_CARRY_OFFSET = (0.0, 0.0, -0.08)
+ARM_SPEED = 0.5
+
 
 # Robot-frame well offsets (metres) relative to the base origin.
 WELLS = {
-    "PIZZA_BOX": (0.36, -0.05, 0.84),
+    "PIZZA_BOX": (0.36, 0.02, 0.81),
+    "DRINK_BOTTLE": (0.30, -0.10, 0.79),
     "COUNTER_PLATE": (0.34, 0.08, 0.83),
     "COUNTER_GLASS": (0.30, 0.12, 0.86),
 }
 
 PLACE_POSES = {
-    "PIZZA_BOX": (-5.2, 3.05, 0.78),
+    "DRINK_BOTTLE": (-4.9, 3.05, 0.78),
+    "PIZZA_BOX": (-5.2, 3.2, 0.76),
     "COUNTER_PLATE": (-5.05, 3.2, 0.73),
     "COUNTER_GLASS": (-4.9, 3.05, 0.73),
 }
@@ -115,7 +95,10 @@ PATH_DELIVER = (
     (-7.20,  2.15, True),
     (-5.40,  2.25, False),
 )
+# Reverse out of 1204 through the door, then the lobby corridor to the dock.
 PATH_DOCK = (
+    (-6.20,  2.20, False),
+    (-7.20,  2.15, True),
     (-7.20,  0.00, False),
     (-7.00, -2.00, True),
     (-8.40, -2.10, False),
@@ -169,38 +152,40 @@ class ButlerServeController:
         self.vacuum = None
         self._bind_sensors()
         self._bind_arms()
-        self.vacuum = self._device("palm vacuum")
-        if self.vacuum is not None:
-            self.vacuum.enablePresence(self.timestep)
-            self.vacuum.turnOff()
-        self.slide = self._device("suction slide")
-        self.slide_sensor = self._device("suction slide sensor")
-        if self.slide is not None:
-            self.slide.setVelocity(0.08)
-            self.slide.setPosition(0.0)
-        if self.slide_sensor is not None:
-            self.slide_sensor.enable(self.timestep)
-        self.palm_range = self._device("palm range")
-        if self.palm_range is not None:
-            self.palm_range.enable(self.timestep)
+        self.vacuum = None
+        self.slide = None
+        self.slide_sensor = None
+        self.palm_range = None
         self.tray_well = self._device("tray well")
         if self.tray_well is not None:
             self.tray_well.enable(self.timestep)
-        self._reach_j1 = REACH_RIGHT[0]
-        self._reach_j2 = REACH_RIGHT[1]
-        self._reach_j4 = REACH_RIGHT[3]
-        self._reach_j6 = REACH_RIGHT[5]
-        self._servo_sign = {"j1": 1.0, "j2": 1.0, "j4": 1.0, "j6": 1.0}
+        self.picker_tool = None
+        self.picker_camera = None
+        self._ur = {name: IDLE_POSE[name] for name in _ARM_JOINTS}
+        self._ik_bias = (0.0, 0.0, 0.0)
+        self._tool_goal = None
+        self._stage = 0
+        self._stage_sent = False
+        self._arm_q = [IDLE_POSE[name] for name in _ARM_JOINTS]
+        self._arm_out = False
+        self._pick_at = None
+        self._grasp_local = None
+        self._gripper_closed = False
+        self._servo_sign = {"pan": 1.0, "lift": 1.0, "elbow": 1.0}
         self._servo_last = None
         self._servo_dist = None
         self._vacuum_on = False
         self._grasp_tries = 0
         self._arm_adjust_at = 0.0
         self._seek_until = 0.0
+        self._arm_base_node = None
+        self._pick_prepped = False
+        self._top_arm_ready = False
+        self._carry_attach = False
         self.apply_pose(IDLE_POSE)
         self.set_hands(closed=False)
-        if not self.teleop and not self.parked:
-            self.start_job()
+        self._job_pending = not self.teleop and not self.parked
+        self._last_wait_print = -1.0
         print(
             "ButlerServe '%s': J job, T teleop, arrows/WASD drive, Q stop."
             % self.name
@@ -257,31 +242,22 @@ class ButlerServeController:
 
     def _bind_arms(self):
         self.arm_motors = {}
-        names = list(IDLE_POSE.keys())
-        for name in names:
+        for name in IDLE_POSE:
             motor = self._device(name)
             if motor is None:
                 continue
-            self._limit_motor(motor, 0.75)
+            if name in _ARM_JOINTS:
+                motor.setVelocity(ARM_SPEED)
+            else:
+                self._limit_motor(motor, 0.35)
             self.arm_motors[name] = motor
-        self.hand_flex = []
-        self.hand_abd = []
-        self.hand_virtual = []
-        count = self.robot.getNumberOfDevices()
-        for i in range(count):
-            device = self.robot.getDeviceByIndex(i)
-            name = device.getName()
-            if not name.startswith("hand_") or not name.endswith("_joint"):
+        self.finger_motors = []
+        for name in _FINGERS:
+            motor = self._device(name)
+            if motor is None:
                 continue
-            if "sensor" in name:
-                continue
-            self._limit_motor(device, 0.5)
-            if "virtual" in name:
-                self.hand_virtual.append(device)
-            elif "thumb_abd" in name:
-                self.hand_abd.append(device)
-            elif "flex" in name:
-                self.hand_flex.append(device)
+            motor.setVelocity(0.03)
+            self.finger_motors.append(motor)
 
     def _limit_motor(self, motor, fraction):
         vmax = motor.getMaxVelocity()
@@ -296,14 +272,14 @@ class ButlerServeController:
             self.pose_hold_until = self.robot.getTime() + hold_s
 
     def set_hands(self, closed):
-        flex = 0.78 if closed else 0.0
-        abd = 1.45 if closed else 0.0
-        for motor in self.hand_flex:
-            motor.setPosition(flex)
-        for motor in self.hand_abd:
-            motor.setPosition(abd)
-        for motor in self.hand_virtual:
-            motor.setPosition(0.0)
+        """Open or close the youBot two-finger gripper."""
+        self._gripper_closed = bool(closed)
+        if not closed:
+            self._carry_attach = False
+        targets = _FINGER_CLOSE if closed else _FINGER_OPEN
+        for motor, position in zip(self.finger_motors, targets):
+            motor.setVelocity(0.03)
+            motor.setPosition(position)
 
     def posing(self):
         return self.robot.getTime() < self.pose_hold_until
@@ -314,6 +290,9 @@ class ButlerServeController:
         self.right.setVelocity(max(-cap, min(cap, right_rad_s)))
 
     def set_base_velocity(self, linear_m_s, angular_rad_s):
+        if math.isnan(linear_m_s) or math.isnan(angular_rad_s):
+            self.set_wheel_speeds(0.0, 0.0)
+            return
         left = (linear_m_s - angular_rad_s * WHEEL_SEP / 2.0) / WHEEL_RADIUS
         right = (linear_m_s + angular_rad_s * WHEEL_SEP / 2.0) / WHEEL_RADIUS
         self.set_wheel_speeds(left, right)
@@ -322,15 +301,25 @@ class ButlerServeController:
         node = self.robot.getSelf()
         if node is not None:
             pos = node.getPosition()
-            yaw = math.atan2(node.getOrientation()[3], node.getOrientation()[0])
-            return pos[0], pos[1], pos[2], yaw
+            rot = node.getOrientation()
+            if (
+                pos is not None
+                and rot is not None
+                and not any(math.isnan(v) for v in pos[:2])
+                and not math.isnan(rot[0])
+                and not math.isnan(rot[3])
+            ):
+                yaw = math.atan2(rot[3], rot[0])
+                return pos[0], pos[1], pos[2], yaw
         if self.gps is not None:
             values = self.gps.getValues()
-            yaw = 0.0
-            if self.compass is not None:
-                north = self.compass.getValues()
-                yaw = math.atan2(north[0], north[1])
-            return values[0], values[1], values[2], yaw
+            if values is not None and not any(math.isnan(v) for v in values[:2]):
+                yaw = 0.0
+                if self.compass is not None:
+                    north = self.compass.getValues()
+                    if north is not None and not any(math.isnan(v) for v in north[:2]):
+                        yaw = math.atan2(north[0], north[1])
+                return values[0], values[1], values[2], yaw
         return 0.0, 0.0, 0.0, 0.0
 
     def _goal_bearing(self, dx, dy, yaw):
@@ -512,10 +501,38 @@ class ButlerServeController:
         pos = node.getPosition()
         return (pos[0], pos[1], pos[2])
 
+    def _world_to_robot(self, point):
+        """Bottle pose in the robot base frame (same as ur5.get_bottle_frame)."""
+        node = self.robot.getSelf()
+        if node is None:
+            return point
+        pos = node.getPosition()
+        rot = node.getOrientation()
+        dx, dy, dz = point[0] - pos[0], point[1] - pos[1], point[2] - pos[2]
+        rx = rot[0] * dx + rot[3] * dy + rot[6] * dz
+        ry = rot[1] * dx + rot[4] * dy + rot[7] * dz
+        rz = rot[2] * dx + rot[5] * dy + rot[8] * dz
+        return (rx, ry, rz)
+
+    def _grasp_point(self, item):
+        return (item[0], item[1], item[2] + _GRASP_UP)
+
+    def _track_bottle(self):
+        """Ground-truth track (CNN-free), like ur5 predict without the model."""
+        item = self._node_pos(self.pick_name)
+        if item is None:
+            return None
+        self._pick_at = self._grasp_point(item)
+        return self._pick_at
+
     def _palm_gap(self):
         """Item position minus the suction pad. None if either node is missing."""
         palm = None
-        raw = getattr(self.vacuum, "_tag", None) if self.vacuum is not None else None
+        if self.picker_tool is not None:
+            vals = self.picker_tool.getValues()
+            if vals is not None and not any(math.isnan(v) for v in vals[:3]):
+                palm = (vals[0], vals[1], vals[2])
+        raw = getattr(self.vacuum, "_tag", None) if palm is None and self.vacuum is not None else None
         try:
             tag = int(raw) if raw is not None else 0
         except (TypeError, ValueError):
@@ -523,7 +540,7 @@ class ButlerServeController:
         if tag > 0:
             try:
                 node = self.robot.getFromDevice(tag)
-            except (TypeError, ctypes.ArgumentError):
+            except (TypeError, ValueError):
                 node = None
             if node is not None:
                 pos = node.getPosition()
@@ -543,43 +560,204 @@ class ButlerServeController:
         return float(value)
 
     def _apply_reach(self):
-        joints = (
-            self._reach_j1,
-            self._reach_j2,
-            REACH_RIGHT[2],
-            self._reach_j4,
-            REACH_RIGHT[4],
-            self._reach_j6,
-            REACH_RIGHT[6],
-        )
-        self.apply_pose(_right_pose(joints, head=0.35, torso=0.26))
+        pose = _arm_pose(head=0.35, torso=0.26)
+        pose.update(self._ur)
+        self.apply_pose(pose)
 
     def _begin_approach(self):
         name = PICKS[self.pick_i][0]
         self.pick_name = name
         self._creeps = 0
-        node = self.robot.getFromDef(name)
-        if node is not None:
-            pos = node.getPosition()
-            # Park north of the pedestal. The right arm reaches south to the box.
-            if name == "PIZZA_BOX":
-                x, y = pos[0] - 0.05, pos[1] + 0.80
-            else:
-                x, y = pos[0] - 0.95, pos[1]
+        self._stage = 0
+        self._stage_sent = False
+        self._ik_bias = (0.0, 0.0, 0.0)
+        self._tool_goal = None
+        self._pick_at = None
+        self._grasp_local = None
+        self._pick_prepped = False
+        self._top_arm_ready = False
+        self._carry_attach = False
+        x, y, _, _ = self.get_pose()
+        sx, sy = COUNTER_STANCE
+        if math.hypot(sx - x, sy - y) < 0.45 or (x == 0.0 and y == 0.0):
+            self.waypoints = [(sx, -3.40, False), (sx, sy, False)]
         else:
-            x, y = PICKS[self.pick_i][1], PICKS[self.pick_i][2]
-        self._servo_sign = {"j1": 1.0, "j2": 1.0, "j4": 1.0, "j6": 1.0}
-        self._servo_last = None
-        self._servo_dist = None
-        self._grasp_tries = 0
-        self.waypoints = [(x, y, False)]
+            self.waypoints = [
+                (x, -3.40, False),
+                (sx, -3.40, False),
+                (sx, sy, False),
+            ]
+        print(
+            "path to %s: %s"
+            % (name, ", ".join("(%.2f, %.2f)" % (px, py) for px, py, _ in self.waypoints))
+        )
         self.wp_index = 0
         self._reset_nav()
         self.job = "approach"
         self.apply_pose(IDLE_POSE)
         self.set_hands(closed=False)
-        self._vacuum(False)
         print("approach %s" % name)
+
+    def _each_scene_child(self, node):
+        if node is None:
+            return
+        for field_name in ("children", "endPoint"):
+            try:
+                field = node.getField(field_name)
+            except Exception:
+                continue
+            if field is None:
+                continue
+            try:
+                for index in range(field.getCount()):
+                    yield field.getMFNode(index)
+            except Exception:
+                try:
+                    child = field.getSFNode()
+                except Exception:
+                    child = None
+                if child is not None:
+                    yield child
+
+    def _find_named_node(self, node, target):
+        if node is None:
+            return None
+        try:
+            name_field = node.getField("name")
+            if name_field is not None and name_field.getSFString() == target:
+                return node
+        except Exception:
+            pass
+        for child in self._each_scene_child(node):
+            found = self._find_named_node(child, target)
+            if found is not None:
+                return found
+        return None
+
+    def _get_arm_base(self):
+        if self._arm_base_node is None:
+            self._arm_base_node = self._find_named_node(self.robot.getSelf(), "butler picker")
+        return self._arm_base_node
+
+    def _world_to_arm(self, point):
+        """Express a world point in the live UR5 base frame (not yaw-only robot frame)."""
+        base = self._get_arm_base()
+        if base is None:
+            x, y, z, yaw = self.get_pose()
+            torso = 0.26
+            ox, oz = 0.05, 0.274 + 0.6 + torso
+            c, s = math.cos(yaw), math.sin(yaw)
+            ax, ay = x + ox * c, y + ox * s
+            az = z + oz
+            dx, dy, dz = point[0] - ax, point[1] - ay, point[2] - az
+            return (dx * c + dy * s, -dx * s + dy * c, dz)
+        pos = base.getPosition()
+        rot = base.getOrientation()
+        dx, dy, dz = point[0] - pos[0], point[1] - pos[1], point[2] - pos[2]
+        lx = rot[0] * dx + rot[3] * dy + rot[6] * dz
+        ly = rot[1] * dx + rot[4] * dy + rot[7] * dz
+        lz = rot[2] * dx + rot[5] * dy + rot[8] * dz
+        return (lx, ly, lz)
+
+    def _go_joints(self, angles, hold=True):
+        """Command youBot arm joints. Hold long enough for the preset to settle."""
+        torso = 0.28 if self.job == "pick" else 0.26
+        pose = _arm_pose(head=-0.12, torso=torso)
+        travel = 0.0
+        for name, angle, previous in zip(_ARM_JOINTS, angles, self._arm_q):
+            pose[name] = angle
+            travel = max(travel, abs(angle - previous))
+        self._arm_q = [pose[name] for name in _ARM_JOINTS]
+        hold_s = (travel / ARM_SPEED + 1.4) if hold else 0.0
+        self.apply_pose(pose, hold_s=hold_s)
+        return hold_s
+
+    def _bottle_local(self):
+        """Bottle grasp in the youBot arm base frame."""
+        item = self._node_pos(self.pick_name)
+        if item is None:
+            return None
+        return self._world_to_arm((item[0], item[1], item[2] + _GRASP_UP))
+
+    def _calibrate_tool(self):
+        if self.picker_tool is None or self._tool_goal is None:
+            return
+        vals = self.picker_tool.getValues()
+        if vals is None or any(math.isnan(v) for v in vals[:3]):
+            return
+        bias = tuple(max(-0.08, min(0.08, self._tool_goal[i] - vals[i])) for i in range(3))
+        self._ik_bias = bias
+
+    def _tool_near_goal(self, tol=0.07):
+        if self._tool_goal is None or self.picker_tool is None:
+            return True
+        vals = self.picker_tool.getValues()
+        if vals is None or any(math.isnan(v) for v in vals[:3]):
+            return True
+        gap = math.sqrt(sum((vals[i] - self._tool_goal[i]) ** 2 for i in range(3)))
+        return gap <= tol
+
+    def _tool_gap_to_grasp(self):
+        if self._pick_at is None or self.picker_tool is None:
+            return None
+        vals = self.picker_tool.getValues()
+        if vals is None or any(math.isnan(v) for v in vals[:3]):
+            return None
+        return math.sqrt(sum((vals[i] - self._pick_at[i]) ** 2 for i in range(3)))
+
+    def _sync_carried_to_tool(self):
+        if not self._carry_attach or self.pick_name is None:
+            return
+        node = self.robot.getFromDef(self.pick_name)
+        if node is None or self.picker_tool is None:
+            return
+        vals = self.picker_tool.getValues()
+        if vals is None or any(math.isnan(v) for v in vals[:3]):
+            return
+        ox, oy, oz = _CARRY_OFFSET
+        node.getField("translation").setSFVec3f(
+            [vals[0] + ox, vals[1] + oy, vals[2] + oz]
+        )
+        node.resetPhysics()
+
+    def _item_on_tray(self, name):
+        item = self._node_pos(name)
+        if item is None:
+            return False
+        rx, ry, rz, yaw = self.get_pose()
+        dx, dy = item[0] - rx, item[1] - ry
+        c, s = math.cos(yaw), math.sin(yaw)
+        forward = dx * c + dy * s
+        left = -dx * s + dy * c
+        return 0.10 < forward < 0.60 and abs(left) < 0.32 and item[2] > rz + 0.50
+
+    def _tick_wait_load(self):
+        """Park at the counter until kitchen staff sets pizza and drink on the tray."""
+        loaded = [name for name in LOAD_ITEMS if self._item_on_tray(name)]
+        now = self.robot.getTime()
+        if now - self._last_wait_print >= 2.0 and len(loaded) < len(LOAD_ITEMS):
+            self._last_wait_print = now
+            missing = [name for name in LOAD_ITEMS if name not in loaded]
+            print("waiting for staff, still need %s" % missing)
+        if len(loaded) < len(LOAD_ITEMS):
+            return
+        self.carried = list(loaded)
+        self.event = "pickup"
+        self.publish()
+        print("pickup t=%.1f items=%s" % (self.robot.getTime(), self.carried))
+        self.job = "fold_carry"
+
+    def _seat_on_tray(self, well):
+        """Set the bottle upright in the tray recess. The fingers are still closed."""
+        if well is None or self.pick_name is None:
+            return
+        node = self.robot.getFromDef(self.pick_name)
+        if node is None:
+            return
+        # Well GPS is 4 cm above the deck. The bottle origin is its base.
+        node.getField("translation").setSFVec3f([well[0], well[1], well[2] - 0.035])
+        node.getField("rotation").setSFRotation([0, 0, 1, 0])
+        node.resetPhysics()
 
     def _tray_point(self):
         """Deck point for the box, from the GPS on the tray well."""
@@ -622,8 +800,7 @@ class ButlerServeController:
             self._vacuum(False)
             self._set_slide(0.0)
             self.set_hands(closed=False)
-            self._reach_j4 = min(2.0, self._reach_j4 + 0.5)
-            self._reach_j2 = min(1.2, self._reach_j2 + 0.35)
+            self._ur = {name: IDLE_POSE[name] for name in _ARM_JOINTS}
             self._apply_reach()
             self.job = "settle"
             self.pose_hold_until = now + 1.2
@@ -645,7 +822,8 @@ class ButlerServeController:
         landed = False
         if well is not None and item is not None:
             horiz = math.hypot(item[0] - well[0], item[1] - well[1])
-            landed = horiz < 0.12 and well[2] - 0.05 < item[2] < well[2] + 0.05
+            deck = well[2] - 0.035
+            landed = horiz < 0.15 and abs(item[2] - deck) < 0.06
         if landed:
             if self.pick_name not in self.carried:
                 self.carried.append(self.pick_name)
@@ -692,7 +870,7 @@ class ButlerServeController:
         self.pick_i = 0
         self.event = "job"
         self._begin_approach()
-        print("job start: kitchen pickup -> room-1204")
+        print("job start: wait for staff to load pizza and drink, then room-1204")
 
     def _reset_nav(self):
         self._stuck_since = None
@@ -703,62 +881,12 @@ class ButlerServeController:
         self._align_yaw = None
 
     def _held(self):
-        present = self.vacuum is not None and bool(self.vacuum.getPresence())
-        return present or (self._vacuum_on and self._item_carried())
+        if self.vacuum is not None and bool(self.vacuum.getPresence()):
+            return True
+        return self._gripper_closed and self._item_carried()
 
     def _servo_arm(self, forward, left, dz, dist):
-        """Step one joint. If that step opened the gap, the next step reverses it."""
-        if self._servo_last is not None and self._servo_dist is not None:
-            if dist > self._servo_dist + 0.01:
-                self._servo_sign[self._servo_last] *= -1.0
-        elbow_stuck = (
-            self._servo_last == "j4"
-            and self._servo_dist is not None
-            and dist > self._servo_dist - 0.008
-        )
-        # Aim the shoulder while the hand is beside the target. Stretching the
-        # elbow first left it at the joint stop with the hand still behind the body.
-        if abs(left) > 0.10 or elbow_stuck:
-            name = "j1"
-            step = -0.12 if left > 0 else 0.12
-        elif forward > 0.06:
-            name = "j4"
-            step = -0.12
-        elif forward < -0.06:
-            name = "j4"
-            step = 0.12
-        elif abs(left) >= abs(dz) and abs(left) > 0.02:
-            name = "j1"
-            step = -0.10 if left > 0 else 0.10
-        elif abs(dz) > 0.02:
-            name = "j2"
-            step = 0.10 if dz < 0 else -0.10
-        else:
-            name = "j6"
-            step = 0.12
-        step *= self._servo_sign[name]
-        if dist < 0.12:
-            step *= 0.55
-        limits = {
-            "j1": (-1.08, 1.45),
-            "j2": (-1.05, 1.35),
-            "j4": (-0.32, 2.1),
-            "j6": (-1.3, 1.3),
-        }
-        attr = {"j1": "_reach_j1", "j2": "_reach_j2", "j4": "_reach_j4", "j6": "_reach_j6"}
-        lo, hi = limits[name]
-        cur = getattr(self, attr[name])
-        nxt = min(hi, max(lo, cur + step))
-        if abs(nxt - cur) < 1e-4:
-            self._servo_sign[name] *= -1.0
-        setattr(self, attr[name], nxt)
-        self._servo_last = name
-        self._servo_dist = dist
-        self._apply_reach()
-        print(
-            "reach %s %+.2f gap %.2f (fwd %.2f left %.2f up %.2f)"
-            % (name, nxt, dist, forward, left, dz)
-        )
+        _ = (forward, left, dz, dist)
 
     def _tick_seek(self):
         """Keep the pad moving until suction holds the box.
@@ -795,20 +923,13 @@ class ButlerServeController:
         forward = dx * c + dy * s
         left = -dx * s + dy * c
         front = self._lidar_sectors()["front"]
-        # The slide is the vacuum-gripper sample's straight approach. Extend it
-        # while the pizza is still ahead of the pad, and turn suction on before contact.
-        slide = self._slide_pos()
-        if forward > 0.02 or dist < 0.28:
-            self._set_slide(slide + 0.012)
-        elif forward < -0.05:
-            self._set_slide(slide - 0.012)
-        if dist < 0.22 or slide > 0.03:
-            self._vacuum(True)
+        # Close the gripper once the tool is on the box.
+        if dist < 0.14:
             self.set_hands(closed=True)
         lin = 0.0
         # The pedestal pickup keeps the base parked. Creeping forward puts the
         # chest and the arms into the post.
-        if self.pick_name != "PIZZA_BOX" and dist > 0.06 and forward > 0.04 and front > 0.24:
+        if self.pick_name != "DRINK_BOTTLE" and dist > 0.06 and forward > 0.04 and front > 0.24:
             lin = 0.05
         elif forward < -0.06:
             lin = -0.04
@@ -823,69 +944,20 @@ class ButlerServeController:
             self.set_base_velocity(0.0, 0.0)
             return
         if self.job == "approach":
-            self.apply_pose(IDLE_POSE)
-            x, y, _, yaw = self.get_pose()
-            tx, ty = self.waypoints[0][0], self.waypoints[0][1]
-            dx, dy = tx - x, ty - y
-            dist = math.hypot(dx, dy)
-            bearing, _forward = self._goal_bearing(dx, dy, yaw)
-            if dist < 0.14:
+            if self.follow_waypoints():
+                x, y, _, _ = self.get_pose()
+                print("at counter (%.2f, %.2f), waiting for staff" % (x, y))
                 self.set_base_velocity(0.0, 0.0)
-                where = "pizza pedestal" if self.pick_name == "PIZZA_BOX" else "counter"
-                print("at %s (%.2f, %.2f) for %s" % (where, x, y, self.pick_name))
-                self._reach_j1 = REACH_RIGHT[0]
-                self._reach_j2 = REACH_RIGHT[1]
-                self._reach_j4 = REACH_RIGHT[3]
-                self._reach_j6 = REACH_RIGHT[5]
-                self.job = "reach"
-                self._apply_reach()
-                self.pose_hold_until = self.robot.getTime() + 2.0
-                self.set_hands(closed=False)
-                self._vacuum(False)
-            elif abs(bearing) > HEADING_ALIGN:
-                self.set_base_velocity(0.0, math.copysign(TURN_IN_PLACE, bearing or 1.0))
-            else:
-                self.set_base_velocity(min(0.35, max(0.12, dist)), 1.0 * bearing)
-        elif self.job == "reach":
-            self._remember_item()
-            self._seek_until = self.robot.getTime() + 14.0
-            self._arm_adjust_at = self.robot.getTime() + 0.4
-            self.job = "seek"
-            self._vacuum(False)
-            self._set_slide(0.0)
-            self.set_hands(closed=False)
-        elif self.job == "seek":
-            self._tick_seek()
-        elif self.job == "grasp":
-            touched = self._item_carried()
-            if self.vacuum is not None and self.vacuum.getPresence():
-                touched = True
-            if touched:
-                print("grasped %s" % self.pick_name)
-                self._vacuum(True)
-                self._servo_sign = {"j1": 1.0, "j2": 1.0, "j4": 1.0, "j6": 1.0}
-                self._servo_last = None
-                self._servo_dist = None
-                self.job = "carry"
-                self._seek_until = self.robot.getTime() + 12.0
-                self._arm_adjust_at = self.robot.getTime() + 0.3
-            else:
-                self._grasp_tries += 1
-                if self._grasp_tries < 3:
-                    print("suction retry %d" % self._grasp_tries)
-                    self._vacuum(False)
-                    self.job = "seek"
-                    self._seek_until = self.robot.getTime() + 6.0
-                    self._arm_adjust_at = self.robot.getTime() + 0.2
-                else:
-                    mx, my, _, _ = self.get_pose()
-                    gap = self._palm_gap()
-                    dist = gap[3] if gap else -1.0
-                    print("grasp miss %s at (%.2f, %.2f) palm %.2fm" % (self.pick_name, mx, my, dist))
-                    self._vacuum(False)
-                    self._next_item_or_deliver()
-        elif self.job == "carry":
-            self._tick_carry()
+                self.job = "wait_load"
+                self.event = "waiting_load"
+                self.publish()
+            return
+        elif self.job == "wait_load":
+            self.set_base_velocity(0.0, 0.0)
+            self._tick_wait_load()
+        elif self.job == "pick":
+            self.set_base_velocity(0.0, 0.0)
+            self._tick_wait_load()
         elif self.job == "settle":
             self._tick_settle()
         elif self.job == "fold_carry":
@@ -897,7 +969,7 @@ class ButlerServeController:
         elif self.job == "nav_deliver":
             if self.follow_waypoints():
                 self.job = "reach_place"
-                self.apply_pose(_right_pose(TRAY_RIGHT, head=-0.2), hold_s=1.6)
+                self.apply_pose(_arm_pose(head=-0.2), hold_s=1.6)
                 self.set_hands(closed=True)
         elif self.job == "reach_place":
             self.place_on_desk()
@@ -994,6 +1066,9 @@ class ButlerServeController:
                 self.set_wheel_speeds(0.0, 0.0)
                 self.apply_pose(IDLE_POSE)
                 continue
+            if getattr(self, "_job_pending", False):
+                self._job_pending = False
+                self.start_job()
             if override or self.teleop:
                 if override:
                     self.set_base_velocity(linear, angular)
@@ -1001,6 +1076,8 @@ class ButlerServeController:
                     self.set_base_velocity(0.0, 0.0)
             else:
                 self.tick_job()
+            if self._carry_attach:
+                self._sync_carried_to_tool()
             steps += 1
             if steps % 16 == 0:
                 self.publish()
