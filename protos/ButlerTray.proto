@@ -199,6 +199,14 @@ PROTO ButlerTray [
               translation 0 0 0.04
               name "tray well"
             }
+            TouchSensor {
+              translation 0 0 0.03
+              name "tray_contact"
+              type "bumper"
+              boundingObject Box {
+                size 0.22 0.16 0.04
+              }
+            }
             Shape {
               appearance USE WELL
               geometry Box {

@@ -17,10 +17,14 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import sys
+import urllib.request
 
 from controller import Keyboard, Supervisor
 
+BRIDGE_URL = os.environ.get("BUTLER_BRIDGE_URL", "http://127.0.0.1:8787")
+DWELL_SEC = 8.0
 MAX_SPEED = 4.0
 FAST_SPEED = 6.4
 WHEEL_RADIUS = 0.0985
@@ -159,6 +163,14 @@ class ButlerServeController:
         self.tray_well = self._device("tray well")
         if self.tray_well is not None:
             self.tray_well.enable(self.timestep)
+        self.tray_contact = self._device("tray_contact")
+        if self.tray_contact is not None:
+            self.tray_contact.enable(self.timestep)
+        self._seen_goal = None
+        self._dwell_until = 0.0
+        # ButlerServe has no Battery node. Enabling the sensor makes Webots
+        # return -1, and the controller then re-enables it on every step.
+        self._battery_sensor = False
         self.picker_tool = None
         self.picker_camera = None
         self._ur = {name: IDLE_POSE[name] for name in _ARM_JOINTS}
@@ -731,9 +743,18 @@ class ButlerServeController:
         left = -dx * s + dy * c
         return 0.10 < forward < 0.60 and abs(left) < 0.32 and item[2] > rz + 0.50
 
+    def _tray_pressed(self):
+        sensor = getattr(self, "tray_contact", None)
+        if sensor is None:
+            return False
+        try:
+            return float(sensor.getValue()) > 0.0
+        except Exception:
+            return False
+
     def _tick_wait_load(self):
         """Park at the counter until kitchen staff sets pizza and drink on the tray."""
-        loaded = [name for name in LOAD_ITEMS if self._item_on_tray(name)]
+        loaded = [name for name in LOAD_ITEMS if self._item_on_tray(name) or self._tray_pressed()]
         now = self.robot.getTime()
         if now - self._last_wait_print >= 2.0 and len(loaded) < len(LOAD_ITEMS):
             self._last_wait_print = now
@@ -968,6 +989,14 @@ class ButlerServeController:
             self.event = "carrying"
         elif self.job == "nav_deliver":
             if self.follow_waypoints():
+                self.job = "dwell_room"
+                self._dwell_until = self.robot.getTime() + DWELL_SEC
+                self.event = "at_dropoff"
+                self.publish()
+                self.set_base_velocity(0.0, 0.0)
+        elif self.job == "dwell_room":
+            self.set_base_velocity(0.0, 0.0)
+            if self.robot.getTime() >= self._dwell_until:
                 self.job = "reach_place"
                 self.apply_pose(_arm_pose(head=-0.2), hold_s=1.6)
                 self.set_hands(closed=True)
@@ -990,16 +1019,59 @@ class ButlerServeController:
                 self.set_base_velocity(0.0, 0.0)
                 print("job complete: back at dock")
 
+    def _read_battery(self):
+        if getattr(self, "_battery_sensor", False):
+            try:
+                raw = float(self.robot.batterySensorGetValue())
+                if 0.0 < raw <= 1.0:
+                    self.battery = raw
+            except Exception:
+                pass
+        return self.battery
+
     def publish(self):
         x, y, z, yaw = self.get_pose()
         payload = {
             "name": self.name,
             "pose": [round(x, 3), round(y, 3), round(z, 3), round(yaw, 3)],
-            "battery": round(self.battery, 3),
+            "battery": round(self._read_battery(), 3),
             "event": self.event,
             "carried": list(self.carried),
         }
-        self.robot.setCustomData(json.dumps(payload, separators=(",", ":")))
+        encoded = json.dumps(payload, separators=(",", ":"))
+        self.robot.setCustomData(encoded)
+        self._post_bridge("/telemetry", payload)
+
+    def _post_bridge(self, path, payload):
+        data = json.dumps(payload).encode("utf-8")
+        request = urllib.request.Request(
+            BRIDGE_URL + path,
+            data=data,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=0.2) as response:
+                response.read()
+        except Exception:
+            return
+
+    def _poll_goal(self):
+        request = urllib.request.Request(BRIDGE_URL + "/robots/" + self.name + "/goal")
+        try:
+            with urllib.request.urlopen(request, timeout=0.2) as response:
+                body = json.loads(response.read().decode("utf-8") or "{}")
+        except Exception:
+            return
+        job_id = body.get("jobId")
+        room = body.get("room")
+        if not job_id or job_id == self._seen_goal:
+            return
+        if "peaq" in body or "circle" in body or "wallet" in body:
+            return
+        self._seen_goal = job_id
+        self.dropoff_room = room
+        self.start_job()
 
     def _normalize_key(self, raw):
         if ord("A") <= raw <= ord("Z"):
@@ -1079,6 +1151,8 @@ class ButlerServeController:
             if self._carry_attach:
                 self._sync_carried_to_tool()
             steps += 1
+            if steps % 32 == 0:
+                self._poll_goal()
             if steps % 16 == 0:
                 self.publish()
 

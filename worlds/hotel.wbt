@@ -371,35 +371,35 @@ DEF LOBBY_DOOR HotelDoor {
   rotation 0 0 1 1.5708
   name "lobby corridor door"
   size 0.2 1.76 2.4
-  leafRotation 0 0 1 -1.57
+  leafRotation 0 0 1 -1.5708
 }
 DEF RESTAURANT_DOOR HotelDoor {
   translation 4 -0.8 0
   rotation 0 0 1 1.5708
   name "restaurant corridor door"
   size 0.2 1.76 2.4
-  leafRotation 0 0 1 -1.57
+  leafRotation 0 0 1 -1.5708
 }
 DEF ROOM_1204_DOOR HotelDoor {
   translation -7.2 0.8 0
   rotation 0 0 1 -1.5708
   name "room-1204 door"
   size 0.2 1.56 2.4
-  leafRotation 0 0 1 1.45
+  leafRotation 0 0 1 1.5708
 }
 DEF ROOM_1205_DOOR HotelDoor {
   translation 0 0.8 0
   rotation 0 0 1 -1.5708
   name "room-1205 door"
   size 0.2 1.56 2.4
-  leafRotation 0 0 1 1.45
+  leafRotation 0 0 1 1.5708
 }
 DEF ROOM_1206_DOOR HotelDoor {
   translation 7.2 0.8 0
   rotation 0 0 1 -1.5708
   name "room-1206 door"
   size 0.2 1.56 2.4
-  leafRotation 0 0 1 1.45
+  leafRotation 0 0 1 1.5708
 }
 
 Solid {
@@ -1425,7 +1425,7 @@ DEF SERVEBOT_1 ButlerServe {
   ]
   supervisor TRUE
   window "generic"
-  synchronization FALSE
+  synchronization TRUE
 }
 ButlerServe {
   translation -7.5 -7.15 0.095
@@ -1490,4 +1490,11 @@ Robot {
   controller "butler_staff"
   window ""
   translation 0 0 0.4
+}
+
+Robot {
+  translation 0 0 -10
+  name "mcp_bridge"
+  controller "mcp_bridge"
+  supervisor TRUE
 }
