@@ -1,0 +1,116 @@
+{
+  "version": 1,
+  "exportedAt": "2026-10-04T10:00:00.000Z",
+  "workflow": {
+    "name": "Butler settle",
+    "description": "Release escrow after delivery proof, or refund when the bridge marks a failure. Then record peaq revenue only on release."
+  },
+  "nodes": [
+    {
+      "id": "settle-trigger",
+      "type": "trigger",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "label": "Settle",
+        "type": "trigger",
+        "config": { "triggerType": "Webhook" },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "failure-check",
+      "type": "action",
+      "position": { "x": 350, "y": 200 },
+      "data": {
+        "label": "Failure check",
+        "type": "action",
+        "config": {
+          "actionType": "Condition",
+          "condition": "{{@settle-trigger:Settle.failure}} == true"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "escrow-refund",
+      "type": "action",
+      "position": { "x": 600, "y": 80 },
+      "data": {
+        "label": "Escrow refund",
+        "type": "action",
+        "config": {
+          "actionType": "circle-wallets/execute-contract",
+          "integrationType": "circle-wallets",
+          "walletId": "b60d34d9-50e9-57fd-9cdf-df99d628d32c",
+          "contractAddress": "0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD",
+          "abiFunctionSignature": "refund(bytes32)",
+          "abiParameters": "[\"{{@settle-trigger:Settle.jobId}}\"]",
+          "jobId": "{{@settle-trigger:Settle.jobId}}"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "escrow-release",
+      "type": "action",
+      "position": { "x": 600, "y": 320 },
+      "data": {
+        "label": "Escrow release",
+        "type": "action",
+        "config": {
+          "actionType": "circle-wallets/execute-contract",
+          "integrationType": "circle-wallets",
+          "walletId": "b60d34d9-50e9-57fd-9cdf-df99d628d32c",
+          "contractAddress": "0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD",
+          "abiFunctionSignature": "release(bytes32)",
+          "abiParameters": "[\"{{@settle-trigger:Settle.jobId}}\"]",
+          "jobId": "{{@settle-trigger:Settle.jobId}}"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "record-delivery",
+      "type": "action",
+      "position": { "x": 850, "y": 320 },
+      "data": {
+        "label": "Record delivery revenue",
+        "type": "action",
+        "config": {
+          "actionType": "peaqos/record-revenue",
+          "integrationType": "peaqos",
+          "machineId": "{{@settle-trigger:Settle.peaqMachineId}}",
+          "value": "600",
+          "currency": "USD",
+          "sourceChainId": "0",
+          "trustLevel": "0",
+          "rawData": "arc:{{@escrow-release:Escrow release.transactionId}}"
+        },
+        "status": "idle"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e-check", "source": "settle-trigger", "target": "failure-check", "type": "default" },
+    {
+      "id": "e-refund",
+      "source": "failure-check",
+      "target": "escrow-refund",
+      "sourceHandle": "true",
+      "type": "default"
+    },
+    {
+      "id": "e-release",
+      "source": "failure-check",
+      "target": "escrow-release",
+      "sourceHandle": "false",
+      "type": "default"
+    },
+    { "id": "e-revenue", "source": "escrow-release", "target": "record-delivery", "type": "default" }
+  ],
+  "integrationBindings": [
+    { "nodeId": "escrow-refund", "integrationType": "circle-wallets" },
+    { "nodeId": "escrow-release", "integrationType": "circle-wallets" },
+    { "nodeId": "record-delivery", "integrationType": "peaqos" }
+  ]
+}

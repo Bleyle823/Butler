@@ -1,0 +1,74 @@
+{
+  "version": 1,
+  "exportedAt": "2026-10-04T10:00:00.000Z",
+  "workflow": {
+    "name": "Butler dispatch",
+    "description": "Lock 6 USDC, then tell the bridge to start the room job. No robot URL on peaq."
+  },
+  "nodes": [
+    {
+      "id": "dispatch-trigger",
+      "type": "trigger",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "label": "Order",
+        "type": "trigger",
+        "config": { "triggerType": "Webhook" },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "escrow-deposit",
+      "type": "action",
+      "position": { "x": 350, "y": 200 },
+      "data": {
+        "label": "Escrow deposit",
+        "type": "action",
+        "config": {
+          "actionType": "circle-wallets/execute-contract",
+          "integrationType": "circle-wallets",
+          "walletId": "c0f5c550-1554-55b6-9e57-60b3c4dd1c63",
+          "contractAddress": "0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD",
+          "abiFunctionSignature": "deposit(bytes32,bytes32,uint256)",
+          "abiParameters": "[\"{{@dispatch-trigger:Order.jobId}}\",\"{{@dispatch-trigger:Order.machineId}}\",\"6000000\"]",
+          "jobId": "{{@dispatch-trigger:Order.jobId}}"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "post-job",
+      "type": "action",
+      "position": { "x": 600, "y": 200 },
+      "data": {
+        "label": "Post job",
+        "type": "action",
+        "config": {
+          "actionType": "HTTP Request",
+          "endpoint": "https://shipments-drum-parameter-graham.trycloudflare.com/jobs",
+          "httpMethod": "POST",
+          "httpHeaders": "{\"Content-Type\":\"application/json\",\"X-Butler-Secret\":\"change-me\"}",
+          "httpBody": "{\"jobId\":\"{{@dispatch-trigger:Order.jobId}}\",\"robot\":\"servebot-1\",\"room\":\"{{@dispatch-trigger:Order.room}}\"}"
+        },
+        "status": "idle"
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e-deposit",
+      "source": "dispatch-trigger",
+      "target": "escrow-deposit",
+      "type": "default"
+    },
+    {
+      "id": "e-job",
+      "source": "escrow-deposit",
+      "target": "post-job",
+      "type": "default"
+    }
+  ],
+  "integrationBindings": [
+    { "nodeId": "escrow-deposit", "integrationType": "circle-wallets" }
+  ]
+}

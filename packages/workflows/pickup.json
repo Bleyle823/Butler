@@ -1,0 +1,67 @@
+{
+  "version": 1,
+  "exportedAt": "2026-10-04T10:00:00.000Z",
+  "workflow": {
+    "name": "Butler pickup",
+    "description": "Pay the vending counter 2 USDC and record that revenue on peaq."
+  },
+  "nodes": [
+    {
+      "id": "pickup-trigger",
+      "type": "trigger",
+      "position": { "x": 100, "y": 200 },
+      "data": {
+        "label": "Pickup",
+        "type": "trigger",
+        "config": { "triggerType": "Webhook" },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "pay-vending",
+      "type": "action",
+      "position": { "x": 350, "y": 200 },
+      "data": {
+        "label": "Pay vending",
+        "type": "action",
+        "config": {
+          "actionType": "circle-wallets/transfer-usdc",
+          "integrationType": "circle-wallets",
+          "walletId": "{{@pickup-trigger:Pickup.circleWalletId}}",
+          "destinationAddress": "0x01ed2f186edab0b28dd796afe0762fac5a5b092d",
+          "amount": "2.00",
+          "jobId": "{{@pickup-trigger:Pickup.jobId}}"
+        },
+        "status": "idle"
+      }
+    },
+    {
+      "id": "record-pickup",
+      "type": "action",
+      "position": { "x": 600, "y": 200 },
+      "data": {
+        "label": "Record pickup revenue",
+        "type": "action",
+        "config": {
+          "actionType": "peaqos/record-revenue",
+          "integrationType": "peaqos",
+          "machineId": "{{@pickup-trigger:Pickup.peaqMachineId}}",
+          "value": "200",
+          "currency": "USD",
+          "sourceChainId": "0",
+          "trustLevel": "0",
+          "rawData": "arc:pickup"
+        },
+        "status": "idle"
+      }
+    }
+  ],
+  "edges": [
+    { "id": "e1", "source": "pickup-trigger", "target": "pay-vending", "type": "default" },
+    { "id": "e2", "source": "pay-vending", "target": "record-pickup", "type": "default" }
+  ],
+  "integrationBindings": [
+    { "nodeId": "pay-vending", "integrationType": "circle-wallets" },
+    { "nodeId": "record-pickup", "integrationType": "peaqos" }
+  ]
+}
