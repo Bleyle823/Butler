@@ -1,0 +1,18 @@
+{
+  "host": "127.0.0.1",
+  "port": 8787,
+  "secret": "change-me",
+  "keeperhub": {
+    "pickup_webhook": "",
+    "delivery_webhook": ""
+  },
+  "rooms": {
+    "room-1204": { "x": -5.4, "y": 2.25 },
+    "room-1205": { "x": -5.4, "y": 4.4 },
+    "room-1206": { "x": -5.4, "y": 6.4 }
+  },
+  "pickup_pose": { "x": 8.98, "y": -3.18 },
+  "arrive_radius": 0.8,
+  "dwell_sec": 8,
+  "wallets_path": "config/wallets.example.json"
+}
