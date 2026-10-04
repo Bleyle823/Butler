@@ -3,6 +3,7 @@
 .env.*
 !.env.example
 config/wallets.json
+config/bridge.json
 *.pem
 *.key
 recovery.json
@@ -32,6 +33,17 @@ log/
 
 # Build
 node_modules/
+.next/
+packages/escrow/lib/
+packages/escrow/artifacts/
+.gitmodules
+
+# Local flow checks. They hardcode this machine and stay out of git.
+scripts/check_money_path.py
+scripts/activate_peaq_machines.py
+scripts/provision_circle_wallets.py
+scripts/provision_circle_wallets.js
+scripts/install_mcp_bridge.py
 dist/
 out/
 .foundry/
