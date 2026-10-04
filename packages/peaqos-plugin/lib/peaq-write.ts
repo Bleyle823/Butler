@@ -1,5 +1,6 @@
 import "server-only";
 
+import { keccak256, toBytes } from "viem";
 import { writeContractCore } from "@/plugins/web3/steps/write-contract-core";
 import type { StepInput } from "@/lib/workflow/executor/step-handler";
 import {
@@ -50,10 +51,8 @@ export async function submitEventWrite(
     currency: string;
   }
 ) {
-  const timestamp = Math.floor(Date.now() / 1000);
-  const rawHex = input.rawData
-    ? "0x" + Buffer.from(input.rawData, "utf8").toString("hex")
-    : "0x00";
+  const timestamp = Math.floor(Date.now() / 1000) - 30;
+  const dataHash = keccak256(toBytes(input.rawData || ""));
   const hash = input.sourceTxHash?.startsWith("0x")
     ? input.sourceTxHash
     : `0x${(input.sourceTxHash || "0").padStart(64, "0")}`;
@@ -68,13 +67,13 @@ export async function submitEventWrite(
       input.machineId,
       input.eventType,
       input.value,
+      input.currency,
       timestamp,
-      rawHex,
+      dataHash,
       Number(input.trustLevel),
       Number(input.sourceChainId),
       hash,
       "0x",
-      input.currency,
     ],
   });
 }

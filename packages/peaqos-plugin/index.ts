@@ -7,7 +7,7 @@ const peaqosPlugin: IntegrationPlugin = {
   egress: "fixed-host",
   label: "peaqOS",
   description:
-    "Economics 2.0 reads (MCR, Verify, subscription) and controller writes (Record Revenue, renew, suspend) on peaq mainnet",
+    "Economics 2.0 reads and controller writes (Record Revenue, renew, suspend) on peaq mainnet",
   icon: PeaqosIcon,
   formFields: [
     {
@@ -23,7 +23,7 @@ const peaqosPlugin: IntegrationPlugin = {
       id: "verifyUrl",
       label: "Verify API URL",
       type: "url",
-      placeholder: "https://verify.peaq.xyz",
+      placeholder: "https://mcr.peaq.xyz",
       configKey: "verifyUrl",
       envVar: "PEAQOS_VERIFY_API_URL",
       helpText: "Public Verify host. Mainnet only.",
@@ -35,7 +35,7 @@ const peaqosPlugin: IntegrationPlugin = {
       placeholder: "https://quicknode1.peaq.xyz",
       configKey: "rpcUrl",
       envVar: "PEAQOS_RPC_URL",
-      helpText: "Used for subscription and owner/controller reads",
+      helpText: "Mainnet HTTP RPC. Used for subscription and owner/controller reads. Contract writes use chain 3338.",
     },
   ],
   testConfig: {

@@ -1,15 +1,17 @@
-export function CircleWalletsIcon({ className }: { className?: string }) {
+import Image from "next/image";
+
+export function CircleWalletsIcon({
+  className,
+}: {
+  className?: string;
+}): React.ReactElement {
   return (
-    <svg
-      aria-label="Circle"
+    <Image
+      alt="Circle"
       className={className}
-      fill="currentColor"
-      viewBox="0 0 24 24"
-      xmlns="http://www.w3.org/2000/svg"
-    >
-      <title>Circle</title>
-      <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
-      <circle cx="12" cy="12" r="4" />
-    </svg>
+      height={48}
+      src="/protocols/circle.png"
+      width={48}
+    />
   );
 }

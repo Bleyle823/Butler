@@ -12,3 +12,5 @@ Rules (from `keeperhub-staging/plugins/AGENTS.md`):
 - no `@circle-fin/*` in this package
 
 Laptop provisioner (`scripts/provision-circle-wallets.ts`) may use the Circle SDK. This plugin may not.
+
+Idempotency keys are a SHA-256 of `jobId` plus the step name, formatted as a UUID, so deposit, transfer, and release do not share a key.

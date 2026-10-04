@@ -1,6 +1,6 @@
 import "server-only";
 
-import { randomUUID, publicEncrypt, constants } from "node:crypto";
+import { constants, createHash, publicEncrypt, randomUUID } from "node:crypto";
 import { safeFetch } from "@/lib/safe-fetch";
 import type { CircleWalletsCredentials } from "../credentials";
 
@@ -88,7 +88,7 @@ export async function entitySecretCiphertext(
         padding: constants.RSA_PKCS1_OAEP_PADDING,
         oaepHash: "sha256",
       },
-      Buffer.from(secret.secret, "utf8")
+      Buffer.from(secret.secret, "hex")
     );
     return { ok: true, ciphertext: encrypted.toString("base64") };
   } catch (error) {
@@ -100,12 +100,7 @@ export async function entitySecretCiphertext(
 }
 
 export function deriveIdempotencyKey(jobId: string, stepName: string): string {
-  const raw = `${jobId}:${stepName}`;
-  if (/^[0-9a-fA-F-]{36}$/.test(jobId)) {
-    return jobId;
-  }
-  // Circle wants a UUID. Derive a stable UUID v5-like from job + step without extra deps.
-  const hex = Buffer.from(raw).toString("hex").padEnd(32, "0").slice(0, 32);
+  const hex = createHash("sha256").update(`${jobId}:${stepName}`).digest("hex");
   return `${hex.slice(0, 8)}-${hex.slice(8, 12)}-5${hex.slice(13, 16)}-a${hex.slice(17, 20)}-${hex.slice(20, 32)}`;
 }
 

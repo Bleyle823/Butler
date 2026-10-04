@@ -8,7 +8,7 @@ export const EVENT_REGISTRY = "0xA1e7F1d7B24dAb55Dc92491e6d9B89F6E925Ad1e";
 export const MACHINE_REGISTRY = "0x64b93Cc29b251fAFa83BD110cDB1C24207f85536";
 export const MACHINE_SUBSCRIPTION = "0x9e37AD189c334C92e6B8a812Ca4c02f35Ac43895";
 
-export const SUPPORTED_SOURCE_CHAIN_IDS = new Set([0, 3338, 8453]);
+export const SUPPORTED_SOURCE_CHAIN_IDS = new Set([0, 3338, 8453, 9990]);
 
 export const EVENT_REGISTRY_ABI = JSON.stringify([
   {
@@ -19,13 +19,13 @@ export const EVENT_REGISTRY_ABI = JSON.stringify([
       { name: "machineId", type: "uint256" },
       { name: "eventType", type: "uint8" },
       { name: "value", type: "uint256" },
+      { name: "currency", type: "string" },
       { name: "timestamp", type: "uint256" },
-      { name: "rawData", type: "bytes" },
+      { name: "dataHash", type: "bytes32" },
       { name: "trustLevel", type: "uint8" },
       { name: "sourceChainId", type: "uint256" },
       { name: "sourceTxHash", type: "bytes32" },
       { name: "metadata", type: "bytes" },
-      { name: "currency", type: "string" },
     ],
     outputs: [],
   },
@@ -36,7 +36,7 @@ export function mcrBase(credentials: PeaqosCredentials): string {
 }
 
 export function verifyBase(credentials: PeaqosCredentials): string {
-  return (credentials.PEAQOS_VERIFY_API_URL || "https://verify.peaq.xyz").replace(
+  return (credentials.PEAQOS_VERIFY_API_URL || "https://mcr.peaq.xyz").replace(
     /\/$/,
     ""
   );
@@ -70,7 +70,7 @@ export function validateRevenue(input: {
   if (!SUPPORTED_SOURCE_CHAIN_IDS.has(chain)) {
     return {
       ok: false,
-      error: "sourceChainId must be a supported chain ID (0, 3338, or 8453). Arc 5042002 is not allowed; use 0 and put the Arc hash in rawData.",
+      error: "sourceChainId must be a supported chain ID (0, 3338, 8453, or 9990). Arc 5042002 is not allowed; use 0 and put the Arc hash in rawData.",
     };
   }
   const trust = Number(input.trustLevel);
