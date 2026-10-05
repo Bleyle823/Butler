@@ -42,7 +42,7 @@ class BridgeTripTest(unittest.TestCase):
             "secret": "test-secret",
             "dwell_sec": 8,
             "arrive_radius": 0.8,
-            "pickup_pose": {"x": 8.98, "y": -3.18},
+            "pickup_pose": {"x": 8.50, "y": -4.860},
             "rooms": {"room-1204": {"x": -5.4, "y": 2.25}},
             "keeperhub": {
                 "pickup_webhook": f"http://127.0.0.1:{port}/pickup",
@@ -100,20 +100,20 @@ class BridgeTripTest(unittest.TestCase):
         self.assertNotIn("peaqMachineId", goal)
 
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [8.98, -3.18, 0.1, 1.57], "battery": 0.9, "event": "pickup", "carried": ["PIZZA_BOX"]}
+            {"name": "servebot-1", "pose": [8.50, -4.860, 0.1, 3.1416], "battery": 0.9, "event": "pickup", "carried": ["ORDER_BOTTLE"]}
         )
         time.sleep(0.3)
         self.assertEqual(WEBHOOKS[0]["_path"], "/pickup")
         self.assertEqual(WEBHOOKS[0]["peaqMachineId"], "m-1")
 
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "at_dropoff", "carried": ["PIZZA_BOX"]}
+            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "at_dropoff", "carried": ["ORDER_BOTTLE"]}
         )
         time.sleep(0.2)
         self.assertEqual(len(WEBHOOKS), 1)
         time.sleep(8.1)
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "delivery", "carried": ["PIZZA_BOX"]}
+            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "delivery", "carried": ["ORDER_BOTTLE"]}
         )
         time.sleep(0.3)
         delivery = [row for row in WEBHOOKS if row["_path"] == "/delivery"]

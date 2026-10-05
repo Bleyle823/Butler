@@ -92,7 +92,7 @@ class Bridge:
         self.webhook_token = str(keeperhub.get("webhook_token") or "")
         self.dwell_sec = float(config.get("dwell_sec") or 8)
         self.radius = float(config.get("arrive_radius") or 0.8)
-        self.pickup = config.get("pickup_pose") or {"x": 8.98, "y": -3.18}
+        self.pickup = config.get("pickup_pose") or {"x": 8.50, "y": -4.860}
 
     def fleet_view(self) -> dict[str, Any]:
         robots = []

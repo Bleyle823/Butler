@@ -11,7 +11,7 @@
     "room-1205": { "x": -5.4, "y": 4.4 },
     "room-1206": { "x": -5.4, "y": 6.4 }
   },
-  "pickup_pose": { "x": 8.98, "y": -3.18 },
+  "pickup_pose": { "x": 8.50, "y": -4.860 },
   "arrive_radius": 0.8,
   "dwell_sec": 8,
   "wallets_path": "config/wallets.example.json"
