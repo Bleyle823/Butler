@@ -1,17 +1,20 @@
 #VRML_SIM R2025a utf8
 # license: Apache License 2.0
-# ButlerServe: TIAGo base and body plus a spill-proof chest tray.
-# A kitchen staff pedestrian loads the tray. Docked fleet is body+tray only.
-# Sensors match the official TIAGo++ Webots model (Astra RGB-D, Hokuyo
-# URG-04LX-UG01) plus GPS/compass for indoor jobs and front sonars the
-# base proto only models visually. IMU, gyro, accelerometer, bumper, and
-# rear sonars already live on TiagoBase.
+# ButlerServe: TIAGo base and body. The live robot uses the front arm and
+# parallel gripper. Docked fleet is body and chest tray only.
+# Sensors match the TiagoLite kitchen robot: Astra RGB-D (640x480),
+# Hokuyo URG-04LX-UG01 at 667 beams over 240 degrees, GPS, compass, and
+# the 200x300 display that robot paints. IMU, gyro, accelerometer,
+# bumper, and rear sonars already live on TiagoBase. Front sonars are
+# added here because that base only draws them.
 # template language: javascript
 
 EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_base/protos/TiagoBase.proto"
 EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoBody.proto"
 EXTERNPROTO "../assets/webots/projects/devices/orbbec/protos/Astra.proto"
 EXTERNPROTO "../assets/webots/projects/devices/hokuyo/protos/HokuyoUrg04lxug01.proto"
+EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoFrontArm.proto"
+EXTERNPROTO "../assets/webots/projects/robots/pal_robotics/tiago_extensions/protos/TiagoGripper.proto"
 EXTERNPROTO "ButlerTray.proto"
 
 PROTO ButlerServe [
@@ -33,7 +36,6 @@ PROTO ButlerServe [
                                            }
   field  MFNode      lidarSlot             [
                                              HokuyoUrg04lxug01 {
-                                               resolution 180
                                              }
                                              GPS {
                                                name "gps"
@@ -66,6 +68,11 @@ PROTO ButlerServe [
                                                  2.5 2.5 0
                                                ]
                                              }
+                                             Display {
+                                               name "display"
+                                               width 200
+                                               height 300
+                                             }
                                            ]
   field  SFNode      plateSlot             NULL
   field  SFNode      glassSlot             NULL
@@ -90,13 +97,18 @@ PROTO ButlerServe [
       TiagoBody {
         %< if (!fields.docked.value) { >%
         cameraSlot IS cameraSlot
-        %< } >%
+        frontArmSlot TiagoFrontArm {
+          endEffectorSlot TiagoGripper {
+          }
+        }
+        %< } else { >%
         frontArmSlot ButlerTray {
           plateSlot IS plateSlot
           glassSlot IS glassSlot
           wineglassSlot IS wineglassSlot
           boxSlot IS boxSlot
         }
+        %< } >%
       }
     ]
     %< if (!fields.docked.value) { >%
