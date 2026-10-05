@@ -11,6 +11,18 @@ import {
 } from "./peaq-api";
 
 const PEAQ_NETWORK = "3338";
+const PEAQ_CHAIN_ID = 3338;
+
+export function peaqWriteResult(written: {
+  transactionHash?: string;
+  chainId?: number;
+}): { success: true; transactionHash: string; chainId: number } {
+  return {
+    success: true,
+    transactionHash: String(written.transactionHash ?? ""),
+    chainId: typeof written.chainId === "number" ? written.chainId : PEAQ_CHAIN_ID,
+  };
+}
 
 const SUBSCRIPTION_ABI = JSON.stringify([
   {

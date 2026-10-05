@@ -1,10 +1,10 @@
 import "server-only";
 
 import { type StepInput, withStepLogging } from "@/lib/workflow/executor/step-handler";
-import { subscriptionWrite } from "../lib/peaq-write";
+import { peaqWriteResult, subscriptionWrite } from "../lib/peaq-write";
 
 type Result =
-  | { success: true; transactionHash: string }
+  | { success: true; transactionHash: string; chainId: number }
   | { success: false; error: string };
 
 export type SuspendMachineCoreInput = { machineId: string };
@@ -18,12 +18,7 @@ async function stepHandler(input: SuspendMachineCoreInput & StepInput): Promise<
   if (!written.success) {
     return { success: false, error: written.error || "suspend failed" };
   }
-  return {
-    success: true,
-    transactionHash: String(
-      (written as { transactionHash?: string }).transactionHash || ""
-    ),
-  };
+  return peaqWriteResult(written);
 }
 
 export async function suspendMachineStep(input: SuspendMachineInput): Promise<Result> {

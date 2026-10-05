@@ -2,10 +2,10 @@ import "server-only";
 
 import { type StepInput, withStepLogging } from "@/lib/workflow/executor/step-handler";
 import { validateRevenue } from "../lib/peaq-api";
-import { submitEventWrite } from "../lib/peaq-write";
+import { peaqWriteResult, submitEventWrite } from "../lib/peaq-write";
 
 type Result =
-  | { success: true; transactionHash: string }
+  | { success: true; transactionHash: string; chainId: number }
   | { success: false; error: string };
 
 export type RecordRevenueCoreInput = {
@@ -51,12 +51,7 @@ async function stepHandler(input: RecordRevenueCoreInput & StepInput): Promise<R
   if (!written.success) {
     return { success: false, error: written.error || "submitEvent failed" };
   }
-  return {
-    success: true,
-    transactionHash: String(
-      (written as { transactionHash?: string }).transactionHash || ""
-    ),
-  };
+  return peaqWriteResult(written);
 }
 
 export async function recordRevenueStep(input: RecordRevenueInput): Promise<Result> {
