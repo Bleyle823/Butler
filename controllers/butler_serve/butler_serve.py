@@ -591,14 +591,10 @@ class ButlerServeController:
         self._carry_attach = False
         x, y, _, _ = self.get_pose()
         sx, sy = COUNTER_STANCE
-        if math.hypot(sx - x, sy - y) < 0.45 or (x == 0.0 and y == 0.0):
-            self.waypoints = [(sx, -3.40, False), (sx, sy, False)]
+        if math.hypot(sx - x, sy - y) < 0.45:
+            self.waypoints = [(sx, sy, False)]
         else:
-            self.waypoints = [
-                (x, -3.40, False),
-                (sx, -3.40, False),
-                (sx, sy, False),
-            ]
+            self.waypoints = list(PATH_PICKUP) + [(sx, sy, False)]
         print(
             "path to %s: %s"
             % (name, ", ".join("(%.2f, %.2f)" % (px, py) for px, py, _ in self.waypoints))
