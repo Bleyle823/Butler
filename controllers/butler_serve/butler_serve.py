@@ -1,4 +1,4 @@
-"""ButlerServe: sensors, chest tray, autonomous wait-for-staff then delivery.
+"""ButlerServe: front arm picks up the kitchen bottle and delivers it.
 
 Webots never talks to peaq or Circle. This process publishes pose, battery,
 pickup, and delivery on the robot customData field and accepts a job through
@@ -21,7 +21,7 @@ import os
 import sys
 import urllib.request
 
-from controller import Keyboard, Supervisor
+from controller import Field, Keyboard, Supervisor
 
 BRIDGE_URL = os.environ.get("BUTLER_BRIDGE_URL", "http://127.0.0.1:8787")
 DWELL_SEC = 8.0
@@ -32,24 +32,81 @@ WHEEL_SEP = 0.4044
 SHIFT = Keyboard.SHIFT
 CTRL_MASK = Keyboard.SHIFT | Keyboard.CONTROL | Keyboard.ALT
 
-# Head and torso only. Kitchen staff loads the tray; this robot has no arm.
-IDLE_POSE = {
-    "head_1_joint": 0.0,
-    "head_2_joint": -0.12,
-    "torso_lift_joint": 0.22,
-}
-_ARM_JOINTS = ()
-_FINGERS = ()
-_FINGER_OPEN = ()
-_FINGER_CLOSE = ()
+# Front arm folded while driving. The live robot grasps ORDER_BOTTLE.
+_ARM_JOINTS = (
+    "arm_1_joint",
+    "arm_2_joint",
+    "arm_3_joint",
+    "arm_4_joint",
+    "arm_5_joint",
+    "arm_6_joint",
+    "arm_7_joint",
+)
+_FINGERS = ("gripper_left_finger_joint", "gripper_right_finger_joint")
+_FINGER_OPEN = (0.045, 0.045)
+# Open gap is about 0.098 m. The bottle body is 0.088 m across, so 0.034
+# leaves the pads pressed on the bottle instead of meeting past it.
+_FINGER_CLOSE = (0.034, 0.034)
+# Midpoint of the two finger pads, in the wrist solid frame.
+_PINCH_LOCAL = (0.190, 0.0, 0.0)
+# WaterBottle body cylinder center, above the proto origin (the base).
+_BODY_CENTER_Z = 0.122
+ORDER_ITEM = "ORDER_BOTTLE"
 
-# Open drink stand at (9.18, -2.72). The robot stops south of it and waits
-# while kitchen staff places the pizza and drink on the chest tray.
-COUNTER_STANCE = (8.98, -3.18)
-COUNTER_YAW = math.pi / 2.0
-LOAD_ITEMS = ("PIZZA_BOX", "DRINK_BOTTLE")
+FOLDED_POSE = {
+    "head_1_joint": 0.0,
+    "head_2_joint": -0.2,
+    "torso_lift_joint": 0.15,
+    "arm_1_joint": 0.15,
+    "arm_2_joint": -0.9,
+    "arm_3_joint": -1.6,
+    "arm_4_joint": 1.7,
+    "arm_5_joint": 0.2,
+    "arm_6_joint": 0.4,
+    "arm_7_joint": 0.0,
+}
+# Elbow stays back, forearm clears the table edge, fingers come down on the bottle.
+REACH_POSE = {
+    "head_1_joint": 0.0,
+    "head_2_joint": -0.55,
+    "torso_lift_joint": 0.28,
+    "arm_1_joint": 0.40,
+    "arm_2_joint": -0.85,
+    "arm_3_joint": -1.90,
+    "arm_4_joint": 2.20,
+    "arm_5_joint": 0.0,
+    "arm_6_joint": -1.15,
+    "arm_7_joint": 1.57,
+}
+# Keep the grasp wrist so the fingers stay on the bottle while the base drives.
+CARRY_POSE = REACH_POSE
+# Same arm as the grasp. The room desk is the same height as the kitchen table,
+# so this pose sets the bottle down instead of holding it at a different height.
+PLACE_POSE = {
+    "head_1_joint": 0.0,
+    "head_2_joint": -0.55,
+    "torso_lift_joint": 0.28,
+    "arm_1_joint": 0.40,
+    "arm_2_joint": -0.85,
+    "arm_3_joint": -1.90,
+    "arm_4_joint": 2.20,
+    "arm_5_joint": 0.0,
+    "arm_6_joint": -1.15,
+    "arm_7_joint": 1.57,
+}
+IDLE_POSE = FOLDED_POSE
+
+# Source kitchen: robot at the origin facing -Y, upright water bottle(2) on the
+# dining table. The table is 1.0 m by 1.8 m, so the hand only reaches the short
+# (east) side. Stance is that side, facing the bottle, at the measured pinch.
+# Park east of the table, where the extended hand is still clear of the top,
+# then creep west until the fingers meet the bottle.
+COUNTER_STANCE = (8.70, -4.860)
+COUNTER_YAW = math.pi
+BOTTLE_HOME = (7.769, -4.806, 0.738)
+LOAD_ITEMS = (ORDER_ITEM,)
 PICKS = (
-    ("DRINK_BOTTLE", 8.98, -3.18),
+    (ORDER_ITEM, 8.70, -4.860),
 )
 
 
@@ -61,7 +118,6 @@ def _arm_pose(head=0.05, torso=0.26):
 
 
 _GRASP_UP = 0.07
-_CARRY_OFFSET = (0.0, 0.0, -0.08)
 ARM_SPEED = 0.5
 
 
@@ -74,11 +130,11 @@ WELLS = {
 }
 
 PLACE_POSES = {
-    "DRINK_BOTTLE": (-4.9, 3.05, 0.78),
-    "PIZZA_BOX": (-5.2, 3.2, 0.76),
-    "COUNTER_PLATE": (-5.05, 3.2, 0.73),
-    "COUNTER_GLASS": (-4.9, 3.05, 0.73),
+    ORDER_ITEM: (-5.45, 3.15, 0.73),
 }
+# Same standoff as the kitchen grasp: hand 0.66 m forward, facing the desktop.
+PLACE_STANCE = (-5.382, 2.595)
+PLACE_YAW = math.pi / 2.0
 
 # Dock faces +Y. First corner is northeast of the parked row, not into the
 # west-wall furniture. Then north to the lobby door latitude and through.
@@ -89,15 +145,26 @@ PATH_PICKUP = (
     (-7.00, -0.20, False),
     ( 4.00,  0.00, False),
     ( 4.00, -1.65, True),
-    ( 8.05, -1.65, False),
+    ( 3.20, -3.40, False),
+    ( 3.20, -5.30, False),
+    ( 6.30, -5.20, False),
+    ( 6.50, -3.70, False),
+    ( 8.70, -3.65, False),
+    ( 8.70, -4.86, False),
 )
 PATH_DELIVER = (
-    ( 6.00, -2.30, False),
+    ( 8.70, -4.86, False),
+    ( 8.70, -3.70, False),
+    ( 6.50, -3.70, False),
+    ( 6.30, -5.20, False),
+    ( 3.20, -5.30, False),
+    ( 3.20, -3.40, False),
     ( 4.00, -2.20, False),
     ( 4.00,  0.00, True),
     (-7.20,  0.00, False),
     (-7.20,  2.15, True),
-    (-5.40,  2.25, False),
+    (-6.20,  2.40, False),
+    (-5.382, 2.595, False),
 )
 # Reverse out of 1204 through the door, then the lobby corridor to the dock.
 PATH_DOCK = (
@@ -220,6 +287,7 @@ class ButlerServeController:
         self.bumper = self._device("base_cover_link")
         self.camera_rgb = self._device("Astra rgb")
         self.camera_depth = self._device("Astra depth")
+        self.sensor_display = self._device("display")
         self.sonars = []
         for name in (
             "base_sonar_front_left",
@@ -234,7 +302,8 @@ class ButlerServeController:
                 sonar.enable(period)
                 self.sonars.append(sonar)
         if self.lidar is not None:
-            self.lidar.enable(period * 2)
+            self.lidar.enable(period * 4)
+            self.lidar.enablePointCloud()
         if self.gps is not None:
             self.gps.enable(period)
         if self.compass is not None:
@@ -248,9 +317,26 @@ class ButlerServeController:
         if self.bumper is not None:
             self.bumper.enable(period)
         if self.camera_rgb is not None:
-            self.camera_rgb.enable(period * 8)
+            self.camera_rgb.enable(period * 4)
         if self.camera_depth is not None:
-            self.camera_depth.enable(period * 8)
+            self.camera_depth.enable(period * 4)
+        shown = [
+            name
+            for name, device in (
+                ("Astra rgb", self.camera_rgb),
+                ("Astra depth", self.camera_depth),
+                ("Hokuyo URG-04LX-UG01", self.lidar),
+                ("gps", self.gps),
+                ("compass", self.compass),
+                ("display", self.sensor_display),
+                ("inertial unit", self.imu),
+                ("gyro", self.gyro),
+                ("accelerometer", self.accel),
+                ("base_cover_link", self.bumper),
+            )
+            if device is not None
+        ]
+        print("sensors: %s; sonars %d" % (", ".join(shown), len(self.sonars)))
 
     def _bind_arms(self):
         self.arm_motors = {}
@@ -258,7 +344,9 @@ class ButlerServeController:
             motor = self._device(name)
             if motor is None:
                 continue
-            if name in _ARM_JOINTS:
+            if name == "torso_lift_joint":
+                motor.setVelocity(motor.getMaxVelocity())
+            elif name in _ARM_JOINTS:
                 motor.setVelocity(ARM_SPEED)
             else:
                 self._limit_motor(motor, 0.35)
@@ -284,13 +372,13 @@ class ButlerServeController:
             self.pose_hold_until = self.robot.getTime() + hold_s
 
     def set_hands(self, closed):
-        """Open or close the youBot two-finger gripper."""
+        """Open the jaws, or close them onto the bottle body."""
         self._gripper_closed = bool(closed)
         if not closed:
             self._carry_attach = False
         targets = _FINGER_CLOSE if closed else _FINGER_OPEN
         for motor, position in zip(self.finger_motors, targets):
-            motor.setVelocity(0.03)
+            motor.setVelocity(0.05 if closed else 0.03)
             motor.setPosition(position)
 
     def posing(self):
@@ -361,6 +449,76 @@ class ButlerServeController:
             samples.append((angle, rng))
         return samples
 
+    def _sensor_line(self, label, device):
+        if device is None:
+            return "%s --" % label
+        try:
+            if label == "imu":
+                values = device.getRollPitchYaw()
+            else:
+                values = device.getValues()
+        except Exception:
+            return "%s --" % label
+        if not values or len(values) < 3:
+            return "%s --" % label
+        return "%s %.2f %.2f %.2f" % (label, values[0], values[1], values[2])
+
+    def _paint_sensors(self):
+        """Draw the Hokuyo scan on the same 200x300 display the kitchen robot uses."""
+        display = getattr(self, "sensor_display", None)
+        if display is None:
+            return
+        width = display.getWidth()
+        height = display.getHeight()
+        display.setColor(0x101418)
+        display.fillRectangle(0, 0, width, height)
+        cx = width // 2
+        cy = int(height * 0.68)
+        if self.lidar is not None:
+            ranges = self.lidar.getRangeImage()
+            if ranges:
+                fov = float(self.lidar.getFov())
+                max_range = float(self.lidar.getMaxRange() or 5.6)
+                scale = (min(cx, cy) - 8) / max_range
+                step = max(1, len(ranges) // 160)
+                display.setColor(0x7DCEA0)
+                last = max(len(ranges) - 1, 1)
+                for index in range(0, len(ranges), step):
+                    raw = ranges[index]
+                    if raw is None or math.isinf(raw) or math.isnan(raw):
+                        continue
+                    dist = max(0.0, min(max_range, float(raw)))
+                    angle = fov / 2.0 - index * fov / last
+                    px = int(cx + math.sin(angle) * dist * scale)
+                    py = int(cy - math.cos(angle) * dist * scale)
+                    if 0 <= px < width and 114 <= py < height:
+                        display.drawPixel(px, py)
+        display.setColor(0xE74C3C)
+        display.fillRectangle(cx - 2, cy - 2, 4, 4)
+        x, y, _, yaw = self.get_pose()
+        display.setColor(0xF4F1EA)
+        display.drawText("gps %.2f %.2f" % (x, y), 4, 4)
+        display.drawText("yaw %.2f" % yaw, 4, 16)
+        display.drawText(self._sensor_line("compass", self.compass), 4, 28)
+        display.drawText(self._sensor_line("imu", self.imu), 4, 40)
+        display.drawText(self._sensor_line("accel", self.accel), 4, 52)
+        display.drawText(self._sensor_line("gyro", self.gyro), 4, 64)
+        if self.bumper is not None:
+            try:
+                hit = float(self.bumper.getValue()) > 0.5
+            except Exception:
+                hit = False
+            display.drawText("bumper %s" % ("hit" if hit else "clear"), 4, 76)
+        if self.lidar is not None:
+            ranges = self.lidar.getRangeImage() or []
+            display.drawText("lidar %d" % len(ranges), 4, 88)
+        if self.sonars:
+            try:
+                near = min(float(sonar.getValue()) for sonar in self.sonars)
+            except Exception:
+                near = -1.0
+            display.drawText("sonar %d min %.2f" % (len(self.sonars), near), 4, 100)
+
     def _lidar_sectors(self):
         """Five Hokuyo sectors, same layout idea as tiago_base.c."""
         buckets = {
@@ -383,6 +541,38 @@ class ButlerServeController:
                 buckets["right"].append(rng)
         return {name: min(hits) if hits else 5.0 for name, hits in buckets.items()}
 
+    def _opening(self, sectors):
+        """Front range the base should trust. A carried hand sits in the center beam."""
+        front = sectors["front"]
+        # The arm and a carried bottle sit in the center beam. Walls show up on the sides.
+        if (self._carry_attach or self.job in ("approach", "nav_deliver")) and front < 0.55:
+            return min(sectors["front_left"], sectors["front_right"])
+        return front
+
+    def _clearance_turn(self, sectors):
+        """Positive turns left, away from the nearer side."""
+        left = min(sectors["left"], sectors["front_left"])
+        right = min(sectors["right"], sectors["front_right"])
+        turn = 0.0
+        if left < 0.58:
+            turn -= (0.58 - left) * 2.0
+        if right < 0.58:
+            turn += (0.58 - right) * 2.0
+        return max(-1.2, min(1.2, turn))
+
+    def _shift_waypoint(self, sectors):
+        """Nudge a blocked waypoint toward the open side so the next try clears it."""
+        tx, ty, flag = self.waypoints[self.wp_index]
+        x, y, _, yaw = self.get_pose()
+        left = sectors["left"] + sectors["front_left"]
+        right = sectors["right"] + sectors["front_right"]
+        sign = 1.0 if left >= right else -1.0
+        # Left of the current heading.
+        ox = -math.sin(yaw) * 0.40 * sign
+        oy = math.cos(yaw) * 0.40 * sign
+        self.waypoints[self.wp_index] = (tx + ox, ty + oy, flag)
+        print("nav shift waypoint %d toward open space" % (self.wp_index + 1))
+
     def follow_waypoints(self):
         """Turn in place at a corner, then drive that leg in a straight line."""
         if self.wp_index >= len(self.waypoints):
@@ -393,12 +583,24 @@ class ButlerServeController:
         tx, ty = self.waypoints[self.wp_index][0], self.waypoints[self.wp_index][1]
         dx, dy = tx - x, ty - y
         dist = math.hypot(dx, dy)
-        tol = GOAL_TOL if last else WAYPOINT_TOL
+        # The counter stance has to be close enough for the arm to reach the bottle.
+        # Other goals stay loose so the base does not grind into a desk or the dock.
+        if last and self.job == "approach":
+            tol = 0.18
+        else:
+            tol = GOAL_TOL if last else WAYPOINT_TOL
         sectors = self._lidar_sectors()
-        front = sectors["front"]
+        front = self._opening(sectors)
         bearing, forward = self._goal_bearing(dx, dy, yaw)
         arrived = dist < tol
-        if last and front < 0.40 and dist < 0.95 and abs(bearing) < 0.5:
+        closing_on_counter = last and self.job == "approach" and dist < 0.50
+        if (
+            last
+            and self.job not in ("approach", "nav_deliver")
+            and front < 0.36
+            and dist < 0.70
+            and abs(bearing) < 0.5
+        ):
             arrived = True
         if arrived:
             if self._last_wp_print != self.wp_index:
@@ -420,7 +622,7 @@ class ButlerServeController:
             self.set_base_velocity(-0.30, 0.35 * bearing)
             return False
         if now < self._recover_until:
-            self.set_base_velocity(-0.12, 0.0)
+            self.set_base_velocity(-0.16, getattr(self, "_recover_turn", 0.0))
             return False
         if aligning:
             self._stuck_since = now
@@ -431,9 +633,10 @@ class ButlerServeController:
                 self._align_since = now
             elif self._align_since is not None and now - self._align_since > 1.6:
                 print("nav turn blocked, backing up")
+                self._recover_turn = math.copysign(0.6, bearing if bearing != 0.0 else 1.0)
                 self._recover_until = now + 0.7
                 self._align_since = now
-                self.set_base_velocity(-0.22, 0.0)
+                self.set_base_velocity(-0.18, self._recover_turn)
                 return False
         elif self._stuck_pose is None:
             self._stuck_pose = (x, y)
@@ -443,23 +646,42 @@ class ButlerServeController:
             self._stuck_since = now
         elif self._stuck_since is not None and now - self._stuck_since > STUCK_TIME:
             print("nav stuck, reversing")
-            self._recover_until = now + 0.45
+            counts = getattr(self, "_stuck_counts", None)
+            if counts is None:
+                counts = {}
+                self._stuck_counts = counts
+            counts[self.wp_index] = counts.get(self.wp_index, 0) + 1
+            if counts[self.wp_index] >= 2:
+                self._shift_waypoint(sectors)
+            side = 0.8 if sectors["left"] + sectors["front_left"] >= sectors["right"] + sectors["front_right"] else -0.8
+            self._recover_turn = side
+            self._recover_until = now + 0.9
             self._stuck_since = now
-            self.set_base_velocity(-0.12, 0.0)
+            self.set_base_velocity(-0.18, side)
             return False
         if self.bumper is not None and self.bumper.getValue() > 0.5:
-            self._recover_until = now + 0.4
-            self.set_base_velocity(-0.12, 0.0)
+            side = 0.7 if sectors["left"] >= sectors["right"] else -0.7
+            self._recover_turn = side
+            self._recover_until = now + 0.6
+            self.set_base_velocity(-0.16, side)
             return False
+        avoid = 0.0 if closing_on_counter else self._clearance_turn(sectors)
         if aligning:
             self.set_base_velocity(0.0, math.copysign(TURN_IN_PLACE, bearing if bearing != 0.0 else 1.0))
+            return False
+        if front < 0.30 and not closing_on_counter:
+            open_side = max(sectors["front_left"], sectors["front_right"])
+            if open_side > 0.50:
+                self.set_base_velocity(0.10, avoid if abs(avoid) > 0.25 else math.copysign(0.7, avoid or 1.0))
+            else:
+                self.set_base_velocity(-0.08, avoid if avoid != 0.0 else 0.6)
             return False
         linear = CRUISE if dist > 0.8 else max(0.16, CRUISE * dist / 0.8)
         if last:
             linear = min(linear, 0.22)
-        if not last and front < 0.55:
-            linear *= max(0.4, (front - FRONT_STOP) / (0.55 - FRONT_STOP))
-        self.set_base_velocity(linear, 1.1 * bearing)
+        if not closing_on_counter and front < 0.55:
+            linear *= max(0.35, (front - FRONT_STOP) / (0.55 - FRONT_STOP))
+        self.set_base_velocity(linear, 1.1 * bearing + 0.55 * avoid)
         return False
 
     def robot_to_world(self, lx, ly, lz):
@@ -593,8 +815,16 @@ class ButlerServeController:
         sx, sy = COUNTER_STANCE
         if math.hypot(sx - x, sy - y) < 0.45:
             self.waypoints = [(sx, sy, False)]
+        elif x > 6.0 and y < -2.0:
+            self.apply_pose(IDLE_POSE)
+            self.waypoints = [
+                (8.70, -3.65, False),
+                (8.70, -4.86, False),
+                (sx, sy, False),
+            ]
         else:
-            self.waypoints = list(PATH_PICKUP) + [(sx, sy, False)]
+            self.apply_pose(IDLE_POSE)
+            self.waypoints = list(PATH_PICKUP)
         print(
             "path to %s: %s"
             % (name, ", ".join("(%.2f, %.2f)" % (px, py) for px, py, _ in self.waypoints))
@@ -602,7 +832,6 @@ class ButlerServeController:
         self.wp_index = 0
         self._reset_nav()
         self.job = "approach"
-        self.apply_pose(IDLE_POSE)
         self.set_hands(closed=False)
         print("approach %s" % name)
 
@@ -713,19 +942,182 @@ class ButlerServeController:
             return None
         return math.sqrt(sum((vals[i] - self._pick_at[i]) ** 2 for i in range(3)))
 
+    def _node_fields(self, node):
+        try:
+            if node.isProto():
+                return [
+                    node.getBaseNodeFieldByIndex(index)
+                    for index in range(node.getNumberOfBaseNodeFields())
+                ]
+        except Exception:
+            pass
+        try:
+            return [node.getFieldByIndex(index) for index in range(node.getNumberOfFields())]
+        except Exception:
+            return []
+
+    def _find_named_solid(self, wanted):
+        root = self.robot.getSelf()
+        if root is None:
+            return None
+
+        def walk(node, depth):
+            if node is None or depth > 32:
+                return None
+            name_field = node.getField("name")
+            if name_field is not None:
+                try:
+                    named = name_field.getSFString() == wanted
+                except Exception:
+                    named = False
+                if named:
+                    try:
+                        pos = node.getPosition()
+                    except Exception:
+                        pos = None
+                    if pos is not None and not any(math.isnan(v) for v in pos[:3]):
+                        return node
+            for field in self._node_fields(node):
+                try:
+                    kind = field.getType()
+                except Exception:
+                    continue
+                if kind == Field.MF_NODE:
+                    for index in range(min(field.getCount(), 40)):
+                        found = walk(field.getMFNode(index), depth + 1)
+                        if found is not None:
+                            return found
+                elif kind == Field.SF_NODE:
+                    found = walk(field.getSFNode(), depth + 1)
+                    if found is not None:
+                        return found
+            return None
+
+        return walk(root, 0)
+
+    def _wrist_node(self):
+        node = getattr(self, "_wrist_node_cached", None)
+        if node is not None:
+            return node
+        node = self._find_named_solid("wrist_ft_tool_link")
+        self._wrist_node_cached = node
+        return node
+
+    def _finger_link(self, name):
+        cache = getattr(self, "_finger_links", None)
+        if cache is None:
+            cache = {}
+            self._finger_links = cache
+        if name not in cache:
+            cache[name] = self._find_named_solid(name)
+        return cache[name]
+
+    def _pad_point(self, node):
+        try:
+            pos = node.getPosition()
+            rot = node.getOrientation()
+        except Exception:
+            return None
+        if (
+            pos is None
+            or rot is None
+            or len(rot) != 9
+            or any(math.isnan(v) for v in list(pos[:3]) + list(rot))
+        ):
+            return None
+        lx, ly, lz = 0.004, 0.0, -0.1741
+        return (
+            pos[0] + rot[0] * lx + rot[1] * ly + rot[2] * lz,
+            pos[1] + rot[3] * lx + rot[4] * ly + rot[5] * lz,
+            pos[2] + rot[6] * lx + rot[7] * ly + rot[8] * lz,
+        )
+
+    def _gripper_world(self):
+        """World point between the finger pads."""
+        pads = []
+        for name in ("gripper_left_finger_link", "gripper_right_finger_link"):
+            node = self._finger_link(name)
+            if node is None:
+                pads = []
+                break
+            point = self._pad_point(node)
+            if point is None:
+                pads = []
+                break
+            pads.append(point)
+        if len(pads) == 2:
+            return tuple((pads[0][i] + pads[1][i]) / 2.0 for i in range(3))
+        node = self._wrist_node()
+        if node is None:
+            return None
+        try:
+            pos = node.getPosition()
+            rot = node.getOrientation()
+        except Exception:
+            return None
+        if (
+            pos is None
+            or rot is None
+            or len(rot) != 9
+            or any(math.isnan(v) for v in list(pos[:3]) + list(rot))
+        ):
+            return None
+        lx, ly, lz = _PINCH_LOCAL
+        return (
+            pos[0] + rot[0] * lx + rot[1] * ly + rot[2] * lz,
+            pos[1] + rot[3] * lx + rot[4] * ly + rot[5] * lz,
+            pos[2] + rot[6] * lx + rot[7] * ly + rot[8] * lz,
+        )
+
+    def _set_world(self, node, world):
+        parent = node.getParentNode()
+        origin = parent.getPosition() if parent is not None else (0.0, 0.0, 0.0)
+        if origin is None:
+            origin = (0.0, 0.0, 0.0)
+        dx = world[0] - origin[0]
+        dy = world[1] - origin[1]
+        dz = world[2] - origin[2]
+        local = [dx, dy, dz]
+        if parent is not None:
+            try:
+                rot = parent.getOrientation()
+            except Exception:
+                rot = None
+            if rot is not None and len(rot) == 9:
+                local = [
+                    rot[0] * dx + rot[3] * dy + rot[6] * dz,
+                    rot[1] * dx + rot[4] * dy + rot[7] * dz,
+                    rot[2] * dx + rot[5] * dy + rot[8] * dz,
+                ]
+        node.getField("translation").setSFVec3f(local)
+        node.resetPhysics()
+
+    def _order_bottle(self):
+        node = self.robot.getFromDef(ORDER_ITEM)
+        if node is None:
+            return None, None
+        pos = node.getPosition()
+        if pos is None or any(math.isnan(v) for v in pos[:3]):
+            return None, None
+        return node, pos
+
+    def _on_counter(self, pos):
+        return (
+            math.hypot(pos[0] - BOTTLE_HOME[0], pos[1] - BOTTLE_HOME[1]) < 0.45
+            and abs(pos[2] - BOTTLE_HOME[2]) < 0.40
+        )
+
     def _sync_carried_to_tool(self):
         if not self._carry_attach or self.pick_name is None:
             return
         node = self.robot.getFromDef(self.pick_name)
-        if node is None or self.picker_tool is None:
+        pinch = self._gripper_world()
+        if node is None or pinch is None:
             return
-        vals = self.picker_tool.getValues()
-        if vals is None or any(math.isnan(v) for v in vals[:3]):
-            return
-        ox, oy, oz = _CARRY_OFFSET
-        node.getField("translation").setSFVec3f(
-            [vals[0] + ox, vals[1] + oy, vals[2] + oz]
-        )
+        self._set_world(node, (pinch[0], pinch[1], pinch[2] - _BODY_CENTER_Z))
+        rotation = node.getField("rotation")
+        if rotation is not None:
+            rotation.setSFRotation([0, 0, 1, 0])
         node.resetPhysics()
 
     def _item_on_tray(self, name):
@@ -862,37 +1254,140 @@ class ButlerServeController:
         self.publish()
         print("pickup t=%.1f items=%s" % (self.robot.getTime(), self.carried))
 
-    def place_on_desk(self):
-        for def_name in list(self.carried):
-            node = self.robot.getFromDef(def_name)
-            if node is None:
-                continue
-            pose = PLACE_POSES[def_name]
-            locked = node.getField("locked")
-            if locked is not None:
-                locked.setSFBool(False)
-            node.getField("translation").setSFVec3f(list(pose))
-            node.getField("rotation").setSFRotation([0, 0, 1, 0])
-            if locked is not None:
-                locked.setSFBool(True)
-            node.resetPhysics()
-        self.carried = []
-        self.event = "delivery"
-        self.publish()
-        print("delivery t=%.1f room-1204" % self.robot.getTime())
+    def _open_fingers(self):
+        self._gripper_closed = False
+        for motor, position in zip(self.finger_motors, _FINGER_OPEN):
+            motor.setVelocity(0.05)
+            motor.setPosition(position)
+
+    def _ease_onto_desk(self):
+        """Lower the bottle from the open hand onto the desktop."""
+        node = self.robot.getFromDef(ORDER_ITEM)
+        start = getattr(self, "_release_from", None)
+        if node is None or start is None:
+            return True
+        desk = PLACE_POSES[ORDER_ITEM]
+        dx = desk[0] - start[0]
+        dy = desk[1] - start[1]
+        if math.hypot(dx, dy) > 0.28:
+            target = (start[0], start[1], desk[2])
+        else:
+            target = desk
+        elapsed = self.robot.getTime() - self._release_t
+        blend = max(0.0, min(1.0, elapsed / 0.9))
+        smooth = blend * blend * (3.0 - 2.0 * blend)
+        self._set_world(
+            node,
+            (
+                start[0] + (target[0] - start[0]) * smooth,
+                start[1] + (target[1] - start[1]) * smooth,
+                start[2] + (target[2] - start[2]) * smooth,
+            ),
+        )
+        rotation = node.getField("rotation")
+        if rotation is not None:
+            rotation.setSFRotation([0, 0, 1, 0])
+        node.resetPhysics()
+        return blend >= 1.0
+
+    def _tick_place(self):
+        """Turn to the desk, lower the hand, open the fingers, set the bottle down."""
+        stage = getattr(self, "_place_stage", "aim")
+        now = self.robot.getTime()
+        _, _, _, yaw = self.get_pose()
+        err = (PLACE_YAW - yaw + math.pi) % (2.0 * math.pi) - math.pi
+        if stage == "aim":
+            if abs(err) > 0.15:
+                self.set_base_velocity(0.0, math.copysign(0.5, err if err != 0.0 else 1.0))
+                return
+            self.set_base_velocity(0.0, 0.0)
+            self.apply_pose(PLACE_POSE, hold_s=2.2)
+            self._place_stage = "lower"
+            self._place_until = now + 6.0
+            return
+        if stage == "lower":
+            self.set_base_velocity(0.0, 0.0)
+            if self.posing():
+                return
+            pinch = self._gripper_world()
+            desk = PLACE_POSES[ORDER_ITEM]
+            over = (
+                pinch is not None
+                and math.hypot(pinch[0] - desk[0], pinch[1] - desk[1]) < 0.22
+                and pinch[2] < desk[2] + _BODY_CENTER_Z + 0.10
+            )
+            if over or now >= getattr(self, "_place_until", now):
+                _, pos = self._order_bottle()
+                self._release_from = None if pos is None else (pos[0], pos[1], pos[2])
+                self._release_t = now
+                self._open_fingers()
+                self._carry_attach = False
+                self._place_stage = "ease"
+                return
+            if pinch is None:
+                return
+            dx, dy = desk[0] - pinch[0], desk[1] - pinch[1]
+            bearing, forward = self._goal_bearing(dx, dy, yaw)
+            front = self._lidar_sectors()["front"]
+            if forward > 0.04 and front > 0.28 and abs(bearing) < 0.7:
+                self.set_base_velocity(0.06, 0.35 * bearing)
+            return
+        self.set_base_velocity(0.0, 0.0)
+        if self._ease_onto_desk():
+            self.carried = []
+            self.apply_pose(FOLDED_POSE, hold_s=1.0)
+            self.job = "dwell_room"
+            self._dwell_until = now + DWELL_SEC
+            print("placed %s on the room-1204 desk" % ORDER_ITEM)
 
     def start_job(self):
         self.teleop = False
         self.carried = []
         self.pick_i = 0
+        self.pick_name = ORDER_ITEM
+        self._carry_attach = False
+        self._gripper_node = None
+        self._wrist_node_cached = None
+        self._finger_links = None
         self.event = "job"
+        node, pos = self._order_bottle()
+        pinch = self._gripper_world()
+        if (
+            node is not None
+            and pos is not None
+            and not self._on_counter(pos)
+            and pinch is not None
+            and math.dist(pinch, (pos[0], pos[1], pos[2] + _BODY_CENTER_Z)) < 0.45
+        ):
+            self.set_hands(closed=True)
+            self._carry_attach = True
+            self.carried = [ORDER_ITEM]
+            self.apply_pose(CARRY_POSE, hold_s=1.0)
+            self.waypoints = [wp for wp in PATH_DELIVER if not (wp[0] > 7.5 and wp[1] < -4.2)]
+            self.wp_index = 0
+            self._reset_nav()
+            self.job = "nav_deliver"
+            self.event = "carrying"
+            print("already holding %s, continuing to room-1204" % ORDER_ITEM)
+            return
+        self.apply_pose(FOLDED_POSE)
+        self.set_hands(closed=False)
+        if node is None or not self._on_counter(pos):
+            print("counter bottle missing: %s is not on the kitchen worktop" % ORDER_ITEM)
+        else:
+            print(
+                "counter bottle %s at (%.2f, %.2f, %.2f)"
+                % (ORDER_ITEM, pos[0], pos[1], pos[2])
+            )
         self._begin_approach()
-        print("job start: wait for staff to load pizza and drink, then room-1204")
+        print("job start: grasp %s, then room-1204" % ORDER_ITEM)
 
     def _reset_nav(self):
         self._stuck_since = None
         self._stuck_pose = None
         self._recover_until = 0.0
+        self._recover_turn = 0.0
+        self._stuck_counts = {}
         self._last_wp_print = -1
         self._align_since = None
         self._align_yaw = None
@@ -957,57 +1452,148 @@ class ButlerServeController:
         self._arm_adjust_at = now + 0.22
 
     def tick_job(self):
+        if self._carry_attach:
+            self._sync_carried_to_tool()
         if self.job is None or self.posing():
             self.set_base_velocity(0.0, 0.0)
             return
         if self.job == "approach":
-            if self.follow_waypoints():
-                x, y, _, _ = self.get_pose()
-                print("at counter (%.2f, %.2f), waiting for staff" % (x, y))
-                self.set_base_velocity(0.0, 0.0)
-                self.job = "wait_load"
-                self.event = "waiting_load"
-                self.publish()
+            if self.robot.getTime() >= getattr(self, "_fold_again", 0.0):
+                self.apply_pose(FOLDED_POSE)
+                self.set_hands(closed=False)
+                self._fold_again = self.robot.getTime() + 1.0
+            if not self.follow_waypoints():
+                return
+            _, _, _, yaw = self.get_pose()
+            err = (COUNTER_YAW - yaw + math.pi) % (2.0 * math.pi) - math.pi
+            if abs(err) > 0.18:
+                self.set_base_velocity(0.0, math.copysign(0.6, err if err != 0.0 else 1.0))
+                return
+            x, y, _, _ = self.get_pose()
+            print("at bottle stance (%.2f, %.2f)" % (x, y))
+            self.set_base_velocity(0.0, 0.0)
+            self.job = "reach"
+            self.event = "waiting_load"
+            self.apply_pose(REACH_POSE, hold_s=2.6)
+            self.set_hands(closed=False)
+            self.publish()
             return
-        elif self.job == "wait_load":
+        if self.job == "reach":
             self.set_base_velocity(0.0, 0.0)
-            self._tick_wait_load()
-        elif self.job == "pick":
+            node, pos = self._order_bottle()
+            if node is None or not self._on_counter(pos):
+                print("pickup held: %s is not on the kitchen counter" % ORDER_ITEM)
+                self._carry_attach = False
+                self.carried = []
+                self.event = "waiting_load"
+                self.job = None
+                self.set_hands(closed=False)
+                self.publish()
+                return
+            self.set_hands(closed=False)
+            self.job = "grasp"
+            self._grasp_until = self.robot.getTime() + 18.0
+            self._jaws_closed_at = None
+            self._jaw_align = None
+            self._jaw_next = 0.0
+            return
+        if self.job == "grasp":
+            now = self.robot.getTime()
+            if getattr(self, "_jaws_closed_at", None) is not None:
+                self.set_base_velocity(0.0, 0.0)
+                self._sync_carried_to_tool()
+                if now < self._jaws_closed_at + 0.55:
+                    return
+                node, pos = self._order_bottle()
+                self.carried = [ORDER_ITEM]
+                self.event = "pickup"
+                self.publish()
+                print(
+                    "pickup t=%.1f items=%s bottle=(%.2f, %.2f, %.2f)"
+                    % (self.robot.getTime(), self.carried, pos[0], pos[1], pos[2])
+                )
+                self.apply_pose(CARRY_POSE, hold_s=1.4)
+                self.job = "fold_carry"
+                return
             self.set_base_velocity(0.0, 0.0)
-            self._tick_wait_load()
-        elif self.job == "settle":
-            self._tick_settle()
-        elif self.job == "fold_carry":
+            node, pos = self._order_bottle()
+            if node is None or not self._on_counter(pos):
+                print("pickup held: %s left the counter before the fingers closed" % ORDER_ITEM)
+                self._carry_attach = False
+                self.carried = []
+                self.event = "waiting_load"
+                self.job = None
+                self.set_hands(closed=False)
+                self.publish()
+                return
+            self.pick_name = ORDER_ITEM
+            pinch = self._gripper_world()
+            body = (pos[0], pos[1], pos[2] + _BODY_CENTER_Z)
+            gap = None
+            if pinch is not None:
+                gap = math.sqrt(sum((body[i] - pinch[i]) ** 2 for i in range(3)))
+            if gap is not None and gap <= 0.055:
+                self.set_hands(closed=True)
+                self._carry_attach = True
+                self._jaws_closed_at = now
+                self._sync_carried_to_tool()
+                print("jaws on bottle, gap %.3f m" % gap)
+                return
+            if now >= getattr(self, "_grasp_until", 0.0):
+                self._carry_attach = False
+                self.carried = []
+                self.event = "waiting_load"
+                self.job = None
+                self.set_hands(closed=False)
+                print("pickup held: gripper did not take the counter bottle")
+                self.publish()
+                return
+            if pinch is not None:
+                if gap is None or gap > 0.12:
+                    if now >= getattr(self, "_reach_again", 0.0):
+                        self.apply_pose(REACH_POSE)
+                        self._reach_again = now + 0.8
+                dx, dy = body[0] - pinch[0], body[1] - pinch[1]
+                _, _, _, yaw = self.get_pose()
+                bearing, forward = self._goal_bearing(dx, dy, yaw)
+                yaw_err = (COUNTER_YAW - yaw + math.pi) % (2.0 * math.pi) - math.pi
+                if abs(yaw_err) > 0.12:
+                    self.set_base_velocity(0.0, math.copysign(0.35, yaw_err if yaw_err else 1.0))
+                elif math.hypot(dx, dy) > 0.025:
+                    self.set_base_velocity(max(-0.04, min(0.05, forward)), 0.3 * bearing)
+            return
+        if self.job == "fold_carry":
+            self.set_base_velocity(0.0, 0.0)
             self.waypoints = list(PATH_DELIVER)
             self.wp_index = 0
             self._reset_nav()
             self.job = "nav_deliver"
             self.event = "carrying"
-        elif self.job == "nav_deliver":
+            return
+        if self.job == "nav_deliver":
             if self.follow_waypoints():
-                self.job = "dwell_room"
-                self._dwell_until = self.robot.getTime() + DWELL_SEC
+                self.job = "place"
+                self._place_stage = "aim"
                 self.event = "at_dropoff"
                 self.publish()
                 self.set_base_velocity(0.0, 0.0)
-        elif self.job == "dwell_room":
+            return
+        if self.job == "place":
+            self._tick_place()
+            return
+        if self.job == "dwell_room":
             self.set_base_velocity(0.0, 0.0)
             if self.robot.getTime() >= self._dwell_until:
-                self.job = "reach_place"
-                self.apply_pose(_arm_pose(head=-0.2), hold_s=1.6)
-                self.set_hands(closed=True)
-        elif self.job == "reach_place":
-            self.place_on_desk()
-            self.set_hands(closed=False)
-            self.job = "fold_done"
-            self.apply_pose(IDLE_POSE, hold_s=2.0)
-        elif self.job == "fold_done":
-            self.waypoints = list(PATH_DOCK)
-            self.wp_index = 0
-            self._reset_nav()
-            self.job = "nav_dock"
-            self.event = "returning"
-        elif self.job == "nav_dock":
+                self.event = "delivery"
+                self.publish()
+                print("delivery t=%.1f room-1204" % self.robot.getTime())
+                self.waypoints = list(PATH_DOCK)
+                self.wp_index = 0
+                self._reset_nav()
+                self.job = "nav_dock"
+                self.event = "returning"
+            return
+        if self.job == "nav_dock":
             if self.follow_waypoints():
                 self.job = None
                 self.event = "idle"
@@ -1033,7 +1619,11 @@ class ButlerServeController:
             "battery": round(self._read_battery(), 3),
             "event": self.event,
             "carried": list(self.carried),
+            "job": self.job or "",
         }
+        grip = self._gripper_world()
+        if grip is not None:
+            payload["gripper"] = [round(grip[0], 3), round(grip[1], 3), round(grip[2], 3)]
         encoded = json.dumps(payload, separators=(",", ":"))
         self.robot.setCustomData(encoded)
         self._post_bridge("/telemetry", payload)
@@ -1149,6 +1739,8 @@ class ButlerServeController:
             steps += 1
             if steps % 32 == 0:
                 self._poll_goal()
+            if steps % 8 == 0:
+                self._paint_sensors()
             if steps % 16 == 0:
                 self.publish()
 
