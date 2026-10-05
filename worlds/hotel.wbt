@@ -1,28 +1,64 @@
 #VRML_SIM R2025a utf8
-# Butler hotel + restaurant. Indoor floor the ServeBots can walk.
-# Box/Plane architecture, shared appearances, no shadow casters.
 
 EXTERNPROTO "../assets/webots/projects/objects/floors/protos/Floor.proto"
-EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
-EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
 EXTERNPROTO "../assets/webots/projects/objects/tables/protos/Desk.proto"
 EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/WoodenChair.proto"
-EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/Chair.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/Chair.proto"
 EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Sofa.proto"
 EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Armchair.proto"
 EXTERNPROTO "../assets/webots/projects/objects/bedroom/protos/Bed.proto"
-EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Worktop.proto"
-EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Plate.proto"
-EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Glass.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Worktop.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Plate.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Glass.proto"
 EXTERNPROTO "../protos/ButlerServe.proto"
 EXTERNPROTO "../protos/HotelDoor.proto"
-EXTERNPROTO "../assets/webots/projects/objects/factory/containers/protos/CardboardBox.proto"
-EXTERNPROTO "../../webots-master/projects/humans/pedestrian/protos/Pedestrian.proto"
-EXTERNPROTO "../../berkeley-humanoid-lite-assets-fc90fedd008b1e56a22e3c5221548d6b24f49707/data/robots/berkeley_humanoid/berkeley_humanoid_lite/webots/BerkeleyHumanoidLite.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/Cabinet.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Ceiling.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Wall.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Door.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Window.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/solids/protos/SolidBox.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/fridge/protos/Fridge.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Sink.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/HotPlate.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/oven/protos/Oven.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/tables/protos/Table.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/lights/protos/CeilingLight.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Carafe.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/WaterBottle.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/BeerBottle.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/Can.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/FruitBowl.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/Apple.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/Orange.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Cookware.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Lid.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/WoodenSpoon.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Fork.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Spoon.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Knife.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Wineglass.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/HoneyJar.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/JamJar.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/CerealBox.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/BiscuitBox.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetHandle.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetDoor.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetDrawer.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/PaintedWood.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/BrushedAluminium.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/Marble.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/ShinyLeather.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/GenericDoorAppearance.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/DoorLever.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/geometries/protos/TexturedBox.proto"
+IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/geometries/protos/TexturedParallelepiped.proto"
 
 WorldInfo {
   info [
-    "Butler hotel. Kitchen staff loads pizza and drink onto servebot-1, which delivers to room 1204. Select the robot and press J to rerun, T for teleop. Supervisor 1-5 toggles doors."
+    "Butler hotel. servebot-1 grasps the kitchen water bottle and delivers it to room 1204. Select the robot and press J to rerun, T for teleop. Supervisor 1-5 toggles doors."
   ]
   title "Butler Hotel"
   basicTimeStep 16
@@ -33,22 +69,15 @@ WorldInfo {
   }
   contactProperties [
     ContactProperties {
-      material1 "default"
-      material2 "default"
-      coulombFriction 1
       bounce 0
-      bounceVelocity 0.01
       softCFM 0.0001
       bumpSound ""
       rollSound ""
       slideSound ""
     }
     ContactProperties {
-      material1 "default"
       material2 "floor"
-      coulombFriction 1
       bounce 0
-      bounceVelocity 0.01
       softCFM 0.0002
       bumpSound ""
       rollSound ""
@@ -57,8 +86,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.3 0.2 0.93 1.4
-  position 6 -14 8
+  orientation -0.19518269427258528 -0.9075645553638644 0.37179334811651177 5.234339268631304
+  position 1.973773164624153 -3.38295189693113 8.176629704327887
 }
 Background {
   skyColor [
@@ -69,12 +98,11 @@ DirectionalLight {
   ambientIntensity 1
   direction 0.4 -0.5 -1
   intensity 1.6
-  castShadows FALSE
 }
 Floor {
-  size 22 16
   name "hotel floor"
   contactMaterial "floor"
+  size 22 16
 }
 Solid {
   translation 0 0 2.4
@@ -94,8 +122,6 @@ Solid {
   ]
   name "hotel ceiling"
 }
-
-# Walls are Solids + Boxes, same trick as jetbot_collision_avoidance.wbt.
 Solid {
   translation 0 -8 1.2
   rotation 0 0 1 1.5708
@@ -365,7 +391,6 @@ Solid {
     size 0.2 7.2 2.4
   }
 }
-
 DEF LOBBY_DOOR HotelDoor {
   translation -7 -0.8 0
   rotation 0 0 1 1.5708
@@ -401,7 +426,6 @@ DEF ROOM_1206_DOOR HotelDoor {
   size 0.2 1.56 2.4
   leafRotation 0 0 1 1.5708
 }
-
 Solid {
   translation -11 -4 1.4
   children [
@@ -438,8 +462,6 @@ Solid {
   ]
   name "restaurant window"
 }
-
-# --- Lobby: west-wall seating north of the dock so arms can fold in free space ---
 Desk {
   translation -10.55 -2.35 0
   name "front desk"
@@ -453,20 +475,18 @@ Sofa {
   name "lobby sofa"
 }
 Armchair {
-  translation -10.50 -5.25 0
+  translation -10.5 -5.25 0
   rotation 0 0 1 3.14159
   name "lobby armchair"
 }
 Solid {
   translation -10.55 -3.15 0
-  name "lobby lamp"
   children [
     PointLight {
-      location 0 0 1.5
-      intensity 0.7
-      radius 8
       attenuation 0 0 1
-      castShadows FALSE
+      intensity 0.7
+      location 0 0 1.5
+      radius 8
     }
     Pose {
       translation 0 0 0.8
@@ -486,12 +506,10 @@ Solid {
       ]
     }
   ]
+  name "lobby lamp"
 }
-
-# --- Restaurant (cylinder tables, same idea as Seronet station primitives) ---
 Solid {
   translation 1.6 -4.6 0
-  name "restaurant table 1"
   children [
     Pose {
       translation 0 0 0.74
@@ -524,6 +542,7 @@ Solid {
       ]
     }
   ]
+  name "restaurant table 1"
   boundingObject Pose {
     translation 0 0 0.74
     children [
@@ -553,48 +572,6 @@ Glass {
   name "table1 glass"
   mass 0
 }
-
-Solid {
-  translation 4.6 -4.6 0
-  name "restaurant table 2"
-  children [
-    Pose {
-      translation 0 0 0.74
-      children [
-        Shape {
-          appearance USE TABLE_WOOD
-          geometry Cylinder {
-            height 0.04
-            radius 0.7
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation 0 0 0.36
-      children [
-        Shape {
-          appearance USE TABLE_WOOD
-          geometry Cylinder {
-            height 0.72
-            radius 0.08
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-  boundingObject Pose {
-    translation 0 0 0.74
-    children [
-      Cylinder {
-        height 0.04
-        radius 0.7
-      }
-    ]
-  }
-}
 WoodenChair {
   translation 4.6 -2.8 0
   name "restaurant chair 2a"
@@ -604,653 +581,6 @@ WoodenChair {
   rotation 0 0 1 3.1416
   name "restaurant chair 2b"
 }
-Plate {
-  translation 4.45 -4.45 0.77
-  name "table2 plate"
-  mass 0
-}
-Glass {
-  translation 4.75 -4.35 0.77
-  name "table2 glass"
-  mass 0
-}
-
-# --- Kitchen (east restaurant): island, sink run, oven, fridge, cookware ---
-Solid {
-  translation 10.45 -7.35 0.9
-  name "restaurant fridge"
-  children [
-    Shape {
-      appearance DEF STEEL PBRAppearance {
-        baseColor 0.82 0.84 0.86
-        roughness 0.28
-        metalness 0.7
-      }
-      geometry Box {
-        size 0.7 0.68 1.8
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation -0.37 0.18 0.1
-      rotation 1 0 0 1.5708
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.7 0.7 0.72
-            roughness 0.3
-            metalness 0.8
-          }
-          geometry Cylinder {
-            height 0.16
-            radius 0.016
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-  boundingObject Box {
-    size 0.7 0.68 1.8
-  }
-}
-
-Solid {
-  translation 10.45 -6.45 0.4
-  name "oven body"
-  children [
-    Shape {
-      appearance USE STEEL
-      geometry Box {
-        size 0.62 0.58 0.8
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation -0.32 0 0.05
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.12 0.12 0.13
-            roughness 0.2
-            metalness 0.1
-          }
-          geometry Box {
-            size 0.02 0.42 0.42
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation -0.34 0 0.32
-      rotation 1 0 0 1.5708
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.25 0.25 0.26
-            roughness 0.4
-            metalness 0.6
-          }
-          geometry Cylinder {
-            height 0.36
-            radius 0.012
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-  boundingObject Box {
-    size 0.62 0.58 0.8
-  }
-}
-
-Solid {
-  translation 10.4 -4.2 0.44
-  name "east cabinets"
-  children [
-    Shape {
-      appearance DEF CABINET PBRAppearance {
-        baseColor 0.28 0.2 0.14
-        roughness 0.7
-        metalness 0
-      }
-      geometry Box {
-        size 0.62 3.6 0.88
-      }
-      castShadows FALSE
-    }
-  ]
-  boundingObject Box {
-    size 0.62 3.6 0.88
-  }
-}
-Worktop {
-  translation 10.4 -4.2 0.91
-  name "east worktop"
-  size 0.66 3.6 0.06
-}
-
-Solid {
-  translation 10.25 -3.35 0.97
-  name "sink basin"
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0.72 0.74 0.76
-        roughness 0.22
-        metalness 0.85
-      }
-      geometry Box {
-        size 0.42 0.5 0.12
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation 0 0 0.04
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.45 0.48 0.5
-            roughness 0.3
-            metalness 0.7
-          }
-          geometry Box {
-            size 0.34 0.4 0.08
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-Solid {
-  translation 10.08 -3.12 1.12
-  name "faucet"
-  children [
-    Shape {
-      appearance USE STEEL
-      geometry Cylinder {
-        height 0.28
-        radius 0.016
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation -0.1 0 0.13
-      rotation 0 1 0 1.2
-      children [
-        Shape {
-          appearance USE STEEL
-          geometry Cylinder {
-            height 0.2
-            radius 0.012
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-
-Solid {
-  translation 10.35 -5.15 1.08
-  name "microwave"
-  children [
-    Shape {
-      appearance USE STEEL
-      geometry Box {
-        size 0.32 0.48 0.28
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation -0.165 0.04 0
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.08 0.08 0.09
-            roughness 0.25
-            metalness 0.05
-          }
-          geometry Box {
-            size 0.01 0.28 0.18
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-
-Solid {
-  translation 8.15 -6.05 0.44
-  name "island cabinets"
-  children [
-    Shape {
-      appearance USE CABINET
-      geometry Box {
-        size 1.7 0.9 0.88
-      }
-      castShadows FALSE
-    }
-  ]
-  boundingObject Box {
-    size 1.7 0.9 0.88
-  }
-}
-Worktop {
-  translation 8.15 -6.05 0.91
-  name "island top"
-  size 1.78 0.96 0.06
-}
-
-Solid {
-  translation 8.15 -6.05 0.96
-  name "hot plate"
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0.08 0.08 0.09
-        roughness 0.35
-        metalness 0.15
-      }
-      geometry Box {
-        size 0.62 0.52 0.04
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation -0.14 -0.1 0.025
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.25 0.18 0.12
-            roughness 0.5
-            metalness 0.4
-          }
-          geometry Cylinder {
-            height 0.008
-            radius 0.09
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation 0.14 -0.1 0.025
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.25 0.18 0.12
-            roughness 0.5
-            metalness 0.4
-          }
-          geometry Cylinder {
-            height 0.008
-            radius 0.08
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation -0.14 0.12 0.025
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.25 0.18 0.12
-            roughness 0.5
-            metalness 0.4
-          }
-          geometry Cylinder {
-            height 0.008
-            radius 0.07
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation 0.14 0.12 0.025
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.25 0.18 0.12
-            roughness 0.5
-            metalness 0.4
-          }
-          geometry Cylinder {
-            height 0.008
-            radius 0.06
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-
-Solid {
-  translation 8.15 -6.05 1.85
-  name "range hood"
-  children [
-    Shape {
-      appearance USE STEEL
-      geometry Box {
-        size 0.7 0.55 0.12
-      }
-      castShadows FALSE
-    }
-    Pose {
-      translation 0 0 0.28
-      children [
-        Shape {
-          appearance USE STEEL
-          geometry Box {
-            size 0.22 0.22 0.45
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-
-Solid {
-  translation 8.01 -6.15 1.03
-  name "island pot"
-  children [
-    Shape {
-      appearance USE STEEL
-      geometry Cylinder {
-        height 0.08
-        radius 0.09
-      }
-      castShadows FALSE
-    }
-  ]
-}
-Solid {
-  translation 8.32 -5.95 1.01
-  name "island pan"
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0.28 0.28 0.3
-        roughness 0.45
-        metalness 0.7
-      }
-      geometry Cylinder {
-        height 0.04
-        radius 0.1
-      }
-      castShadows FALSE
-    }
-  ]
-}
-Solid {
-  translation 8.6 -5.72 0.95
-  name "island utensils"
-  children [
-    Pose {
-      translation 0 0 0
-      children [
-        Shape {
-          appearance USE STEEL
-          geometry Box {
-            size 0.16 0.016 0.004
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-    Pose {
-      translation 0.02 -0.03 0
-      children [
-        Shape {
-          appearance USE STEEL
-          geometry Box {
-            size 0.14 0.012 0.004
-          }
-          castShadows FALSE
-        }
-      ]
-    }
-  ]
-}
-Plate {
-  translation 7.45 -5.75 0.95
-  name "island plate stack"
-  mass 0
-}
-Plate {
-  translation 7.45 -5.75 0.96
-  name "island plate 2"
-  mass 0
-}
-Glass {
-  translation 7.65 -5.7 0.95
-  name "island glass"
-  mass 0
-}
-Solid {
-  translation 7.5 -6.35 1.05
-  name "island carafe"
-  children [
-    Shape {
-      appearance PBRAppearance {
-        baseColor 0.75 0.85 0.9
-        transparency 0.35
-        roughness 0.1
-        metalness 0
-      }
-      geometry Cylinder {
-        height 0.2
-        radius 0.04
-      }
-      castShadows FALSE
-    }
-  ]
-}
-
-Worktop {
-  translation 9.2 -1.6 0.87
-  rotation 0 0 1 1.5708
-  name "pickup counter"
-  size 1.6 0.7 0.08
-}
-Solid {
-  translation 9.2 -1.6 0.4
-  name "pickup cabinets"
-  children [
-    Shape {
-      appearance USE CABINET
-      geometry Box {
-        size 0.7 1.6 0.8
-      }
-      castShadows FALSE
-    }
-  ]
-  boundingObject Box {
-    size 0.7 1.6 0.8
-  }
-}
-DEF COUNTER_PLATE Plate {
-  translation 9.35 -2.05 0.97
-  name "counter plate 1"
-  mass 0.25
-}
-Plate {
-  translation 8.75 -1.45 0.93
-  name "counter plate 2"
-  mass 0
-}
-DEF COUNTER_GLASS Glass {
-  translation 9.16 -2.36 0.98
-  name "counter glass 1"
-  mass 0.12
-}
-Glass {
-  translation 9.5 -1.35 0.92
-  name "counter glass 2"
-  mass 0
-}
-# Pizza and drink start in the kitchen staff's hands, west of the load point.
-DEF PIZZA_BOX CardboardBox {
-  translation 8.70 -2.66 1.05
-  name "pizza box"
-  size 0.22 0.22 0.05
-  mass 0.35
-  locked TRUE
-}
-DEF DRINK_STAND Solid {
-  translation 9.18 -2.72 0
-  name "drink stand"
-  children [
-    Pose {
-      translation 0 0 0.49
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.32 0.26 0.18
-            roughness 0.65
-            metalness 0
-          }
-          geometry Box {
-            size 0.10 0.10 0.98
-          }
-        }
-      ]
-    }
-    Pose {
-      translation 0 0 1.00
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.48 0.38 0.24
-            roughness 0.4
-            metalness 0.05
-          }
-          geometry Box {
-            size 0.34 0.34 0.04
-          }
-        }
-      ]
-    }
-  ]
-  boundingObject Group {
-    children [
-      Pose {
-        translation 0 0 0.49
-        children [
-          Box {
-            size 0.10 0.10 0.98
-          }
-        ]
-      }
-      Pose {
-        translation 0 0 1.00
-        children [
-          Box {
-            size 0.34 0.34 0.04
-          }
-        ]
-      }
-    ]
-  }
-}
-DEF DRINK_BOTTLE Solid {
-  translation 8.70 -2.98 1.00
-  name "drink bottle"
-  locked TRUE
-  children [
-    Pose {
-      translation 0 0 0.07
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.10 0.48 0.16
-            roughness 0.22
-            metalness 0.05
-          }
-          geometry Cylinder {
-            height 0.14
-            radius 0.032
-          }
-        }
-      ]
-    }
-    Pose {
-      translation 0 0 0.16
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.14 0.50 0.18
-            roughness 0.2
-          }
-          geometry Cylinder {
-            height 0.06
-            radius 0.015
-          }
-        }
-      ]
-    }
-    Pose {
-      translation 0 0 0.205
-      children [
-        Shape {
-          appearance PBRAppearance {
-            baseColor 0.72 0.62 0.16
-            roughness 0.28
-            metalness 0.55
-          }
-          geometry Cylinder {
-            height 0.028
-            radius 0.017
-          }
-        }
-      ]
-    }
-  ]
-  boundingObject Group {
-    children [
-      Pose {
-        translation 0 0 0.07
-        children [
-          Cylinder {
-            height 0.14
-            radius 0.032
-          }
-        ]
-      }
-      Pose {
-        translation 0 0 0.175
-        children [
-          Cylinder {
-            height 0.09
-            radius 0.016
-          }
-        ]
-      }
-    ]
-  }
-  physics Physics {
-    density -1
-    mass 0.35
-  }
-}
-Solid {
-  translation 9.2 -1.6 0.87
-  rotation 0 0 1 1.5708
-  name "counter top"
-  boundingObject Box {
-    size 1.6 0.7 0.08
-  }
-}
-
-# --- Rooms ---
 Bed {
   translation -8.6 5.4 0
   rotation 0 0 1 1.5708
@@ -1261,7 +591,7 @@ Desk {
   name "room-1204 desk"
 }
 Chair {
-  translation -5.2 4.0 0
+  translation -5.2 4 0
   name "room-1204 chair"
 }
 Plate {
@@ -1274,7 +604,6 @@ Glass {
   name "room-1204 glass"
   mass 0
 }
-
 Bed {
   translation 0 5.4 0
   rotation 0 0 1 -1.5708
@@ -1285,7 +614,7 @@ Desk {
   name "room-1205 desk"
 }
 Chair {
-  translation 2.2 4.0 0
+  translation 2.2 4 0
   name "room-1205 chair"
 }
 Plate {
@@ -1298,7 +627,6 @@ Glass {
   name "room-1205 glass"
   mass 0
 }
-
 Bed {
   translation 8.6 5.4 0
   rotation 0 0 1 -1.5708
@@ -1309,7 +637,7 @@ Desk {
   name "room-1206 desk"
 }
 Chair {
-  translation 5.2 4.0 0
+  translation 5.2 4 0
   name "room-1206 chair"
 }
 Plate {
@@ -1322,17 +650,15 @@ Glass {
   name "room-1206 glass"
   mass 0
 }
-
 Solid {
   translation 8.4 -1.1 0.05
-  name "counter"
   children [
     Shape {
       appearance PBRAppearance {
         baseColor 0.2 0.8 0.3
         transparency 0.7
-        metalness 0
         roughness 1
+        metalness 0
       }
       geometry Sphere {
         radius 0.08
@@ -1340,17 +666,17 @@ Solid {
       castShadows FALSE
     }
   ]
+  name "counter"
 }
 Solid {
   translation 1.6 -4.6 0.05
-  name "restaurant-table-1"
   children [
     Shape {
       appearance PBRAppearance {
         baseColor 0.2 0.4 0.9
         transparency 0.7
-        metalness 0
         roughness 1
+        metalness 0
       }
       geometry Sphere {
         radius 0.08
@@ -1358,17 +684,17 @@ Solid {
       castShadows FALSE
     }
   ]
+  name "restaurant-table-1"
 }
 Solid {
   translation -5.2 2.4 0.05
-  name "room-1204"
   children [
     Shape {
       appearance PBRAppearance {
         baseColor 0.9 0.5 0.1
         transparency 0.7
-        metalness 0
         roughness 1
+        metalness 0
       }
       geometry Sphere {
         radius 0.08
@@ -1376,17 +702,17 @@ Solid {
       castShadows FALSE
     }
   ]
+  name "room-1204"
 }
 Solid {
   translation 2.2 2.4 0.05
-  name "room-1205"
   children [
     Shape {
       appearance PBRAppearance {
         baseColor 0.9 0.5 0.1
         transparency 0.7
-        metalness 0
         roughness 1
+        metalness 0
       }
       geometry Sphere {
         radius 0.08
@@ -1394,17 +720,17 @@ Solid {
       castShadows FALSE
     }
   ]
+  name "room-1205"
 }
 Solid {
   translation 5.2 2.4 0.05
-  name "room-1206"
   children [
     Shape {
       appearance PBRAppearance {
         baseColor 0.9 0.5 0.1
         transparency 0.7
-        metalness 0
         roughness 1
+        metalness 0
       }
       geometry Sphere {
         radius 0.08
@@ -1412,89 +738,696 @@ Solid {
       castShadows FALSE
     }
   ]
+  name "room-1206"
 }
-
-# Live ServeBot. Kitchen staff loads the chest tray; this robot has no arm.
 DEF SERVEBOT_1 ButlerServe {
-  translation 6.2 -3.3 0.095
-  rotation 0 0 1 0
-  name "servebot-1"
+  translation 8.1 -3.65 0.095
+  rotation 0 0 1 -1.5723853071795864
   controller "butler_serve"
   controllerArgs [
     "autonomous"
   ]
+  window "<generic>"
+  customData "{\"name\":\"servebot-1\",\"pose\":[8.1,-3.65,0.095,-1.5724],\"battery\":1.0,\"event\":\"idle\",\"carried\":[]}"
   supervisor TRUE
-  window "generic"
   synchronization TRUE
 }
 ButlerServe {
-  translation -7.5 -7.15 0.095
-  rotation 0 0 1 1.5708
+  translation -7.500000004115832 -7.149976018667195 0.09747928348132828
+  rotation -0.00012187196576572339 0.00012183181639007031 0.9999999851521161 1.570800014816698
   name "servebot-2"
   controller "<none>"
-  window ""
-  synchronization FALSE
   locked TRUE
   docked TRUE
-  cameraSlot [
-  ]
-  lidarSlot [
-  ]
+  cameraSlot []
+  lidarSlot []
 }
 ButlerServe {
-  translation -5.4 -7.15 0.095
-  rotation 0 0 1 1.5708
+  translation -5.40000000411583 -7.149976018667197 0.0974792834813285
+  rotation -0.00012187196576657049 0.00012183181639106237 0.9999999851521161 1.5708000148166812
   name "servebot-3"
   controller "<none>"
-  window ""
-  synchronization FALSE
   locked TRUE
   docked TRUE
-  cameraSlot [
-  ]
-  lidarSlot [
-  ]
-}
-
-# In the open floor the default camera looks through, west of the ServeBot path.
-BerkeleyHumanoidLite {
-  translation 6.4 -6.3 0
-  rotation 0 0 1 -1.5708
-  name "berkeley-humanoid"
-  controller "berkeley_hold"
-  synchronization FALSE
+  cameraSlot []
+  lidarSlot []
 }
 Robot {
-  name "butler_supervisor"
-  supervisor TRUE
-  controller "butler_supervisor"
-  window ""
   translation 0 0 0.5
-}
-# Kitchen staff stands west of the tray, already holding pizza and drink.
-DEF KITCHEN_STAFF Pedestrian {
-  translation 8.50 -2.82 1.27
-  rotation 0 0 1 0
-  name "kitchen staff"
-  controller "<none>"
-  controllerArgs [
-    "staff"
-  ]
-  shirtColor 0.82 0.18 0.16
-  pantsColor 0.16 0.16 0.20
-  shoesColor 0.12 0.12 0.12
+  name "butler_supervisor"
+  controller "butler_supervisor"
+  supervisor TRUE
+  window ""
 }
 Robot {
-  name "staff director"
-  supervisor TRUE
-  controller "butler_staff"
-  window ""
   translation 0 0 0.4
+  name "staff director"
+  controller "<none>"
+  supervisor TRUE
+  window ""
 }
-
 Robot {
   translation 0 0 -10
   name "mcp_bridge"
   controller "mcp_bridge"
   supervisor TRUE
+}
+DEF KITCHEN Pose {
+  translation 8.1 -3.65 0
+  children [
+    Cabinet {
+      translation 2.15 -1 0.83
+      rotation 0 0 1 3.14159
+      name "cabinet(1)"
+      depth 0.7
+      outerThickness 0.02
+      rowsHeights [
+        0.2, 0.2, 0.2, 0.2, 0.2, 0.34
+      ]
+      columnsWidths [
+        0.4
+      ]
+      layout [
+        "LeftSidedDoor (1, 1, 1, 6, 1.5)"
+        "Shelf (1,2, 1, 0)"
+        "Shelf (1,3, 1, 0)"
+        "Shelf (1,4, 1, 0)"
+        "Shelf (1,5, 1, 0)"
+        "Shelf (1,6, 1, 0)"
+      ]
+      handle CabinetHandle {
+        translation 0 0 -0.3
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Cabinet {
+      translation -0.11 1.65 0.15
+      rotation 0 0 1 -1.5707953071795862
+      name "cabinet(2)"
+      depth 0.67
+      outerThickness 0.02
+      rowsHeights [
+        0.68, 0.25, 0.25, 0.25, 0.25, 0.34
+      ]
+      columnsWidths [
+        0.44
+      ]
+      layout [
+        "RightSidedDoor (1, 2, 1, 3, 1.5)"
+        "RightSidedDoor (1, 5, 1, 2, 1.5)"
+        "Shelf (1,2, 1, 0)"
+        "Shelf (1,3, 1, 0)"
+        "Shelf (1,4, 1, 0)"
+        "Shelf (1,5, 1, 0)"
+        "Shelf (1,6, 1, 0)"
+      ]
+      handle CabinetHandle {
+        translation 0 -0.15 0
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Cabinet {
+      translation 2.15 -0.1 1.4
+      rotation 0 0 1 3.14159
+      name "cabinet(3)"
+      outerThickness 0.02
+      rowsHeights [
+        0.21, 0.21, 0.22
+      ]
+      columnsWidths [
+        0.44, 0.44, 0.44
+      ]
+      layout [
+        "RightSidedDoor (1, 1, 1, 3, 1.5)"
+        "LeftSidedDoor (2, 1, 1, 3, 1.5)"
+        "LeftSidedDoor (3, 1, 1, 3, 1.5)"
+        "Shelf (1, 2, 3, 0)"
+        "Shelf (1, 3, 2, 0)"
+        "Shelf (1, 1, 0, 1)"
+        "Shelf (2, 1, 0, 3)"
+      ]
+      handle CabinetHandle {
+        translation 0 -0.2 0
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Cabinet {
+      translation 0.37 1.647 1.4
+      rotation 0 0 1 -1.5707953071795862
+      name "cabinet(4)"
+      outerThickness 0.02
+      rowsHeights [
+        0.21, 0.21, 0.22
+      ]
+      columnsWidths [
+        0.44
+      ]
+      layout [
+        "RightSidedDoor (1, 1, 1, 3, 1.5)"
+        "Shelf (1, 2 ,1 , 0)"
+        "Shelf (1, 3 ,1 , 0)"
+      ]
+      handle CabinetHandle {
+        translation 0 -0.2 0
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Cabinet {
+      translation 0.79 1.48 0.15
+      rotation 0 0 1 -1.5707953071795862
+      name "cabinet(5)"
+      outerThickness 0.02
+      rowsHeights [
+        0.21, 0.21, 0.22
+      ]
+      columnsWidths [
+        0.34, 0.47, 0.47
+      ]
+      layout [
+        "RightSidedDoor (2, 1, 1, 3, 1.5)"
+        "LeftSidedDoor (3, 1, 1, 3, 1.5)"
+        "RightSidedDoor (1, 1, 1, 3, 1.5)"
+        "Shelf (1, 2, 1, 0)"
+        "Shelf (1, 3, 1, 0)"
+        "Shelf (1, 1, 0, 3)"
+        "Shelf (2, 1, 0, 3)"
+      ]
+      handle CabinetHandle {
+        translation 0 0 0.1
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Cabinet {
+      translation 2.15 -0.12 0.15
+      rotation 0 0 1 3.14159
+      depth 0.7
+      outerThickness 0.02
+      rowsHeights [
+        0.25, 0.25, 0.14
+      ]
+      columnsWidths [
+        0.76, 0.54, 0.43, 0.43
+      ]
+      layout [
+        "LeftSidedDoor (2, 1, 1, 2, 1.5)"
+        "LeftSidedDoor (4, 1, 1, 3, 1.5)"
+        "RightSidedDoor (3, 1, 1, 3, 1.5)"
+        "Drawer (1, 1, 1, 1, 3.5)"
+        "Drawer (1, 2, 1, 1, 3.5)"
+        "Drawer (1, 3, 1, 1, 3.5)"
+        "Drawer (2, 3, 1, 1, 3.5)"
+        "Shelf (1, 2, 1, 0)"
+        "Shelf (1, 3, 2, 0)"
+        "Shelf (3, 2, 2, 0)"
+        "Shelf (1, 1, 0, 3)"
+        "Shelf (2, 1, 0, 3)"
+        "Shelf (3, 1, 0, 1)"
+      ]
+      handle CabinetHandle {
+        handleLength 0.1
+        handleRadius 0.008
+        handleColor 0.427451 0.513725 0.533333
+      }
+      primaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+      secondaryAppearance PaintedWood {
+        colorOverride 0.2 0.2 0.2
+      }
+    }
+    Ceiling {
+      translation 0 -1.1 2.4
+      size 4.7 5.9
+    }
+    Wall {
+      translation 1.8 1.75 0
+      rotation 0 0 1 1.5708
+      name "wall(1)"
+      size 0.2 0.7 2.4
+    }
+    Wall {
+      translation 2.25 -0.15 0
+      rotation 0 0 1 3.1416
+      name "wall(2)"
+      size 0.2 4 2.4
+    }
+    Wall {
+      translation -0.75 1.75 0
+      rotation 0 0 1 1.5708
+      name "wall(3)"
+      size 0.2 2.8 2.4
+    }
+    Wall {
+      translation -2.25 1.35 0
+      name "wall(4)"
+    }
+    Wall {
+      translation -2.25 -0.45 0
+      name "wall(5)"
+    }
+    Wall {
+      translation -2.25 -2.985 0
+      name "wall(6)"
+      size 0.2 2.07 2.4
+    }
+    Wall {
+      translation -0.5 -3.92 0
+      name "wall(7)"
+      size 3.3 0.2 2.4
+    }
+    Wall {
+      translation 1.25 -2.986 0
+      name "wall(8)"
+      size 0.2 2.07 2.4
+    }
+    Wall {
+      translation 1.75 -2.05 0
+      rotation 0 0 1 4.71239
+      size 0.2 0.8 2.4
+    }
+    SolidBox {
+      translation 1.55 -0.12 0.07
+      name "box(1)"
+      size 0.2 2.2 0.16
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 4 4
+        }
+      }
+    }
+    SolidBox {
+      translation 0.65 1.08 0.07
+      rotation 0 0 1 1.5708
+      name "box(2)"
+      size 0.2 2 0.16
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 4 4
+        }
+      }
+    }
+    SolidBox {
+      translation 1.9 -1.12 0.07
+      rotation 0 0 -1 4.71239
+      name "box(3)"
+      size 0.2 0.5 0.16
+      appearance PBRAppearance {
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 4 4
+        }
+      }
+    }
+    SolidBox {
+      translation -0.25 1.415 0.07
+      rotation 0 0 -1 6.28318
+      name "box(4)"
+      size 0.2 0.47 0.16
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 4 4
+        }
+      }
+    }
+    SolidBox {
+      translation -1.23 1.645 0.03
+      name "box(5)"
+      size 1.84 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    SolidBox {
+      translation -2.145 0.345 0.03
+      rotation 0 0 1 1.5708
+      name "box(6)"
+      size 2.59 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    SolidBox {
+      translation -2.145 -2.885 0.03
+      rotation 0 0 1 1.5708
+      name "box(7)"
+      size 1.87 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    SolidBox {
+      translation 1.645 -1.945 0.03
+      rotation 0 0 -1 3.14159
+      name "box(8)"
+      size 1.01 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    SolidBox {
+      translation 1.145 -2.88 0.03
+      rotation 0 0 0.9999999999999999 4.71239
+      name "box(9)"
+      size 1.86 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    SolidBox {
+      translation -0.495 -3.815 0.03
+      rotation 0 0 1 3.14159
+      size 3.29 0.01 0.07
+      appearance PBRAppearance {
+        baseColor 0.8 0.8 0.8
+        roughness 0.5
+        metalness 0
+        textureTransform TextureTransform {
+          scale 1 8
+        }
+      }
+    }
+    Window {
+      translation -2.25 0.45 0
+      rotation 0 0 1 3.14159
+      name "window(1)"
+      bottomWallHeight 0.9
+      windowHeight 1
+      windowSillSize 0.01 0.05
+    }
+    Window {
+      translation 1.05 1.75 0
+      rotation 0 0 1 1.5708
+      bottomWallHeight 1.2
+      windowHeight 1
+      windowSillSize 0.01 0.05
+    }
+    Fridge {
+      translation 1.8 -1.57 0
+      rotation 0 0 -1 3.14159
+    }
+    Worktop {
+      translation 0.345 1.31 0.86
+      rotation 0 0 1 4.71239
+      name "worktop(1)"
+      size 0.7 0.43 0.06
+    }
+    Worktop {
+      translation 0.78 1.531 0.86
+      rotation 0 0 1 4.71239
+      name "worktop(2)"
+      size 0.237 0.44 0.06
+    }
+    Worktop {
+      translation 0.780001 1.003 0.86
+      rotation 0 0 1 4.71239
+      name "worktop(3)"
+      size 0.085 0.442 0.06
+    }
+    Worktop {
+      translation 1.22 1.306 0.86
+      rotation 0 0 -1 1.5708
+      name "worktop(4)"
+      size 0.69 0.44 0.06
+    }
+    Worktop {
+      translation 1.79 0.435 0.86
+      size 0.7 2.43 0.06
+    }
+    Sink {
+      translation 0.78 1.33 0.87
+      rotation 0 0 1 4.71239
+    }
+    HotPlate {
+      translation 1.62912 1.14971 0.86
+      rotation 0 0 -1 5.49779
+    }
+    Oven {
+      translation -0.11 1.24 0.17
+      rotation 0 0 1 -1.5707953071795862
+    }
+    Solid {
+      translation 2.01 1.48 2.09
+      rotation 0 0 1 0.785398
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.8 0.8 0.8
+            roughness 0.5
+            metalness 0
+          }
+          geometry Box {
+            size 0.45 0.35 0.61
+          }
+        }
+      ]
+      name "solid(1)"
+    }
+    Solid {
+      translation 1.8 1.3 1.742
+      rotation 0 0 -1 5.89049
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.8 0.8 0.8
+            roughness 0.5
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.1
+            radius 0.35
+            subdivision 8
+          }
+        }
+      ]
+      name "solid(2)"
+    }
+    Solid {
+      translation 1.8 1.3 1.692
+      rotation 0 0 1 0.261799
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.8 0.8 0.8
+            roughness 0.5
+            metalness 0
+          }
+          geometry Cylinder {
+            height 0.001
+            radius 0.27
+            subdivision 8
+          }
+        }
+      ]
+    }
+    Table {
+      translation -1.21 1.31 0
+      rotation 0 0 1 3.14159
+      name "table(1)"
+      size 1.7 0.6 0.8
+    }
+    CeilingLight {
+      translation -0.7 -1.5 2.4
+      pointLightColor 1 0.9764705882352941 0.9058823529411765
+      pointLightIntensity 4
+    }
+    WaterBottle {
+      translation 2.0306663723903213 -1.3755461444430206 0.5839686458602498
+      rotation 0.7095709288242467 -0.21438078013114187 -0.6712301975312632 2.532415968634957
+      name "water bottle(1)"
+    }
+    Table {
+      translation -0.65 -1.43 0
+      rotation 0 0 1 6.28319
+      name "order table"
+    }
+    DEF ORDER_BOTTLE WaterBottle {
+      translation -0.330933 -1.15603 0.737804
+      name "water bottle(2)"
+    }
+    WaterBottle {
+      translation 2.042850733673058 -1.6309876061925057 0.5839686458602498
+      rotation 0.19105146012470847 -0.9430758794833328 -0.27222642252535884 1.6509907374529773
+      name "water bottle(3)"
+    }
+    WaterBottle {
+      translation 2.026299394665873 -1.718692615085549 0.5839686458602499
+      rotation -0.08473561442350325 -0.9933126920399019 0.07842047870750701 1.5770492316600369
+      name "water bottle(4)"
+    }
+    WaterBottle {
+      translation 2.047361683350344 -1.8122976088365896 0.5839686458602492
+      rotation 0.6480049990180126 -0.4014310286304841 -0.6472577929236056 2.3762020032291997
+    }
+    BeerBottle {
+      translation 2.0412798146992905 -1.6112398411708084 0.2952480475311948
+      rotation 4.451921068158112e-06 6.828892642552402e-06 -0.9999999999667734 0.26179900000860845
+      name "beer bottle(1)"
+    }
+    Can {
+      translation 1.9417100000000005 -1.5373699999999997 0.3610965664999999
+      rotation -1.826587305092925e-15 9.979345693692196e-15 -1 0.08885150000000111
+      name "can(1)"
+    }
+    Can {
+      translation 1.7218 -1.5173399999999995 0.3610965674462236
+      rotation 1.1520563813955581e-16 -2.4571142870725364e-16 0.9999999999999999 -2.8791699999999993
+    }
+    BeerBottle {
+      translation 1.8872498147003647 -1.7121498411717284 0.29524804753147005
+      rotation 2.4796175037980465e-06 1.2579113556732972e-06 0.9999999999961345 0.7853980000027813
+      name "beer bottle(2)"
+    }
+    BeerBottle {
+      translation 1.895199814699284 -1.3844598411707936 0.2952480475308289
+      rotation 7.167091821613114e-07 -7.988243958633824e-07 0.9999999999994241 -2.879790000000176
+    }
+    FruitBowl {
+      translation 1.772163151157791 -1.627597872421386 0.04997253193469074
+      rotation -0.0022710478770688112 -0.017114173367746364 0.9998509625996662 0.00037684770794436527
+      name "fruit bowl(1)"
+    }
+    Orange {
+      translation 1.7146591479985496 -1.5701416355893092 0.11042089400155494
+      rotation 0.5576387704493118 0.07690661259585559 0.8265133844232716 -2.299902141431826
+      name "orange(2)"
+    }
+    Orange {
+      translation 1.717940389205273 -1.684937127437943 0.10995951387772748
+      rotation -0.11058835059622045 0.9411335645563169 -0.3194336087169419 3.0463519001398005
+      name "orange(4)"
+    }
+    Orange {
+      translation 1.844731327627402 -1.7001218117808405 0.1568474300253007
+      rotation -0.1142229737104206 0.257937719572229 0.9593858687194776 1.9081876442337915
+      name "orange(5)"
+    }
+    Orange {
+      translation 1.6896445273342877 -1.628612734559265 0.18758236934440378
+      rotation 0.6622898854326851 -0.2870989603828664 0.6920594588621978 -2.6346555057615824
+      name "orange(6)"
+    }
+    Orange {
+      translation 1.8459878752672019 -1.5537088725980621 0.16090668922559015
+      rotation -0.69703212972159 -0.6941580755991165 0.17969634447121066 1.0134526265211086
+      name "orange(7)"
+    }
+    Orange {
+      translation 1.798103473596072 -1.6251646017255141 0.10994760286988599
+      rotation -0.17791416464586873 0.8251583747953863 0.5361531558457895 0.6465888753593327
+    }
+    Cookware {
+      translation 1.6673587387146362 1.3201710425555544 0.8857176586376104
+      rotation 2.9916334984560777e-06 -1.2765980958153858e-06 0.9999999999947101 2.358095196900773
+    }
+    Lid {
+      translation 1.6669623505421196 1.31945443041465 0.9562173465224468
+      rotation 0.006073682845329743 0.005817501872444522 0.9999646328989134 0.0007173940309913136
+    }
+    WoodenSpoon {
+      translation 1.248562564031598 1.376034446923383 0.8892450363917214
+      rotation 0.0003880696759622113 -0.0033474015033167627 0.999994322136432 0.2308340760769254
+    }
+    HoneyJar {
+      translation 1.7143800000000002 0.7042299999999999 0.8894950949999998
+      rotation -0.9846908895946989 0.1607012421843892 -0.06752009115511623 7.255890185727973e-16
+    }
+    JamJar {
+      translation 1.712299999999999 -0.30179699999999965 0.889495095670552
+      rotation -1.0633608158365537e-16 3.006651001269638e-16 1 2.62768
+      name "jam jar(1)"
+    }
+    JamJar {
+      translation 1.92638 0.49369700000000005 0.8894950949999998
+      rotation -7.799581259501746e-17 1.9863469167947802e-16 1 3.14159
+    }
+    CerealBox {
+      translation 2.0247899999999994 0.333777 0.8899803799999996
+      rotation 2.9206578530294944e-18 1.0296831960815974e-17 1 -2.6189053071795847
+      name "cereal box(1)"
+    }
+    CerealBox {
+      translation 2.0531900000000007 0.0376474 0.8899803799999996
+      rotation -4.376633421904636e-19 -5.667093113526597e-18 1 2.87916
+      name "cereal box(2)"
+    }
+    CerealBox {
+      translation 1.859960000000001 -0.6072429999999991 0.8899803799999996
+      rotation -2.113620781579039e-17 -1.2511442600681304e-18 1 2.87972
+    }
+  ]
 }
