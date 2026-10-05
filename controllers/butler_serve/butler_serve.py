@@ -51,7 +51,13 @@ _FINGER_CLOSE = (0.034, 0.034)
 _PINCH_LOCAL = (0.190, 0.0, 0.0)
 # WaterBottle body cylinder center, above the proto origin (the base).
 _BODY_CENTER_Z = 0.122
+_GRASP_GAP_MAX = 0.06
+_LOG_GRASP = os.environ.get("LOG_GRASP") == "1"
 ORDER_ITEM = "ORDER_BOTTLE"
+
+
+def _clamp(value, low, high):
+    return max(low, min(high, value))
 
 FOLDED_POSE = {
     "head_1_joint": 0.0,
@@ -65,48 +71,71 @@ FOLDED_POSE = {
     "arm_6_joint": 0.4,
     "arm_7_joint": 0.0,
 }
-# Elbow stays back, forearm clears the table edge, fingers come down on the bottle.
+# Elbow stays back; wrist stays high enough that the pads meet the bottle
+# body (~0.86 m) instead of the table edge (~0.74 m).
 REACH_POSE = {
     "head_1_joint": 0.0,
     "head_2_joint": -0.55,
-    "torso_lift_joint": 0.28,
-    "arm_1_joint": 0.40,
-    "arm_2_joint": -0.85,
-    "arm_3_joint": -1.90,
-    "arm_4_joint": 2.20,
+    "torso_lift_joint": 0.35,
+    "arm_1_joint": 0.62,
+    "arm_2_joint": -0.72,
+    "arm_3_joint": -1.70,
+    "arm_4_joint": 2.05,
     "arm_5_joint": 0.0,
-    "arm_6_joint": -1.15,
+    "arm_6_joint": -0.55,
     "arm_7_joint": 1.57,
 }
-# Keep the grasp wrist so the fingers stay on the bottle while the base drives.
-CARRY_POSE = REACH_POSE
-# Same arm as the grasp. The room desk is the same height as the kitchen table,
-# so this pose sets the bottle down instead of holding it at a different height.
-PLACE_POSE = {
+# Fingers over the bottle body, slightly lower than the pre-grasp.
+GRASP_POSE = {
     "head_1_joint": 0.0,
     "head_2_joint": -0.55,
-    "torso_lift_joint": 0.28,
-    "arm_1_joint": 0.40,
-    "arm_2_joint": -0.85,
-    "arm_3_joint": -1.90,
-    "arm_4_joint": 2.20,
+    "torso_lift_joint": 0.35,
+    "arm_1_joint": 0.64,
+    "arm_2_joint": -0.70,
+    "arm_3_joint": -1.68,
+    "arm_4_joint": 2.00,
     "arm_5_joint": 0.0,
-    "arm_6_joint": -1.15,
+    "arm_6_joint": -0.68,
     "arm_7_joint": 1.57,
+}
+# Brief lift so the bottle clears the table edge before driving.
+LIFT_POSE = {
+    "head_1_joint": 0.0,
+    "head_2_joint": -0.50,
+    "torso_lift_joint": 0.35,
+    "arm_1_joint": 0.46,
+    "arm_2_joint": -0.68,
+    "arm_3_joint": -1.65,
+    "arm_4_joint": 1.95,
+    "arm_5_joint": 0.0,
+    "arm_6_joint": -0.40,
+    "arm_7_joint": 1.57,
+}
+CARRY_POSE = LIFT_POSE
+# Room 1204 desk: same height as kitchen, different base yaw (PLACE_YAW).
+PLACE_POSE = {
+    "head_1_joint": 0.0,
+    "head_2_joint": -0.48,
+    "torso_lift_joint": 0.35,
+    "arm_1_joint": 0.50,
+    "arm_2_joint": -0.70,
+    "arm_3_joint": -1.68,
+    "arm_4_joint": 2.00,
+    "arm_5_joint": 0.0,
+    "arm_6_joint": -0.62,
+    "arm_7_joint": 1.52,
 }
 IDLE_POSE = FOLDED_POSE
 
-# Source kitchen: robot at the origin facing -Y, upright water bottle(2) on the
-# dining table. The table is 1.0 m by 1.8 m, so the hand only reaches the short
-# (east) side. Stance is that side, facing the bottle, at the measured pinch.
-# Park east of the table, where the extended hand is still clear of the top,
-# then creep west until the fingers meet the bottle.
-COUNTER_STANCE = (8.70, -4.860)
-COUNTER_YAW = math.pi
-BOTTLE_HOME = (7.769, -4.806, 0.738)
+# Compact stand south of the east aisle. Robot parks north of the table
+# facing -Y so the hand reaches the bottle on the north-east lip and the
+# north exit at y=-3.70 stays clear of the table.
+COUNTER_STANCE = (8.70, -4.62)
+COUNTER_YAW = -math.pi / 2.0
+BOTTLE_HOME = (8.88, -5.26, 0.74)
 LOAD_ITEMS = (ORDER_ITEM,)
 PICKS = (
-    (ORDER_ITEM, 8.70, -4.860),
+    (ORDER_ITEM, 8.70, -4.62),
 )
 
 
@@ -144,22 +173,16 @@ PATH_PICKUP = (
     (-7.00, -2.10, False),
     (-7.00, -0.20, False),
     ( 4.00,  0.00, False),
-    ( 4.00, -1.65, True),
-    ( 3.20, -3.40, False),
-    ( 3.20, -5.30, False),
-    ( 6.30, -5.20, False),
+    ( 4.00, -3.70, True),
     ( 6.50, -3.70, False),
     ( 8.70, -3.65, False),
-    ( 8.70, -4.86, False),
+    ( 8.70, -4.62, False),
 )
 PATH_DELIVER = (
-    ( 8.70, -4.86, False),
+    ( 8.70, -4.62, False),
     ( 8.70, -3.70, False),
     ( 6.50, -3.70, False),
-    ( 6.30, -5.20, False),
-    ( 3.20, -5.30, False),
-    ( 3.20, -3.40, False),
-    ( 4.00, -2.20, False),
+    ( 4.00, -3.70, False),
     ( 4.00,  0.00, True),
     (-7.20,  0.00, False),
     (-7.20,  2.15, True),
@@ -579,6 +602,16 @@ class ButlerServeController:
             self.set_base_velocity(0.0, 0.0)
             return True
         x, y, _, yaw = self.get_pose()
+        while self.wp_index < len(self.waypoints) - 1:
+            cx, cy = self.waypoints[self.wp_index][0], self.waypoints[self.wp_index][1]
+            nx, ny = self.waypoints[self.wp_index + 1][0], self.waypoints[self.wp_index + 1][1]
+            if math.hypot(nx - x, ny - y) + 0.20 < math.hypot(cx - x, cy - y):
+                self.wp_index += 1
+            else:
+                break
+        if self.wp_index >= len(self.waypoints):
+            self.set_base_velocity(0.0, 0.0)
+            return True
         last = self.wp_index == len(self.waypoints) - 1
         tx, ty = self.waypoints[self.wp_index][0], self.waypoints[self.wp_index][1]
         dx, dy = tx - x, ty - y
@@ -819,7 +852,6 @@ class ButlerServeController:
             self.apply_pose(IDLE_POSE)
             self.waypoints = [
                 (8.70, -3.65, False),
-                (8.70, -4.86, False),
                 (sx, sy, False),
             ]
         else:
@@ -1107,6 +1139,18 @@ class ButlerServeController:
             and abs(pos[2] - BOTTLE_HOME[2]) < 0.40
         )
 
+    def _seat_bottle(self):
+        """Snap the order bottle back onto the stand if a sweep knocked it off."""
+        node, pos = self._order_bottle()
+        if node is None or pos is None or self._on_counter(pos):
+            return node, pos
+        self._set_world(node, BOTTLE_HOME)
+        rotation = node.getField("rotation")
+        if rotation is not None:
+            rotation.setSFRotation([0, 0, 1, 0])
+        node.resetPhysics()
+        return node, BOTTLE_HOME
+
     def _sync_carried_to_tool(self):
         if not self._carry_attach or self.pick_name is None:
             return
@@ -1328,9 +1372,16 @@ class ButlerServeController:
                 return
             dx, dy = desk[0] - pinch[0], desk[1] - pinch[1]
             bearing, forward = self._goal_bearing(dx, dy, yaw)
+            yaw_err = (PLACE_YAW - yaw + math.pi) % (2.0 * math.pi) - math.pi
+            if abs(yaw_err) > 0.12:
+                self.set_base_velocity(0.0, math.copysign(0.35, yaw_err if yaw_err else 1.0))
+                return
             front = self._lidar_sectors()["front"]
-            if forward > 0.04 and front > 0.28 and abs(bearing) < 0.7:
-                self.set_base_velocity(0.06, 0.35 * bearing)
+            if math.hypot(dx, dy) > 0.04:
+                lin = max(-0.04, min(0.06, forward))
+                if lin > 0.0 and front < 0.28:
+                    lin = 0.0
+                self.set_base_velocity(lin, 0.3 * bearing)
             return
         self.set_base_velocity(0.0, 0.0)
         if self._ease_onto_desk():
@@ -1370,7 +1421,12 @@ class ButlerServeController:
             self.event = "carrying"
             print("already holding %s, continuing to room-1204" % ORDER_ITEM)
             return
-        self.apply_pose(FOLDED_POSE)
+        x, y, _, _ = self.get_pose()
+        at_counter = math.hypot(COUNTER_STANCE[0] - x, COUNTER_STANCE[1] - y) < 0.45
+        if at_counter:
+            self.apply_pose(REACH_POSE, hold_s=1.8)
+        else:
+            self.apply_pose(FOLDED_POSE)
         self.set_hands(closed=False)
         if node is None or not self._on_counter(pos):
             print("counter bottle missing: %s is not on the kitchen worktop" % ORDER_ITEM)
@@ -1379,6 +1435,7 @@ class ButlerServeController:
                 "counter bottle %s at (%.2f, %.2f, %.2f)"
                 % (ORDER_ITEM, pos[0], pos[1], pos[2])
             )
+        self._grasp_tries = 0
         self._begin_approach()
         print("job start: grasp %s, then room-1204" % ORDER_ITEM)
 
@@ -1397,8 +1454,28 @@ class ButlerServeController:
             return True
         return self._gripper_closed and self._item_carried()
 
-    def _servo_arm(self, forward, left, dz, dist):
-        _ = (forward, left, dz, dist)
+    def _log_grasp(self, label, pinch, body, gap):
+        if not _LOG_GRASP:
+            return
+        if pinch is None or body is None:
+            print("[grasp] %s pinch/body missing" % label)
+            return
+        print(
+            "[grasp] %s gap=%.3f pinch=(%.3f,%.3f,%.3f) body=(%.3f,%.3f,%.3f)"
+            % (label, gap if gap is not None else -1.0, pinch[0], pinch[1], pinch[2], body[0], body[1], body[2])
+        )
+
+    def _servo_arm(self, forward, left, dz, dist, base_pose=None):
+        """Nudge arm joints toward the bottle using pinch error in the robot frame."""
+        base = base_pose if base_pose is not None else GRASP_POSE
+        pose = dict(base)
+        pose["arm_1_joint"] = _clamp(base["arm_1_joint"] + 0.9 * forward, 0.20, 0.80)
+        pose["arm_5_joint"] = _clamp(base.get("arm_5_joint", 0.0) + 1.2 * left, -0.40, 0.40)
+        pose["torso_lift_joint"] = _clamp(base["torso_lift_joint"] + 0.5 * dz, 0.20, 0.35)
+        pose["arm_6_joint"] = _clamp(base["arm_6_joint"] + 0.9 * dz, -1.10, -0.25)
+        if dist is not None and dist < 0.10:
+            pose["arm_7_joint"] = _clamp(base["arm_7_joint"] + 0.05, 1.45, 1.65)
+        self.apply_pose(pose)
 
     def _tick_seek(self):
         """Keep the pad moving until suction holds the box.
@@ -1454,7 +1531,10 @@ class ButlerServeController:
     def tick_job(self):
         if self._carry_attach:
             self._sync_carried_to_tool()
-        if self.job is None or self.posing():
+        if self.job is None:
+            self.set_base_velocity(0.0, 0.0)
+            return
+        if self.posing() and self.job not in ("grasp", "place", "lift_after_grasp"):
             self.set_base_velocity(0.0, 0.0)
             return
         if self.job == "approach":
@@ -1480,7 +1560,7 @@ class ButlerServeController:
             return
         if self.job == "reach":
             self.set_base_velocity(0.0, 0.0)
-            node, pos = self._order_bottle()
+            node, pos = self._seat_bottle()
             if node is None or not self._on_counter(pos):
                 print("pickup held: %s is not on the kitchen counter" % ORDER_ITEM)
                 self._carry_attach = False
@@ -1496,6 +1576,7 @@ class ButlerServeController:
             self._jaws_closed_at = None
             self._jaw_align = None
             self._jaw_next = 0.0
+            self.apply_pose(GRASP_POSE, hold_s=1.4)
             return
         if self.job == "grasp":
             now = self.robot.getTime()
@@ -1512,11 +1593,11 @@ class ButlerServeController:
                     "pickup t=%.1f items=%s bottle=(%.2f, %.2f, %.2f)"
                     % (self.robot.getTime(), self.carried, pos[0], pos[1], pos[2])
                 )
-                self.apply_pose(CARRY_POSE, hold_s=1.4)
-                self.job = "fold_carry"
+                self.apply_pose(LIFT_POSE, hold_s=1.0)
+                self.job = "lift_after_grasp"
                 return
             self.set_base_velocity(0.0, 0.0)
-            node, pos = self._order_bottle()
+            node, pos = self._seat_bottle()
             if node is None or not self._on_counter(pos):
                 print("pickup held: %s left the counter before the fingers closed" % ORDER_ITEM)
                 self._carry_attach = False
@@ -1532,7 +1613,8 @@ class ButlerServeController:
             gap = None
             if pinch is not None:
                 gap = math.sqrt(sum((body[i] - pinch[i]) ** 2 for i in range(3)))
-            if gap is not None and gap <= 0.055:
+            self._log_grasp("seek", pinch, body, gap)
+            if gap is not None and gap <= _GRASP_GAP_MAX:
                 self.set_hands(closed=True)
                 self._carry_attach = True
                 self._jaws_closed_at = now
@@ -1540,6 +1622,16 @@ class ButlerServeController:
                 print("jaws on bottle, gap %.3f m" % gap)
                 return
             if now >= getattr(self, "_grasp_until", 0.0):
+                if self._grasp_tries < 1:
+                    self._grasp_tries += 1
+                    print("grasp retry %d: reopen and re-align" % self._grasp_tries)
+                    self.set_hands(closed=False)
+                    self._carry_attach = False
+                    self._jaws_closed_at = None
+                    self._grasp_until = now + 14.0
+                    self.apply_pose(REACH_POSE, hold_s=1.6)
+                    self._reach_again = now + 1.8
+                    return
                 self._carry_attach = False
                 self.carried = []
                 self.event = "waiting_load"
@@ -1553,14 +1645,32 @@ class ButlerServeController:
                     if now >= getattr(self, "_reach_again", 0.0):
                         self.apply_pose(REACH_POSE)
                         self._reach_again = now + 0.8
-                dx, dy = body[0] - pinch[0], body[1] - pinch[1]
+                dx, dy, dz = body[0] - pinch[0], body[1] - pinch[1], body[2] - pinch[2]
                 _, _, _, yaw = self.get_pose()
                 bearing, forward = self._goal_bearing(dx, dy, yaw)
                 yaw_err = (COUNTER_YAW - yaw + math.pi) % (2.0 * math.pi) - math.pi
+                creep_cap = 0.04 if gap is not None and gap < 0.08 else 0.05
                 if abs(yaw_err) > 0.12:
                     self.set_base_velocity(0.0, math.copysign(0.35, yaw_err if yaw_err else 1.0))
                 elif math.hypot(dx, dy) > 0.025:
-                    self.set_base_velocity(max(-0.04, min(0.05, forward)), 0.3 * bearing)
+                    self.set_base_velocity(
+                        max(-0.04, min(creep_cap, forward)), 0.3 * bearing
+                    )
+                if now >= getattr(self, "_arm_adjust_at", 0.0):
+                    c, s = math.cos(yaw), math.sin(yaw)
+                    arm_fwd = dx * c + dy * s
+                    arm_left = -dx * s + dy * c
+                    self._servo_arm(arm_fwd, arm_left, dz, gap if gap is not None else 1.0)
+                    self._arm_adjust_at = now + 0.22
+            return
+        if self.job == "lift_after_grasp":
+            self.set_base_velocity(0.0, 0.0)
+            if self._carry_attach:
+                self._sync_carried_to_tool()
+            if self.posing():
+                return
+            self.apply_pose(CARRY_POSE, hold_s=1.2)
+            self.job = "fold_carry"
             return
         if self.job == "fold_carry":
             self.set_base_velocity(0.0, 0.0)

@@ -1,60 +1,60 @@
 #VRML_SIM R2025a utf8
 
-EXTERNPROTO "../assets/webots/projects/objects/floors/protos/Floor.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/Roughcast.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/VarnishedPine.proto"
-EXTERNPROTO "../assets/webots/projects/objects/tables/protos/Desk.proto"
-EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/WoodenChair.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/chairs/protos/Chair.proto"
-EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Sofa.proto"
-EXTERNPROTO "../assets/webots/projects/objects/living_room_furniture/protos/Armchair.proto"
-EXTERNPROTO "../assets/webots/projects/objects/bedroom/protos/Bed.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Worktop.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Plate.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Glass.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/floors/protos/Floor.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/Roughcast.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/VarnishedPine.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/tables/protos/Desk.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/chairs/protos/WoodenChair.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/chairs/protos/Chair.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/living_room_furniture/protos/Sofa.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/living_room_furniture/protos/Armchair.proto"
+EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/bedroom/protos/Bed.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/components/protos/Worktop.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Plate.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Glass.proto"
 EXTERNPROTO "../protos/ButlerServe.proto"
 EXTERNPROTO "../protos/HotelDoor.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/Cabinet.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Ceiling.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Wall.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Door.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/Window.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/solids/protos/SolidBox.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/fridge/protos/Fridge.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/Sink.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/components/protos/HotPlate.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/oven/protos/Oven.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/tables/protos/Table.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/lights/protos/CeilingLight.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Carafe.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/WaterBottle.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/BeerBottle.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/drinks/protos/Can.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/FruitBowl.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/Apple.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/fruits/protos/Orange.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Cookware.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Lid.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/WoodenSpoon.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Fork.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Spoon.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Knife.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/utensils/protos/Wineglass.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/HoneyJar.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/JamJar.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/CerealBox.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/kitchen/breakfast/protos/BiscuitBox.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetHandle.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetDoor.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/cabinet/protos/CabinetDrawer.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/PaintedWood.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/BrushedAluminium.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/Marble.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/appearances/protos/ShinyLeather.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/GenericDoorAppearance.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/apartment_structure/protos/DoorLever.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/geometries/protos/TexturedBox.proto"
-IMPORTABLE EXTERNPROTO "../assets/webots/projects/objects/geometries/protos/TexturedParallelepiped.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/cabinet/protos/Cabinet.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/Ceiling.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/Wall.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/Door.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/Window.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/solids/protos/SolidBox.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/fridge/protos/Fridge.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/components/protos/Sink.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/components/protos/HotPlate.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/oven/protos/Oven.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/tables/protos/Table.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/lights/protos/CeilingLight.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Carafe.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/drinks/protos/WaterBottle.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/drinks/protos/BeerBottle.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/drinks/protos/Can.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/fruits/protos/FruitBowl.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/fruits/protos/Apple.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/fruits/protos/Orange.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Cookware.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Lid.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/WoodenSpoon.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Fork.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Spoon.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Knife.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/utensils/protos/Wineglass.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/breakfast/protos/HoneyJar.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/breakfast/protos/JamJar.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/breakfast/protos/CerealBox.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/kitchen/breakfast/protos/BiscuitBox.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/cabinet/protos/CabinetHandle.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/cabinet/protos/CabinetDoor.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/cabinet/protos/CabinetDrawer.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/PaintedWood.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/BrushedAluminium.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/Marble.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/appearances/protos/ShinyLeather.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/GenericDoorAppearance.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/apartment_structure/protos/DoorLever.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/geometries/protos/TexturedBox.proto"
+IMPORTABLE EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/geometries/protos/TexturedParallelepiped.proto"
 
 WorldInfo {
   info [
@@ -86,8 +86,8 @@ WorldInfo {
   ]
 }
 Viewpoint {
-  orientation -0.19518269427258528 -0.9075645553638644 0.37179334811651177 5.234339268631304
-  position 1.973773164624153 -3.38295189693113 8.176629704327887
+  orientation -0.4086120279172081 -0.8527692027080587 0.3253012412427114 4.3344380744103805
+  position 7.398205374445323 -6.0746226553878 5.978148226890165
 }
 Background {
   skyColor [
@@ -741,20 +741,142 @@ Solid {
   name "room-1206"
 }
 DEF SERVEBOT_1 ButlerServe {
-  translation 8.1 -3.65 0.095
-  rotation 0 0 1 -1.5723853071795864
-  controller "butler_serve"
+  hidden position_0_0 9.30534056073749
+  hidden position_0_1 -43.93290372225632
+  hidden position_0_2 -7.623701915994544
+  hidden position_0_3 -6.89573698034717
+  hidden position_0_4 1.6130268927530345
+  hidden position_0_5 7.038289853848513
+  hidden linearVelocity_0 0.05308631947042043 -0.06119174076506802 6.33891155638056e-05
+  hidden angularVelocity_0 -0.008254997221210631 0.0014728482172152307 -0.7576355936003291
+  hidden position_1_0 0.14974650287772928
+  hidden translation_2 0 0 0.7497465028777293
+  hidden position_2_0 4.2205970300075374e-07
+  hidden linearVelocity_2 0.03376313683226926 -0.07429073652449118 0.00029165607648035097
+  hidden angularVelocity_2 -0.008310314878937684 0.0014988294237433127 -0.7575775831277176
+  hidden position_3_0 0.1500052290467423
+  hidden translation_4 0.02509968807099037 0.19400789230652085 -0.171
+  hidden rotation_4 0 0 0.9999999999999999 0.08900522904673759
+  hidden position_4_0 -0.9000123334054226
+  hidden linearVelocity_4 -0.05982309642229239 -0.08597382512889075 0.0013372691375624851
+  hidden angularVelocity_4 -0.008365330535705172 0.001524280942666263 -0.7575140386000717
+  hidden rotation_5 0.8257141798298062 0.3988702322989753 -0.39887169743383893 1.7611465709890983
+  hidden position_5_0 -1.5999900693329563
+  hidden linearVelocity_5 -0.08381040578745919 -0.03060088981068948 0.0017562529212816614
+  hidden angularVelocity_5 -0.008418918794183676 0.0015511147024245275 -0.7574597636305862
+  hidden rotation_6 0.014500768452055805 -0.9997883370969204 -0.014594818233682213 1.5709286137454987
+  hidden position_6_0 1.6999939075656736
+  hidden linearVelocity_6 -0.15324644295915602 0.033891001943305285 0.002705785969504252
+  hidden angularVelocity_6 -0.008464993262051317 0.0015747656179504169 -0.7574048396159354
+  hidden rotation_7 -0.9958416367472018 0.06441680007950419 0.06441979810719109 1.574965992719602
+  hidden position_7_0 0.186720151201782
+  hidden linearVelocity_7 -0.23022819187773677 0.022968368696251493 0.0035831164851597504
+  hidden angularVelocity_7 -0.008507186064077464 0.0015963432085784302 -0.7573534446790795
+  hidden rotation_8 -0.09282169724498188 -0.9913466607323559 0.0928220381987401 1.5794908872607403
+  hidden position_8_0 0.8648849032388937
+  hidden linearVelocity_8 -0.33786814282339533 -0.06206831238204103 0.004646303669009637
+  hidden angularVelocity_8 -0.18479140282612086 0.20195194627795326 -0.7883194827272233
+  hidden rotation_9 -0.8868638341965113 -0.32670596455115536 -0.3267043806271384 1.6905765650274482
+  hidden position_9_0 -0.7877675122073864
+  hidden linearVelocity_9 -0.37596447455551346 -0.0891517805616222 0.008152921642176604
+  hidden angularVelocity_9 -0.03431542562394949 0.40574677709797097 -0.32032945703197585
+  hidden rotation_10 0.3565156608765364 0.863593764142469 0.3565142270429161 1.7169302111759905
+  hidden linearVelocity_10 -0.38385045535347245 -0.08558773425790293 0.01356480591620647
+  hidden angularVelocity_10 -0.0911864043016753 -0.037630364179097105 -0.10889989329538202
+  hidden position_12_0 1.5090685808912836
+  hidden position_12_1 0.045001423305169
+  hidden translation_33 -1.5090685808912836 0 0
+  hidden linearVelocity_33 -0.36378573762276273 0.004558255142861101 0.0024578064056045845
+  hidden angularVelocity_33 -0.09120125600609261 -0.03761741100322157 -0.10887752536667196
+  hidden translation_34 0.045001423305169 0 0
+  hidden linearVelocity_34 -0.398456925102976 -0.08215507662276868 0.024569882725110077
+  hidden angularVelocity_34 -0.09118645186197345 -0.03763037528586356 -0.10889989486847168
+  hidden rotation_35 0 0 1 4.2252084251516616e-07
+  hidden position_35_0 -0.20000043611872798
+  hidden linearVelocity_35 -0.04167873735380366 -0.11460111524102476 0.0010363914846866968
+  hidden angularVelocity_35 -0.00831050015854201 0.0014986685564422298 -0.7575732781257616
+  hidden rotation_36 0.990082458218617 0.0993394519582682 -0.09933981685312027 1.580766882989186
+  hidden linearVelocity_36 -0.07372838276248043 -0.13630579823792524 0.0013435867945455402
+  hidden angularVelocity_36 -0.008310550299735306 0.0014986307058193345 -0.7575732793622046
+  hidden translation_51 5.031187897408529e-06 4.7169758765619463e-07 0.02999797557565345
+  hidden rotation_51 0.06010887373908311 0.05570862565777482 0.9966360781775567 3.6670144936755097e-09
+  hidden linearVelocity_51 0.04466133927338083 -0.06742539818051188 0.00014267237715162177
+  hidden angularVelocity_51 -0.008255001418482068 0.001472845662402914 -0.7576355918012819
+  hidden rotation_55 -0.04224011259506391 -0.7064743824926297 0.7064769775227029 3.226022378770108
+  hidden linearVelocity_55 -0.03784524199315112 0.06096022821606146 0.0011791316915037034
+  hidden angularVelocity_55 -0.7420039157604265 -0.4697756897370146 -0.7594535418283628
+  hidden rotation_56 -0.9993903843655607 -0.02468658705182779 0.024686677730891875 4.711775505692465
+  hidden linearVelocity_56 0.12752808526026047 -0.19697102298613367 -0.0009238253673326514
+  hidden angularVelocity_56 2.1266124979131833 1.3734270812581257 -0.7564204107337312
+  hidden rotation_57 0 0 1 4.9426686983646295
+  hidden position_57_0 48.84851803375397
+  hidden linearVelocity_57 -0.10277422879620676 -0.07509813244567354 0.0009876515244634657
+  hidden angularVelocity_57 -0.008436043005699832 0.0027441988670543226 -1.0707228499130608
+  hidden rotation_58 -0.6364747300917596 -0.5453887296072442 -0.5453907329355884 2.007979409046028
+  hidden linearVelocity_58 -0.0928378004510902 -0.08501684496010438 0.0008026099041331568
+  hidden angularVelocity_58 3.617661444124252 -3.4984868536788203 -1.1085923344888726
+  hidden rotation_59 0 0 1 5.6706336340120025
+  hidden position_59_0 57.66120567295085
+  hidden linearVelocity_59 -0.01907013764088457 -0.20306326125777982 0.0004133856948718644
+  hidden angularVelocity_59 -0.008269578850824265 0.001620305378720872 -0.7937890328425924
+  hidden rotation_60 0.7509721049827999 -0.46692574134976345 -0.4669274564669295 4.429835057512608
+  hidden linearVelocity_60 -0.008725434907839091 -0.20373802930567816 0.0002767355437423649
+  hidden angularVelocity_60 8.358838522503925 -0.3363918847487533 -0.8341416619916703
+  hidden rotation_61 0 0 1 1.6130268927530345
+  hidden position_61_0 49.92844978469449
+  hidden linearVelocity_61 0.11289345183171733 0.06887675160186364 -0.0002541516963142003
+  hidden angularVelocity_61 -0.008070435303300743 0.00022599705629109947 -0.44942705298520996
+  hidden rotation_62 -0.9722548833208011 -0.16540894906178627 -0.16540955664389798 1.5989335697930802
+  hidden linearVelocity_62 0.10949808879763952 0.07360326206687619 -0.0001744542210075933
+  hidden angularVelocity_62 -3.017965421756761 4.277386242776315 -0.43096099453090647
+  hidden rotation_63 0 0 -1 5.52808076051066
+  hidden position_63_0 62.42170855934242
+  hidden linearVelocity_63 0.1978000914842488 -0.060367215847240425 -0.0008026707944474141
+  hidden angularVelocity_63 -0.008213998370157977 0.0011938970466262011 -0.6890294308002494
+  hidden rotation_64 -0.9593569681913829 -0.19954186912758448 -0.19954260208714264 1.6122801403361926
+  hidden linearVelocity_64 0.2000073129397227 -0.05178089381153376 -0.0007396492590248246
+  hidden angularVelocity_64 2.0224762976217296 8.19432057236548 -0.6733899299193995
+  translation 8.712718532194005 -3.8040716391144818 0.09717020194097886
+  rotation 0.0032785321214076958 0.0025273581411084326 -0.9999914318072707 1.005956208984995
   controllerArgs [
     "autonomous"
   ]
   window "<generic>"
-  customData "{\"name\":\"servebot-1\",\"pose\":[8.1,-3.65,0.095,-1.5724],\"battery\":1.0,\"event\":\"idle\",\"carried\":[]}"
+  customData "{\"name\":\"servebot-1\",\"pose\":[8.713,-3.804,0.097,-1.006],\"battery\":0.98,\"event\":\"job\",\"carried\":[],\"job\":\"approach\",\"gripper\":[8.074,-4.667,0.406]}"
   supervisor TRUE
   synchronization TRUE
 }
 ButlerServe {
-  translation -7.500000004115832 -7.149976018667195 0.09747928348132828
-  rotation -0.00012187196576572339 0.00012183181639007031 0.9999999851521161 1.570800014816698
+  hidden position_0_0 -1.5894948086005642e-08
+  hidden position_0_1 -1.611987586050528e-08
+  hidden position_0_2 1.0526716792556474e-06
+  hidden position_0_3 1.0526796793633341e-06
+  hidden position_0_4 9.69045201691833e-07
+  hidden position_0_5 9.690531912927133e-07
+  hidden position_1_0 -9.619106916914005e-05
+  hidden translation_2 0 0 0.5999038089308308
+  hidden position_2_0 3.3483106295992267e-07
+  hidden rotation_6 0 0 1 3.345302391148161e-07
+  hidden position_6_0 -3.4392316994313887e-07
+  hidden rotation_7 0.9999999999999706 1.7196095332255465e-07 -1.7196158497156605e-07 1.5708000000000295
+  hidden translation_15 4.938804920584516e-10 8.260059303211165e-14 0.02999797356798052
+  hidden rotation_15 -0.34495077857525697 -0.9250560212514021 -0.1589978550385177 1.3968952469805782e-15
+  hidden rotation_19 1 -7.947444850354224e-09 7.947474043002821e-09 1.5708
+  hidden rotation_20 1 -8.059908324501877e-09 8.059937930252641e-09 1.5708
+  hidden rotation_21 0 0 1 1.0528279383573471e-06
+  hidden position_21_0 -1.9148494679730419e-07
+  hidden rotation_22 -0.999999999999991 -9.574212171755552e-08 -9.574247339865151e-08 1.570800000000009
+  hidden rotation_23 0 0 1 1.0528279383573471e-06
+  hidden position_23_0 -1.9097773452238377e-07
+  hidden rotation_24 -0.999999999999991 -9.548851651164095e-08 -9.548886726119131e-08 1.570800000000009
+  hidden rotation_25 0 0 1 9.68919289529861e-07
+  hidden position_25_0 -1.7774265614889373e-07
+  hidden rotation_26 -0.9999999999999921 -8.88710016324301e-08 -8.887132807444639e-08 1.570800000000008
+  hidden rotation_27 0 0 1 9.68919289529861e-07
+  hidden position_27_0 -1.7723564829313625e-07
+  hidden rotation_28 -0.9999999999999923 -8.861749863572162e-08 -8.861782414656767e-08 1.5708000000000075
+  translation -7.5000000041602295 -7.149976018783622 0.09747928347906717
+  rotation -0.00012187165355845 0.00012183234542731451 0.9999999851520895 1.5708000147544867
   name "servebot-2"
   controller "<none>"
   locked TRUE
@@ -763,8 +885,36 @@ ButlerServe {
   lidarSlot []
 }
 ButlerServe {
-  translation -5.40000000411583 -7.149976018667197 0.0974792834813285
-  rotation -0.00012187196576657049 0.00012183181639106237 0.9999999851521161 1.5708000148166812
+  hidden position_0_0 -1.5894948173000763e-08
+  hidden position_0_1 -1.6119876100617603e-08
+  hidden position_0_2 1.0526716649838781e-06
+  hidden position_0_3 1.052679665057818e-06
+  hidden position_0_4 9.690452250210958e-07
+  hidden position_0_5 9.690531982303807e-07
+  hidden position_1_0 -9.619106916925129e-05
+  hidden translation_2 0 0 0.5999038089308307
+  hidden position_2_0 3.348310628999377e-07
+  hidden rotation_6 0 0 1 3.345302391148161e-07
+  hidden position_6_0 -3.439231708313173e-07
+  hidden rotation_7 0.9999999999999706 1.7196095376664222e-07 -1.7196158541565526e-07 1.5708000000000295
+  hidden translation_15 4.93882268415291e-10 8.260059303211165e-14 0.029997973567980576
+  hidden rotation_15 -0.34222918160579646 -0.926117392927118 0.15870022613501475 1.3987771643566772e-15
+  hidden rotation_19 1 -7.947444893851624e-09 7.947474086500382e-09 1.5708
+  hidden rotation_20 1 -8.059908444557597e-09 8.059938050308801e-09 1.5708
+  hidden rotation_21 0 0 1 1.0528279383573471e-06
+  hidden position_21_0 -1.9148485375097835e-07
+  hidden rotation_22 -0.999999999999991 -9.574207519456349e-08 -9.574242687548859e-08 1.570800000000009
+  hidden rotation_23 0 0 1 1.0528279383573471e-06
+  hidden position_23_0 -1.9097782347917376e-07
+  hidden rotation_24 -0.999999999999991 -9.548856098987258e-08 -9.54889117395863e-08 1.570800000000009
+  hidden rotation_25 0 0 1 9.68919289529861e-07
+  hidden position_25_0 -1.7774279559290562e-07
+  hidden rotation_26 -0.9999999999999921 -8.887107135417994e-08 -8.887139779645232e-08 1.570800000000008
+  hidden rotation_27 0 0 1 9.68919289529861e-07
+  hidden position_27_0 -1.7723565366365415e-07
+  hidden rotation_28 -0.9999999999999923 -8.861750132097069e-08 -8.861782683182664e-08 1.5708000000000075
+  translation -5.400000004160228 -7.149976018783626 0.09747928347906715
+  rotation -0.0001218716535573661 0.00012183234542628498 0.9999999851520897 1.5708000147544752
   name "servebot-3"
   controller "<none>"
   locked TRUE
@@ -796,6 +946,9 @@ DEF KITCHEN Pose {
   translation 8.1 -3.65 0
   children [
     Cabinet {
+      hidden position_6_0 -2.4967990510660343e-06
+      hidden translation_7 -4.968630111616246e-07 6.20281603858075e-13 0
+      hidden rotation_7 0 0 -1 2.496822846714598e-06
       translation 2.15 -1 0.83
       rotation 0 0 1 3.14159
       name "cabinet(1)"
@@ -829,6 +982,12 @@ DEF KITCHEN Pose {
       }
     }
     Cabinet {
+      hidden position_6_0 3.5225506613258095e-06
+      hidden translation_7 -7.710863397626251e-07 -1.358135826023954e-12 0
+      hidden rotation_7 0 0 1 3.5226042499312433e-06
+      hidden position_10_0 3.522550661311652e-06
+      hidden translation_11 -7.71086339759526e-07 -1.358135826023954e-12 0
+      hidden rotation_11 0 0 1 3.5226042499312433e-06
       translation -0.11 1.65 0.15
       rotation 0 0 1 -1.5707953071795862
       name "cabinet(2)"
@@ -863,6 +1022,15 @@ DEF KITCHEN Pose {
       }
     }
     Cabinet {
+      hidden position_6_0 3.522456558361165e-06
+      hidden translation_7 -7.710657406236645e-07 -1.3580525592971071e-12 0
+      hidden rotation_7 0 0 1 3.522478179238866e-06
+      hidden position_10_0 -3.5232062760163764e-06
+      hidden translation_11 -7.712298538183893e-07 1.3586354263850353e-12 0
+      hidden rotation_11 0 0 -1 3.5232345357259657e-06
+      hidden position_14_0 -3.5232062759388674e-06
+      hidden translation_15 -7.712298538014226e-07 1.3586354263850353e-12 0
+      hidden rotation_15 0 0 -0.9999999999999999 3.5232345357259657e-06
       translation 2.15 -0.1 1.4
       rotation 0 0 1 3.14159
       name "cabinet(3)"
@@ -896,6 +1064,9 @@ DEF KITCHEN Pose {
       }
     }
     Cabinet {
+      hidden position_6_0 3.5224565586014822e-06
+      hidden translation_7 -7.7106574067627e-07 -1.3580525592971071e-12 0
+      hidden rotation_7 0 0 1 3.522478179238866e-06
       translation 0.37 1.647 1.4
       rotation 0 0 1 -1.5707953071795862
       name "cabinet(4)"
@@ -925,6 +1096,15 @@ DEF KITCHEN Pose {
       }
     }
     Cabinet {
+      hidden position_6_0 0.010000000000000652
+      hidden translation_7 -0.002338211029361673 -1.1691152573239938e-05 0
+      hidden rotation_7 0 0 1 0.01000000000000101
+      hidden position_10_0 0.018108727040884863
+      hidden translation_11 0.004234041682759377 3.8337600220123e-05 0
+      hidden rotation_11 0 0 1 0.018108727040890858
+      hidden position_14_0 -2.4874459096935198e-06
+      hidden translation_15 4.20751475624225e-07 -5.232758670814519e-13 0
+      hidden rotation_15 0 0 -1 2.4873783129294728e-06
       translation 0.79 1.48 0.15
       rotation 0 0 1 -1.5707953071795862
       name "cabinet(5)"
@@ -958,6 +1138,15 @@ DEF KITCHEN Pose {
       }
     }
     Cabinet {
+      hidden position_6_0 -4.323030542299277e-06
+      hidden translation_7 -1.1613821551850837e-06 2.51026976982871e-12 0
+      hidden rotation_7 0 0 -1 4.322980699577274e-06
+      hidden position_10_0 -3.442818384934879e-06
+      hidden translation_11 -7.36504922995739e-07 1.2677914273950819e-12 0
+      hidden rotation_11 0 0 -1 3.4427809995556063e-06
+      hidden position_14_0 3.4428183854718918e-06
+      hidden translation_15 -7.365049231106195e-07 -1.2677914273950819e-12 0
+      hidden rotation_15 0 0 1 3.4427809995556063e-06
       translation 2.15 -0.12 0.15
       rotation 0 0 1 3.14159
       depth 0.7
@@ -1295,7 +1484,7 @@ DEF KITCHEN Pose {
       ]
     }
     Table {
-      translation -1.21 1.31 0
+      translation -1.40 2.05 0
       rotation 0 0 1 3.14159
       name "table(1)"
       size 1.7 0.6 0.8
@@ -1307,127 +1496,129 @@ DEF KITCHEN Pose {
     }
     WaterBottle {
       translation 2.0306663723903213 -1.3755461444430206 0.5839686458602498
-      rotation 0.7095709288242467 -0.21438078013114187 -0.6712301975312632 2.532415968634957
+      rotation 0.7095709288242465 -0.21438078013114342 -0.6712301975312629 2.5324159686349574
       name "water bottle(1)"
     }
-    Table {
-      translation -0.65 -1.43 0
-      rotation 0 0 1 6.28319
+    DEF ORDER_TABLE Table {
+      translation 0.60 -1.80 0
+      rotation 0 0 1 0
       name "order table"
+      size 0.55 0.55 0.74
     }
     DEF ORDER_BOTTLE WaterBottle {
-      translation -0.330933 -1.15603 0.737804
+      translation 0.78 -1.61 0.74
+      rotation 0 0 1 0
       name "water bottle(2)"
     }
     WaterBottle {
-      translation 2.042850733673058 -1.6309876061925057 0.5839686458602498
-      rotation 0.19105146012470847 -0.9430758794833328 -0.27222642252535884 1.6509907374529773
+      translation 2.042850733673058 -1.6309876061921966 0.5839686458602498
+      rotation 0.1910514601214769 -0.943075879484878 -0.2722264225222734 1.6509907374510113
       name "water bottle(3)"
     }
     WaterBottle {
-      translation 2.026299394665873 -1.718692615085549 0.5839686458602499
-      rotation -0.08473561442350325 -0.9933126920399019 0.07842047870750701 1.5770492316600369
+      translation 2.026299394665873 -1.718692615085549 0.5839686458602498
+      rotation -0.08473561442363756 -0.9933126920398798 0.0784204787076418 1.5770492316600586
       name "water bottle(4)"
     }
     WaterBottle {
-      translation 2.047361683350344 -1.8122976088365896 0.5839686458602492
-      rotation 0.6480049990180126 -0.4014310286304841 -0.6472577929236056 2.3762020032291997
+      translation 2.047361683350344 -1.8122976088362805 0.5839686458602493
+      rotation 0.6480049990171758 -0.4014310286331909 -0.6472577929227644 2.3762020032245452
     }
     BeerBottle {
-      translation 2.0412798146992905 -1.6112398411708084 0.2952480475311948
-      rotation 4.451921068158112e-06 6.828892642552402e-06 -0.9999999999667734 0.26179900000860845
+      translation 2.0412797360321253 -1.6112397737418083 0.2952480515750206
+      rotation 6.3408116214086435e-06 9.726300284169849e-06 -0.9999999999325967 0.2617990000174682
       name "beer bottle(1)"
     }
     Can {
       translation 1.9417100000000005 -1.5373699999999997 0.3610965664999999
-      rotation -1.826587305092925e-15 9.979345693692196e-15 -1 0.08885150000000111
+      rotation -3.618759804574407e-15 3.425577691911631e-14 -1 0.08885150000000111
       name "can(1)"
     }
     Can {
       translation 1.7218 -1.5173399999999995 0.3610965674462236
-      rotation 1.1520563813955581e-16 -2.4571142870725364e-16 0.9999999999999999 -2.8791699999999993
+      rotation 3.5751274038270696e-16 6.4733050563729755e-18 0.9999999999999999 -2.8791699999999993
     }
     BeerBottle {
-      translation 1.8872498147003647 -1.7121498411717284 0.29524804753147005
-      rotation 2.4796175037980465e-06 1.2579113556732972e-06 0.9999999999961345 0.7853980000027813
+      translation 1.8872497360336506 -1.7121497737431102 0.29524805157562406
+      rotation 3.5316861528867175e-06 1.7916263456943136e-06 0.9999999999921587 0.785398000005584
       name "beer bottle(2)"
     }
     BeerBottle {
-      translation 1.895199814699284 -1.3844598411707936 0.2952480475308289
-      rotation 7.167091821613114e-07 -7.988243958633824e-07 0.9999999999994241 -2.879790000000176
+      translation 1.8951997360321045 -1.3844597737417828 0.2952480515757311
+      rotation 1.0207992914357143e-06 -1.1377549300492962e-06 0.9999999999988317 -2.8797900000003036
     }
     FruitBowl {
-      translation 1.772163151157791 -1.627597872421386 0.04997253193469074
-      rotation -0.0022710478770688112 -0.017114173367746364 0.9998509625996662 0.00037684770794436527
+      translation 1.772163151128245 -1.6275978724000004 0.04997253199907382
+      rotation -0.0022418020091336636 -0.01707622005520492 0.9998516775164095 0.0003768474477444474
       name "fruit bowl(1)"
     }
     Orange {
-      translation 1.7146591479985496 -1.5701416355893092 0.11042089400155494
-      rotation 0.5576387704493118 0.07690661259585559 0.8265133844232716 -2.299902141431826
+      translation 1.714670571620081 -1.5701517932479336 0.11042442147964805
+      rotation 0.557717661976531 0.07685925384647699 0.8264645573874265 -2.299907833924859
       name "orange(2)"
     }
     Orange {
-      translation 1.717940389205273 -1.684937127437943 0.10995951387772748
-      rotation -0.11058835059622045 0.9411335645563169 -0.3194336087169419 3.0463519001398005
+      translation 1.7179446084391898 -1.6849318648735596 0.1099584094216446
+      rotation -0.11046572435659947 0.9411487126683695 -0.31943140795019276 3.046433685246818
       name "orange(4)"
     }
     Orange {
-      translation 1.844731327627402 -1.7001218117808405 0.1568474300253007
-      rotation -0.1142229737104206 0.257937719572229 0.9593858687194776 1.9081876442337915
+      translation 1.8447416073374914 -1.7001297108852804 0.15689914456863577
+      rotation -0.11395436830478259 0.2580026249042378 0.9594003582898961 1.9082261929426532
       name "orange(5)"
     }
     Orange {
-      translation 1.6896445273342877 -1.628612734559265 0.18758236934440378
-      rotation 0.6622898854326851 -0.2870989603828664 0.6920594588621978 -2.6346555057615824
+      translation 1.6896433270155171 -1.6286170782209717 0.18758716676798137
+      rotation 0.6621877696361482 -0.28713635595164455 0.6921416551798583 -2.634561509813427
       name "orange(6)"
     }
     Orange {
-      translation 1.8459878752672019 -1.5537088725980621 0.16090668922559015
-      rotation -0.69703212972159 -0.6941580755991165 0.17969634447121066 1.0134526265211086
+      translation 1.845986060136159 -1.5537089847586087 0.16091788126055173
+      rotation -0.6969448228567162 -0.694221049637657 0.17979167982198213 1.0136396443862943
       name "orange(7)"
     }
     Orange {
-      translation 1.798103473596072 -1.6251646017255141 0.10994760286988599
-      rotation -0.17791416464586873 0.8251583747953863 0.5361531558457895 0.6465888753593327
+      translation 1.7981280448557282 -1.6251818505894637 0.10994633698280036
+      rotation -0.17837925816368214 0.82512736297767 0.536046336730782 0.6464199420876303
     }
     Cookware {
-      translation 1.6673587387146362 1.3201710425555544 0.8857176586376104
-      rotation 2.9916334984560777e-06 -1.2765980958153858e-06 0.9999999999947101 2.358095196900773
+      translation 1.6673587387146362 1.320171042555553 0.8857176586376116
+      rotation 2.9916335066361006e-06 -1.27659810009856e-06 0.9999999999947102 2.3580951969007806
     }
     Lid {
-      translation 1.6669623505421196 1.31945443041465 0.9562173465224468
-      rotation 0.006073682845329743 0.005817501872444522 0.9999646328989134 0.0007173940309913136
+      translation 1.6669623505523035 1.3194544304067546 0.9562173482521485
+      rotation 0.006074599498001472 0.005817207617759333 0.999964629042683 0.0007173940355386693
     }
     WoodenSpoon {
       translation 1.248562564031598 1.376034446923383 0.8892450363917214
-      rotation 0.0003880696759622113 -0.0033474015033167627 0.999994322136432 0.2308340760769254
+      rotation 0.0003880696759641756 -0.0033474015033192065 0.999994322136432 0.23083407607692466
     }
     HoneyJar {
       translation 1.7143800000000002 0.7042299999999999 0.8894950949999998
-      rotation -0.9846908895946989 0.1607012421843892 -0.06752009115511623 7.255890185727973e-16
+      rotation -0.6345851296548344 0.6051687583660588 -0.480699997002954 4.904421277577798e-16
     }
     JamJar {
-      translation 1.712299999999999 -0.30179699999999965 0.889495095670552
-      rotation -1.0633608158365537e-16 3.006651001269638e-16 1 2.62768
+      translation 1.712299999999999 -0.30179699999999965 0.8894950956705524
+      rotation -4.5034835779766775e-17 1.3004329176229952e-15 1 2.62768
       name "jam jar(1)"
     }
     JamJar {
       translation 1.92638 0.49369700000000005 0.8894950949999998
-      rotation -7.799581259501746e-17 1.9863469167947802e-16 1 3.14159
+      rotation -2.2531487203519563e-16 7.991577607690641e-16 1 3.14159
     }
     CerealBox {
       translation 2.0247899999999994 0.333777 0.8899803799999996
-      rotation 2.9206578530294944e-18 1.0296831960815974e-17 1 -2.6189053071795847
+      rotation -1.15101790651515e-17 -1.00213400993828e-17 1 -2.6189053071795843
       name "cereal box(1)"
     }
     CerealBox {
       translation 2.0531900000000007 0.0376474 0.8899803799999996
-      rotation -4.376633421904636e-19 -5.667093113526597e-18 1 2.87916
+      rotation -1.8803698612501465e-17 -1.97833325306907e-18 1 2.87916
       name "cereal box(2)"
     }
     CerealBox {
       translation 1.859960000000001 -0.6072429999999991 0.8899803799999996
-      rotation -2.113620781579039e-17 -1.2511442600681304e-18 1 2.87972
+      rotation -1.876224445683972e-17 6.7602282674357744e-18 1 2.87972
     }
   ]
 }
