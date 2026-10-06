@@ -38,8 +38,6 @@ EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/project
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/breakfast/protos/CerealBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/kitchen/breakfast/protos/BiscuitBox.proto"
 EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2023b/projects/objects/balls/protos/PingPongBall.proto"
-EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/bedroom/protos/Bed.proto"
-EXTERNPROTO "C:/Users/Omen/Desktop/Butler/assets/webots/projects/objects/tables/protos/Desk.proto"
 
 WorldInfo {
 }
@@ -5800,182 +5798,489 @@ DEF marker PingPongBall {
   translation 1 -0.68 0.02
   name "marker"
 }
-Floor {
+Solid {
   translation -3.3 -0.35 0
   name "guest corridor floor"
-  size 1.8 8.8
-  tileSize 0.5 0.5
-  appearance Parquetry {
-  }
+  children [
+    Shape {
+      appearance Parquetry {
+      }
+      geometry Box {
+        size 1.8 8.8 0.01
+      }
+    }
+  ]
 }
-Floor {
+Solid {
   translation -5.965 -3.25 0
   name "room-1204 floor"
-  size 3.2 2.7
-  tileSize 0.5 0.5
-  appearance Parquetry {
-  }
+  children [
+    Shape {
+      appearance Parquetry {
+      }
+      geometry Box {
+        size 3.2 2.7 0.01
+      }
+    }
+  ]
 }
-Floor {
+Solid {
   translation -5.965 -0.35 0
   name "room-1205 floor"
-  size 3.2 2.7
-  tileSize 0.5 0.5
-  appearance Parquetry {
-  }
+  children [
+    Shape {
+      appearance Parquetry {
+      }
+      geometry Box {
+        size 3.2 2.7 0.01
+      }
+    }
+  ]
 }
-Floor {
+Solid {
   translation -5.965 2.55 0
   name "room-1206 floor"
-  size 3.2 2.7
-  tileSize 0.5 0.5
-  appearance Parquetry {
-  }
+  children [
+    Shape {
+      appearance Parquetry {
+      }
+      geometry Box {
+        size 3.2 2.7 0.01
+      }
+    }
+  ]
 }
-Ceiling {
-  translation -5.05 -0.35 2.4
-  name "guest ceiling"
-  size 5.4 8.9
-}
-Wall {
-  translation -7.65 -0.35 0
+Solid {
+  translation -7.65 -0.35 1.2
   name "guest west wall"
-  size 0.2 8.7 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 8.7 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -5.075 -4.7 0
+Solid {
+  translation -5.075 -4.7 1.2
   rotation 0 0 1 1.5708
   name "guest south wall"
-  size 0.2 5.35 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 5.35 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -5.075 4 0
+Solid {
+  translation -5.075 4 1.2
   rotation 0 0 1 1.5708
   name "guest north wall"
-  size 0.2 5.35 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 5.35 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -5.965 -1.8 0
+Solid {
+  translation -5.965 -1.8 1.2
   rotation 0 0 1 1.5708
   name "room-1204 1205 split"
-  size 0.2 3.37 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 3.37 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -5.965 1.1 0
+Solid {
+  translation -5.965 1.1 1.2
   rotation 0 0 1 1.5708
   name "room-1205 1206 split"
-  size 0.2 3.37 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 3.37 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 -4.275 0
+Solid {
+  translation -4.28 -4.275 1.2
   name "room-1204 east south"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 -2.225 0
+Solid {
+  translation -4.28 -2.225 1.2
   name "room-1204 east north"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 -1.375 0
+Solid {
+  translation -4.28 -1.375 1.2
   name "room-1205 east south"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 0.675 0
+Solid {
+  translation -4.28 0.675 1.2
   name "room-1205 east north"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 1.525 0
+Solid {
+  translation -4.28 1.525 1.2
   name "room-1206 east south"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Wall {
-  translation -4.28 3.575 0
+Solid {
+  translation -4.28 3.575 1.2
   name "room-1206 east north"
-  size 0.2 0.65 2.4
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.88 0.84
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 0.2 0.65 2.4
+      }
+    }
+  ]
 }
-Door {
-  translation -4.28 -3.25 0.02
-  name "room-1204 door"
-}
-Door {
-  translation -4.28 -0.35 0.02
-  name "room-1205 door"
-}
-Door {
-  translation -4.28 2.55 0.02
-  name "room-1206 door"
-}
-Bed {
-  translation -6.55 -3.25 0
+Solid {
+  translation -6.55 -3.25 0.28
   rotation 0 0 1 1.5708
   name "room-1204 bed"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.82 0.8 0.76
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.9 0.28
+      }
+    }
+  ]
 }
-Desk {
-  translation -5.2 -4.05 0
+Solid {
+  translation -5.2 -4.05 0.36
   name "room-1204 desk"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.45 0.32 0.22
+        roughness 0.6
+        metalness 0
+      }
+      geometry Box {
+        size 0.7 1.1 0.04
+      }
+    }
+  ]
 }
-Chair {
-  translation -5.2 -3.35 0
+Solid {
+  translation -5.2 -3.35 0.45
   name "room-1204 chair"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.35 0.24 0.16
+        roughness 0.7
+        metalness 0
+      }
+      geometry Box {
+        size 0.4 0.4 0.45
+      }
+    }
+  ]
 }
-Plate {
-  translation -5.2 -4.05 0.73
+Solid {
+  translation -5.2 -4.05 0.4
   name "room-1204 plate"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.9 0.88
+        roughness 0.3
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.02
+        radius 0.1
+      }
+    }
+  ]
 }
-Glass {
-  translation -5.0 -3.9 0.73
+Solid {
+  translation -5.0 -3.9 0.46
   name "room-1204 glass"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.7 0.85 0.9
+        transparency 0.4
+        roughness 0.05
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.035
+      }
+    }
+  ]
 }
-Bed {
-  translation -6.55 -0.35 0
+Solid {
+  translation -6.55 -0.35 0.28
   rotation 0 0 1 -1.5708
   name "room-1205 bed"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.82 0.8 0.76
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.9 0.28
+      }
+    }
+  ]
 }
-Desk {
-  translation -5.2 -1.15 0
+Solid {
+  translation -5.2 -1.15 0.36
   name "room-1205 desk"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.45 0.32 0.22
+        roughness 0.6
+        metalness 0
+      }
+      geometry Box {
+        size 0.7 1.1 0.04
+      }
+    }
+  ]
 }
-Chair {
-  translation -5.2 -0.45 0
+Solid {
+  translation -5.2 -0.45 0.45
   name "room-1205 chair"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.35 0.24 0.16
+        roughness 0.7
+        metalness 0
+      }
+      geometry Box {
+        size 0.4 0.4 0.45
+      }
+    }
+  ]
 }
-Plate {
-  translation -5.2 -1.15 0.73
+Solid {
+  translation -5.2 -1.15 0.4
   name "room-1205 plate"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.9 0.88
+        roughness 0.3
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.02
+        radius 0.1
+      }
+    }
+  ]
 }
-Glass {
-  translation -5.0 -1.0 0.73
+Solid {
+  translation -5.0 -1.0 0.46
   name "room-1205 glass"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.7 0.85 0.9
+        transparency 0.4
+        roughness 0.05
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.035
+      }
+    }
+  ]
 }
-Bed {
-  translation -6.55 2.55 0
+Solid {
+  translation -6.55 2.55 0.28
   rotation 0 0 1 -1.5708
   name "room-1206 bed"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.82 0.8 0.76
+        roughness 1
+        metalness 0
+      }
+      geometry Box {
+        size 2 0.9 0.28
+      }
+    }
+  ]
 }
-Desk {
-  translation -5.2 1.75 0
+Solid {
+  translation -5.2 1.75 0.36
   name "room-1206 desk"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.45 0.32 0.22
+        roughness 0.6
+        metalness 0
+      }
+      geometry Box {
+        size 0.7 1.1 0.04
+      }
+    }
+  ]
 }
-Chair {
-  translation -5.2 2.45 0
+Solid {
+  translation -5.2 2.45 0.45
   name "room-1206 chair"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.35 0.24 0.16
+        roughness 0.7
+        metalness 0
+      }
+      geometry Box {
+        size 0.4 0.4 0.45
+      }
+    }
+  ]
 }
-Plate {
-  translation -5.2 1.75 0.73
+Solid {
+  translation -5.2 1.75 0.4
   name "room-1206 plate"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.9 0.9 0.88
+        roughness 0.3
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.02
+        radius 0.1
+      }
+    }
+  ]
 }
-Glass {
-  translation -5.0 1.9 0.73
+Solid {
+  translation -5.0 1.9 0.46
   name "room-1206 glass"
-  mass 0
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.7 0.85 0.9
+        transparency 0.4
+        roughness 0.05
+        metalness 0
+      }
+      geometry Cylinder {
+        height 0.1
+        radius 0.035
+      }
+    }
+  ]
 }
 Solid {
   translation -5.95 -3.25 0.05
@@ -6031,6 +6336,7 @@ Solid {
   ]
   name "room-1206"
 }
+
 Robot {
   translation 0 0 -5
   children [
