@@ -1,4 +1,4 @@
-# Secrets
+# Secrets and local payment config
 .env
 .env.*
 !.env.example
@@ -10,25 +10,14 @@ recovery.json
 **/*entity*secret*
 **/*turnkey*
 **/*webhook*secret*
-.pinata*
-*PINATA*
 
-# Planning docs (local only)
-docs/PLAN.md
-docs/scope/
-docs/specs/
-*.plan.md
-.cursor/
-
-# Editor / agents
+# Editor
 .vscode/
 .idea/
-agent-transcripts/
 
-# Webots / sim
+# Webots
 *.wbproj
 *.wbt.bak
-install/
 log/
 
 # Build
@@ -37,14 +26,7 @@ node_modules/
 *.tsbuildinfo
 packages/escrow/lib/
 packages/escrow/artifacts/
-.gitmodules
-
-# Local flow checks. They hardcode this machine and stay out of git.
-scripts/check_money_path.py
-scripts/activate_peaq_machines.py
-scripts/provision_circle_wallets.py
-scripts/provision_circle_wallets.js
-scripts/install_mcp_bridge.py
+packages/escrow/cache/
 dist/
 out/
 .foundry/
