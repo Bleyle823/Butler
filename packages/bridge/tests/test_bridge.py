@@ -42,7 +42,7 @@ class BridgeTripTest(unittest.TestCase):
             "secret": "test-secret",
             "dwell_sec": 8,
             "arrive_radius": 0.8,
-            "pickup_pose": {"x": 8.50, "y": -4.860},
+            "pickup_pose": {"x": 8.70, "y": -4.62},
             "rooms": {"room-1204": {"x": -5.4, "y": 2.25}},
             "keeperhub": {
                 "pickup_webhook": f"http://127.0.0.1:{port}/pickup",
@@ -100,7 +100,7 @@ class BridgeTripTest(unittest.TestCase):
         self.assertNotIn("peaqMachineId", goal)
 
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [8.50, -4.860, 0.1, 3.1416], "battery": 0.9, "event": "pickup", "carried": ["ORDER_BOTTLE"]}
+            {"name": "servebot-1", "pose": [8.70, -4.50, 0.1, -1.5708], "battery": 0.9, "event": "pickup", "carried": ["ORDER_BOTTLE"]}
         )
         time.sleep(0.3)
         self.assertEqual(WEBHOOKS[0]["_path"], "/pickup")
