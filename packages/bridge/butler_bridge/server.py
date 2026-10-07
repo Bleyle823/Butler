@@ -1,8 +1,7 @@
 """Butler bridge HTTP API.
 
-KeeperHub posts jobs. The robot posts pose. This process never calls peaq or Circle.
-Webhook bodies are the only place peaq and Circle ids appear, and they come from
-config/wallets.json on this machine.
+The local settler posts jobs. The robot posts pose. This process never calls peaq or Circle.
+Pickup and delivery bodies carry wallet and machine ids from config/wallets.json.
 """
 
 from __future__ import annotations
@@ -76,9 +75,10 @@ def _post_json(url: str, body: dict[str, Any], secret: str, token: str = "") -> 
         method="POST",
     )
     try:
-        with urllib.request.urlopen(request, timeout=5) as response:
+        with urllib.request.urlopen(request, timeout=120) as response:
             response.read()
-    except urllib.error.URLError:
+    except urllib.error.URLError as error:
+        print(f"[butler_bridge] webhook failed {url}: {error.reason}", flush=True)
         return
 
 
@@ -86,10 +86,19 @@ class Bridge:
     def __init__(self, config: dict[str, Any], wallets: dict[str, Any]) -> None:
         self.ledger = Ledger(config, wallets)
         self.secret = str(config.get("secret") or "")
+        settler = config.get("settler") or {}
         keeperhub = config.get("keeperhub") or {}
-        self.pickup_url = str(keeperhub.get("pickup_webhook") or "")
-        self.delivery_url = str(keeperhub.get("delivery_webhook") or "")
-        self.webhook_token = str(keeperhub.get("webhook_token") or "")
+        self.pickup_url = str(
+            settler.get("pickup_url")
+            or keeperhub.get("pickup_webhook")
+            or "http://127.0.0.1:8788/pickup"
+        )
+        self.delivery_url = str(
+            settler.get("delivery_url")
+            or keeperhub.get("delivery_webhook")
+            or "http://127.0.0.1:8788/delivery"
+        )
+        self.webhook_token = str(settler.get("token") or keeperhub.get("webhook_token") or "")
         self.dwell_sec = float(config.get("dwell_sec") or 8)
         self.radius = float(config.get("arrive_radius") or 0.8)
         self.pickup = config.get("pickup_pose") or {"x": 8.70, "y": -4.62}
@@ -125,12 +134,17 @@ class Bridge:
                 "robot": robot,
                 "room": room,
                 "status": "assigned",
+                "items": body.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
                 "peaqMachineId": body.get("peaqMachineId") or self.ledger.actor(robot).get("peaqMachineId"),
                 "circleWalletId": body.get("circleWalletId") or self.ledger.actor(robot).get("circleWalletId"),
                 "guestWalletId": body.get("guestWalletId") or self.ledger.actor("guest-bob").get("circleWalletId"),
                 "vendingWalletId": body.get("vendingWalletId") or self.ledger.actor("vending").get("circleWalletId"),
             }
-            self.ledger.goals[robot] = {"jobId": job_id, "room": room}
+            self.ledger.goals[robot] = {
+                "jobId": job_id,
+                "room": room,
+                "items": body.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+            }
             self.ledger.sent[job_id] = set()
         return 201, {"jobId": job_id, "robot": robot, "room": room}
 
@@ -159,7 +173,11 @@ class Bridge:
             goal = self.ledger.goals.get(robot)
         if not goal:
             return {}
-        return {"jobId": goal["jobId"], "room": goal["room"]}
+        return {
+            "jobId": goal["jobId"],
+            "room": goal["room"],
+            "items": goal.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+        }
 
     def telemetry(self, body: dict[str, Any]) -> None:
         name = str(body.get("name") or "")
@@ -167,18 +185,21 @@ class Bridge:
             return
         pose = body.get("pose") or [0, 0, 0, 0]
         event = str(body.get("event") or "")
+        carried = body.get("carried") or []
+        delivered = body.get("delivered") or []
         with self.ledger.lock:
             self.ledger.fleet[name] = {
                 "pose": pose,
                 "battery": body.get("battery", 0),
                 "event": event,
-                "carried": body.get("carried") or [],
+                "carried": carried,
+                "delivered": delivered,
             }
             job = self._active_job(name)
             if job is None:
                 return
-            self._maybe_pickup(job, pose, event)
-            self._maybe_delivery(job, pose, event)
+            self._maybe_pickup(job, event, carried)
+            self._maybe_delivery(job, pose, event, carried, delivered)
 
     def _active_job(self, robot: str) -> dict[str, Any] | None:
         for job in self.ledger.jobs.values():
@@ -186,25 +207,27 @@ class Bridge:
                 return job
         return None
 
-    def _near(self, pose: list[float], x: float, y: float) -> bool:
-        return math.hypot(float(pose[0]) - x, float(pose[1]) - y) <= self.radius
+    def _names(self, carried: Any) -> set[str]:
+        if isinstance(carried, str):
+            return {carried}
+        if not isinstance(carried, list):
+            return set()
+        return {str(name) for name in carried}
 
-    def _maybe_pickup(self, job: dict[str, Any], pose: list[float], event: str) -> None:
+    def _maybe_pickup(self, job: dict[str, Any], event: str, carried: Any) -> None:
         job_id = job["jobId"]
         if "pickup" in self.ledger.sent.get(job_id, set()):
             return
-        at_counter = self._near(pose, float(self.pickup["x"]), float(self.pickup["y"]))
-        if event != "pickup" and not at_counter:
-            return
-        if event != "pickup":
+        if event != "pickup" or "honey jar" not in self._names(carried):
             return
         job["status"] = "delivering"
         self.ledger.sent.setdefault(job_id, set()).add("pickup")
-        robot = job["robot"]
         payload = {
             "jobId": job_id,
-            "robot": robot,
+            "robot": job["robot"],
             "event": "pickup",
+            "object": "honey jar",
+            "items": job.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
             "peaqMachineId": job.get("peaqMachineId") or "",
             "circleWalletId": job.get("circleWalletId") or "",
             "vendingWalletId": job.get("vendingWalletId") or "",
@@ -216,16 +239,24 @@ class Bridge:
             daemon=True,
         ).start()
 
-    def _maybe_delivery(self, job: dict[str, Any], pose: list[float], event: str) -> None:
+    def _maybe_delivery(
+        self,
+        job: dict[str, Any],
+        pose: list[float],
+        event: str,
+        carried: Any,
+        delivered: Any = None,
+    ) -> None:
         job_id = job["jobId"]
         if "delivery" in self.ledger.sent.get(job_id, set()):
             return
-        target = self.ledger.room_pose(job["room"])
-        if target is None:
+        # A new job must pick up the honey jar before it can settle.
+        if "pickup" not in self.ledger.sent.get(job_id, set()):
+            self.ledger.dwell_since.pop(job_id, None)
             return
-        at_room = self._near(pose, target[0], target[1]) or event == "delivery"
         now = time.monotonic()
-        if not at_room:
+        on_table = self._names(delivered) or (self._names(carried) if event == "delivery" else set())
+        if event != "delivery" or "honey jar" not in on_table:
             self.ledger.dwell_since.pop(job_id, None)
             return
         started = self.ledger.dwell_since.get(job_id)
@@ -233,9 +264,7 @@ class Bridge:
             self.ledger.dwell_since[job_id] = now
             return
         dwell = now - started
-        if dwell < self.dwell_sec and event != "delivery":
-            return
-        if event == "delivery" and dwell < self.dwell_sec:
+        if dwell < self.dwell_sec:
             return
         job["status"] = "delivered"
         self.ledger.sent.setdefault(job_id, set()).add("delivery")
@@ -243,6 +272,8 @@ class Bridge:
             "jobId": job_id,
             "robot": job["robot"],
             "event": "delivery",
+            "object": "honey jar",
+            "items": job.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
             "dwellSec": round(dwell, 3),
             "pose": pose,
             "failure": False,

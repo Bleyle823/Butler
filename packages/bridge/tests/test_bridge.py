@@ -1,4 +1,4 @@
-"""Scripted trip: counter pickup, room-1204, dwell of at least 8 seconds."""
+"""Scripted trip: jar pickup, kitchen table delivery, dwell of at least 8 seconds."""
 
 from __future__ import annotations
 
@@ -42,11 +42,11 @@ class BridgeTripTest(unittest.TestCase):
             "secret": "test-secret",
             "dwell_sec": 8,
             "arrive_radius": 0.8,
-            "pickup_pose": {"x": 8.70, "y": -4.62},
-            "rooms": {"room-1204": {"x": -5.4, "y": 2.25}},
-            "keeperhub": {
-                "pickup_webhook": f"http://127.0.0.1:{port}/pickup",
-                "delivery_webhook": f"http://127.0.0.1:{port}/delivery",
+            "pickup_pose": {"x": 1.72, "y": 0.69},
+            "rooms": {"room-1204": {"x": -5.95, "y": -3.25}},
+            "settler": {
+                "pickup_url": f"http://127.0.0.1:{port}/pickup",
+                "delivery_url": f"http://127.0.0.1:{port}/delivery",
             },
         }
         wallets = {
@@ -100,26 +100,73 @@ class BridgeTripTest(unittest.TestCase):
         self.assertNotIn("peaqMachineId", goal)
 
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [8.70, -4.50, 0.1, -1.5708], "battery": 0.9, "event": "pickup", "carried": ["ORDER_BOTTLE"]}
+            {"name": "servebot-1", "pose": [1.72, 0.69, 0.1, 0], "battery": 0.9, "event": "pickup", "carried": ["honey jar"]}
         )
         time.sleep(0.3)
         self.assertEqual(WEBHOOKS[0]["_path"], "/pickup")
         self.assertEqual(WEBHOOKS[0]["peaqMachineId"], "m-1")
 
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "at_dropoff", "carried": ["ORDER_BOTTLE"]}
+            {"name": "servebot-1", "pose": [-0.38, -0.68, 0.1, 0], "battery": 0.8, "event": "", "carried": ["honey jar"]}
+        )
+        time.sleep(0.2)
+        self.assertEqual(len(WEBHOOKS), 1)
+        self.bridge.telemetry(
+            {"name": "servebot-1", "pose": [-5.95, -3.25, 0.1, 0], "battery": 0.8, "event": "", "carried": []}
+        )
+        time.sleep(0.2)
+        self.assertEqual(len(WEBHOOKS), 1)
+        self.bridge.telemetry(
+            {"name": "servebot-1", "pose": [-0.38, -0.68, 0.1, 0], "battery": 0.8, "event": "delivery", "carried": ["honey jar"]}
         )
         time.sleep(0.2)
         self.assertEqual(len(WEBHOOKS), 1)
         time.sleep(8.1)
         self.bridge.telemetry(
-            {"name": "servebot-1", "pose": [-5.4, 2.25, 0.1, 0], "battery": 0.8, "event": "delivery", "carried": ["ORDER_BOTTLE"]}
+            {"name": "servebot-1", "pose": [-0.38, -0.68, 0.1, 0], "battery": 0.8, "event": "delivery", "carried": ["honey jar"]}
         )
         time.sleep(0.3)
         delivery = [row for row in WEBHOOKS if row["_path"] == "/delivery"]
         self.assertEqual(len(delivery), 1)
         self.assertGreaterEqual(delivery[0]["dwellSec"], 8)
         self.assertFalse(delivery[0]["failure"])
+
+    def test_delivery_waits_until_pickup(self) -> None:
+        code, _ = self._req(
+            "POST",
+            "/jobs",
+            {"jobId": "job-order", "robot": "servebot-1", "room": "room-1204"},
+        )
+        self.assertEqual(code, 201)
+        placed = {
+            "name": "servebot-1",
+            "pose": [-0.38, -0.68, 0.1, 0],
+            "battery": 1.0,
+            "event": "delivery",
+            "carried": ["honey jar"],
+        }
+        self.bridge.telemetry(placed)
+        time.sleep(8.2)
+        self.bridge.telemetry(placed)
+        time.sleep(0.3)
+        self.assertEqual(WEBHOOKS, [])
+
+        self.bridge.telemetry(
+            {
+                "name": "servebot-1",
+                "pose": [1.72, 0.69, 0.1, 0],
+                "battery": 1.0,
+                "event": "pickup",
+                "carried": ["honey jar"],
+            }
+        )
+        time.sleep(0.3)
+        self.assertEqual([row["_path"] for row in WEBHOOKS], ["/pickup"])
+        self.bridge.telemetry(placed)
+        time.sleep(8.2)
+        self.bridge.telemetry(placed)
+        time.sleep(0.3)
+        self.assertEqual([row["_path"] for row in WEBHOOKS], ["/pickup", "/delivery"])
 
     def test_cancel_and_suspend(self) -> None:
         self._req("POST", "/jobs", {"jobId": "job-2", "robot": "servebot-1", "room": "room-1204"})

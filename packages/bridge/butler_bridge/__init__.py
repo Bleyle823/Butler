@@ -1,1 +1,1 @@
-"""Local job ledger between Webots and KeeperHub. No peaq or Circle calls."""
+"""Local job ledger between Webots and the settler. No peaq or Circle calls."""
