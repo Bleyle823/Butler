@@ -23,10 +23,10 @@ _post_lock = threading.Lock()
 _post_busy = False
 
 
-def post(body):
+def post(body, force=False):
     global _post_busy
     with _post_lock:
-        if _post_busy:
+        if _post_busy and not force:
             return
         _post_busy = True
 
@@ -40,7 +40,7 @@ def post(body):
             method="POST",
         )
         try:
-            with urllib.request.urlopen(request, timeout=0.05) as response:
+            with urllib.request.urlopen(request, timeout=1.0) as response:
                 response.read()
         except Exception as error:
             print(f"[butler_observe] bridge post failed: {error}", flush=True)
@@ -126,19 +126,23 @@ while robot.step(timestep) != -1:
     else:
         event = ""
 
-    if event != last_event:
-        shown = carried or delivered
-        print(f"[butler_observe] {event or 'idle'} {shown}", flush=True)
-        last_event = event
-
-    if step_count % 8 != 0:
-        continue
-
-    post({
+    body = {
         "name": ROBOT_NAME,
         "pose": [pose[0], pose[1], pose[2], yaw_of(serve)],
         "battery": 1.0,
         "event": event,
         "carried": carried,
         "delivered": delivered,
-    })
+    }
+
+    if event != last_event:
+        shown = carried or delivered
+        print(f"[butler_observe] {event or 'idle'} {shown}", flush=True)
+        last_event = event
+        post(body, force=True)
+        continue
+
+    if step_count % 8 != 0:
+        continue
+
+    post(body)
