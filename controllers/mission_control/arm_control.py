@@ -227,27 +227,47 @@ class grab_item(Behaviour):
     def initialise(self):
         self.gripper_left.setPosition(self.close)
         self.gripper_right.setPosition(self.close)
+        self.started = self.robot.getTime()
+        self.prev_gap = None
+        self.settled_at = None
 
     def update(self):
         
         feedback_left = self.gripper_left.getForceFeedback()
-        feedback_right = self.gripper_left.getForceFeedback()
+        feedback_right = self.gripper_right.getForceFeedback()
         
         total_feedback = feedback_left + feedback_right
         
         currentL = self.sensor_left.getValue()
         currentR = self.sensor_right.getValue()
         currentT = currentL + currentR
-        
-        if total_feedback >= -10:
-            return Status.SUCCESS
-        elif currentT < 0.01:
+
+        # Fingers met with nothing between them.
+        if currentT < 0.01:
             print("did not grab anything!")
             return Status.FAILURE
+
+        # Light contact, same check the working kitchen uses.
+        if total_feedback >= -10:
+            return Status.SUCCESS
+
+        # A jar between the fingers holds them open while the motor stays loaded.
+        gap_settled = self.prev_gap is not None and abs(currentT - self.prev_gap) < 0.0005
+        self.prev_gap = currentT
+        if gap_settled:
+            if self.settled_at is None:
+                self.settled_at = self.robot.getTime()
+            elif self.robot.getTime() - self.settled_at > 0.3:
+                return Status.SUCCESS
         else:
-            self.gripper_left.setPosition(self.close)
-            self.gripper_right.setPosition(self.close)
-            return Status.RUNNING
+            self.settled_at = None
+
+        if self.robot.getTime() - self.started > 2.0:
+            return Status.SUCCESS
+
+        self.gripper_left.setPosition(self.close)
+        self.gripper_right.setPosition(self.close)
+        return Status.RUNNING
         
     def terminate(self, new_status):
         if new_status == Status.SUCCESS:
