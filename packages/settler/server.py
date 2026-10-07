@@ -1,14 +1,17 @@
-"""HTTP commander for Circle and peaq. The sim never talks to this except via the bridge."""
+"""HTTP commander for Circle and peaq. The robot calls this the way peaq ROS calls peaqos_node."""
 
 from __future__ import annotations
 
 import json
+import os
+import threading
 import urllib.error
 import urllib.request
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from typing import Any
 
+from circle_client import arc_line
 from economy import actor, deposit, machine_id_bytes32, on_delivery, on_pickup
 from peaq_client import PeaqMachine
 
@@ -35,6 +38,17 @@ def load_json(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def new_job_id() -> str:
+    return "0x" + os.urandom(32).hex()
+
+
+def as_tx(value: object) -> str:
+    text = str(value or "")
+    if text and not text.startswith("0x"):
+        return "0x" + text
+    return text
+
+
 class Settler:
     def __init__(self) -> None:
         env_path = ROOT / ".env"
@@ -48,6 +62,24 @@ class Settler:
         self.host = self.env.get("SETTLER_HOST") or "127.0.0.1"
         self.port = int(self.env.get("SETTLER_PORT") or "8788")
         self.peaq = PeaqMachine(self.env)
+        self.lock = threading.Lock()
+        self.jobs: dict[str, dict[str, Any]] = {}
+
+    def record(self, job_id: str, line: str) -> None:
+        if not job_id:
+            print(f"[settler] {line}", flush=True)
+            return
+        with self.lock:
+            row = self.jobs.setdefault(job_id, {"jobId": job_id, "lines": []})
+            row["lines"].append(line)
+        print(f"[settler] {line}", flush=True)
+
+    def job_snapshot(self, job_id: str) -> dict[str, Any]:
+        with self.lock:
+            row = self.jobs.get(job_id)
+            if row is None:
+                return {"jobId": job_id, "lines": []}
+            return {"jobId": row["jobId"], "lines": list(row["lines"])}
 
     def post_bridge_job(self, job_id: str, room: str, items: list[str]) -> dict[str, Any]:
         robot = actor(self.wallets, "servebot-1")
@@ -88,14 +120,19 @@ class Settler:
         items = [str(name) for name in (body.get("items") or [])]
         if items != KITCHEN_ITEMS:
             return 400, {"error": "Order is honey jar, jam jar 1, and jam jar 2"}
+        if not job_id:
+            job_id = new_job_id()
         if not job_id.startswith("0x") or len(job_id) != 66:
             return 400, {"error": "jobId must be 32 bytes hex"}
         machine_hex = machine_id_bytes32(self.wallets, str(body.get("machineId") or ""))
         try:
+            self.record(job_id, f"locking 6.00 USDC for {room}")
             paid = deposit(self.env, self.wallets, job_id, machine_hex)
+            self.record(job_id, arc_line("Circle deposit", paid.get("transactionId"), paid.get("txHash")))
             posted = self.post_bridge_job(job_id, room, items)
+            self.record(job_id, "paid goal is on the bridge")
         except Exception as error:
-            print(f"[settler] order failed {error}", flush=True)
+            self.record(job_id, f"order failed {error}")
             return 502, {"error": str(error)}
         return 200, {
             "jobId": job_id,
@@ -106,19 +143,29 @@ class Settler:
         }
 
     def pickup(self, body: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+        job_id = str(body.get("jobId") or "")
         try:
             result = on_pickup(self.env, self.wallets, body, self.peaq)
         except Exception as error:
-            print(f"[settler] pickup failed {error}", flush=True)
+            self.record(job_id, f"pickup failed {error}")
             return 502, {"error": str(error)}
+        circle = result.get("circle") or {}
+        peaq_tx = as_tx((result.get("peaq") or {}).get("transactionHash"))
+        self.record(job_id, arc_line("Circle vending 2.00", circle.get("transactionId"), circle.get("txHash")))
+        self.record(job_id, f"peaq pickup revenue {peaq_tx}")
         return 200, result
 
     def delivery(self, body: dict[str, Any]) -> tuple[int, dict[str, Any]]:
+        job_id = str(body.get("jobId") or "")
         try:
             result = on_delivery(self.env, self.wallets, body, self.peaq)
         except Exception as error:
-            print(f"[settler] delivery failed {error}", flush=True)
+            self.record(job_id, f"delivery failed {error}")
             return 502, {"error": str(error)}
+        circle = result.get("circle") or {}
+        peaq_tx = as_tx((result.get("peaq") or {}).get("transactionHash"))
+        self.record(job_id, arc_line("Circle release", circle.get("transactionId"), circle.get("txHash")))
+        self.record(job_id, f"peaq delivery revenue {peaq_tx}")
         return 200, result
 
 
@@ -142,8 +189,13 @@ def make_handler(settler: Settler) -> type[BaseHTTPRequestHandler]:
             return json.loads(self.rfile.read(length).decode("utf-8"))
 
         def do_GET(self) -> None:
-            if self.path.split("?", 1)[0] == "/health":
+            path = self.path.split("?", 1)[0]
+            if path == "/health":
                 self._json(200, {"ok": True})
+                return
+            if path.startswith("/jobs/"):
+                job_id = path[len("/jobs/") :]
+                self._json(200, settler.job_snapshot(job_id))
                 return
             self._json(404, {"error": "not found"})
 

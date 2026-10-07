@@ -6,6 +6,7 @@ import hashlib
 import json
 import ssl
 import subprocess
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -15,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[2]
 HELPER = Path(__file__).resolve().parent / "circle_cipher.js"
 USDC_ARC = "0x3600000000000000000000000000000000000000"
 ARC_TESTNET = "ARC-TESTNET"
+ARCSCAN = "https://testnet.arcscan.app/tx/"
 ESCROW = "0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD"
 VENDING = "0x01ed2f186edab0b28dd796afe0762fac5a5b092d"
 
@@ -87,7 +89,55 @@ def circle_post(
     tx_id = str(data_obj.get("id") or data_obj.get("transactionId") or "")
     if not tx_id:
         raise RuntimeError("Circle returned no transaction id")
-    return {"transactionId": tx_id, "raw": parsed}
+    tx_hash = wait_for_tx_hash(env, tx_id)
+    return {"transactionId": tx_id, "txHash": tx_hash, "raw": parsed}
+
+
+def circle_get(env: dict[str, str], path: str) -> dict[str, Any]:
+    api_key = env.get("CIRCLE_API_KEY") or ""
+    if not api_key:
+        raise RuntimeError("CIRCLE_API_KEY and CIRCLE_ENTITY_SECRET are required")
+    request = urllib.request.Request(
+        circle_host(env) + path,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Accept": "application/json",
+            "User-Agent": "butler-check/1.0",
+        },
+    )
+    ctx = ssl.create_default_context()
+    with urllib.request.urlopen(request, timeout=30, context=ctx) as response:
+        parsed = json.loads(response.read().decode("utf-8") or "{}")
+    return parsed if isinstance(parsed, dict) else {}
+
+
+def wait_for_tx_hash(env: dict[str, str], tx_id: str, timeout_sec: float = 45) -> str:
+    deadline = time.time() + timeout_sec
+    while True:
+        try:
+            parsed = circle_get(env, f"/v1/w3s/transactions/{tx_id}")
+        except (urllib.error.URLError, urllib.error.HTTPError, TimeoutError, json.JSONDecodeError):
+            parsed = {}
+        data = parsed.get("data") if isinstance(parsed.get("data"), dict) else {}
+        tx = data.get("transaction") if isinstance(data.get("transaction"), dict) else data
+        digest = str(tx.get("txHash") or "")
+        state = str(tx.get("state") or "")
+        if digest:
+            return digest
+        if state in {"FAILED", "CANCELLED", "DENIED"}:
+            return ""
+        if time.time() >= deadline:
+            return ""
+        time.sleep(2)
+
+
+def arc_line(label: str, circle_id: object, tx_hash: object) -> str:
+    digest = str(tx_hash or "")
+    if digest and not digest.startswith("0x"):
+        digest = "0x" + digest
+    if digest:
+        return f"{label} {circle_id} arc {ARCSCAN}{digest}"
+    return f"{label} {circle_id} arc hash pending"
 
 
 def execute_contract(

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import sys
+import threading
 import time
 import types
 from pathlib import Path
@@ -42,6 +43,7 @@ def load_peaq_config(path: Path | None = None) -> dict[str, Any]:
 
 class PeaqMachine:
     def __init__(self, env: dict[str, str], config: dict[str, Any] | None = None) -> None:
+        self.lock = threading.Lock()
         self.config = config or load_peaq_config()
         registry_path = Path(str((self.config.get("wallet_registry") or {}).get("path") or "config/peaqos_wallets.json"))
         if not registry_path.is_absolute():
@@ -112,18 +114,19 @@ class PeaqMachine:
             metadata=b"",
             currency="USD",
         )
-        tx_hash, data_hash = client.submit_event(
-            machine_id=params.machine_id,
-            event_type=params.event_type,
-            value=params.value,
-            timestamp=params.timestamp,
-            raw_data=params.raw_data,
-            trust_level=params.trust_level,
-            source_chain_id=params.source_chain_id,
-            source_tx_hash=params.source_tx_hash,
-            metadata=params.metadata,
-            currency="USD",
-        )
+        with self.lock:
+            tx_hash, data_hash = client.submit_event(
+                machine_id=params.machine_id,
+                event_type=params.event_type,
+                value=params.value,
+                timestamp=params.timestamp,
+                raw_data=params.raw_data,
+                trust_level=params.trust_level,
+                source_chain_id=params.source_chain_id,
+                source_tx_hash=params.source_tx_hash,
+                metadata=params.metadata,
+                currency="USD",
+            )
         digest = data_hash.hex() if isinstance(data_hash, (bytes, bytearray)) else str(data_hash)
         if not digest.startswith("0x"):
             digest = "0x" + digest
