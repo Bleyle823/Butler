@@ -4,11 +4,12 @@ The kitchen simulation is the working robot. Butler supplied the name `servebot-
 
 ## Architecture rules
 
-1. Webots never talks to peaq or Circle. `butler_observe` only publishes pose, pickup, and delivery to the local bridge.
-2. peaq never talks to Webots. peaq has no robot URL. The local settler is the only commander of payments and the only writer on peaq.
-3. The robot never holds Circle’s entity secret or peaq’s controller key. Circle stays in the settler. The peaq key stays in the settler’s local address-keyed wallet registry. Callers pass the signer address only.
+1. peaq’s ROS robots run `peaqos_node` on the robot host. Callers pass an address and a machine id. Keys stay in a local wallet registry. Butler uses the same split: `mission_control` calls the settler; the settler runs `peaq-os-sdk`. Webots R2025a’s controller Python is 3.9, and the SDK needs 3.10+, so the SDK does not load inside the controller process.
+2. `mission_control` may POST `/order` and GET `/jobs/<id>` on the settler when Play starts. `butler_observe` still only publishes pose, pickup, and delivery to the local bridge.
+3. peaq never talks to Webots. peaq has no robot URL. The settler is the only writer on peaq and the only process that holds Circle’s entity secret.
+4. The robot never holds Circle’s entity secret or peaq’s controller key. Callers pass a job id and room. The peaq key stays in the settler’s address-keyed wallet registry.
 
-`mission_control` waits until the bridge has a paid goal for the honey jar, jam jar 1, and jam jar 2, then places those jars on the kitchen table. It does not call Circle or peaq.
+`mission_control` starts a kitchen order on Play if the bridge has no paid goal, then places the honey jar, jam jar 1, and jam jar 2 on the kitchen table. The Webots console prints settler lines as Circle and peaq settle.
 
 ## Stack
 
@@ -25,4 +26,4 @@ The kitchen simulation is the working robot. Butler supplied the name `servebot-
 
 KeeperHub is not in the run path. Plugin copies in `packages/circle-plugin` and `packages/peaqos-plugin` are unused references.
 
-Never commit `.env`, entity secrets, recovery files, Turnkey keys, webhook secrets, `config/wallets.json`, or `config/bridge.json`.
+Never commit `.env`, entity secrets, recovery files, Turnkey keys, webhook secrets, `config/wallets.json`, `config/bridge.json`, or `config/peaqos_wallets.json`.

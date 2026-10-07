@@ -1,31 +1,43 @@
-# Manual run: kitchen table order
+# Confirm kitchen payments end to end
 
-This is the paid kitchen demo on this machine. `servebot-1` waits for a paid goal, then picks up the honey jar, jam jar 1, and jam jar 2 and places them on the kitchen table. The local settler is the only commander. Webots publishes pose, pickup, and delivery. peaq and Circle are called from the settler. The robot never holds Circle’s entity secret or the peaq controller key.
+Follow these stages in order. Do not skip a pass check. One robot, one paid job at a time. Wait until `servebot-1` is idle before the next run. Do not replay a job that already settled.
 
-One robot, one paid job at a time. Wait until `servebot-1` is idle before the next order. Every hotel order creates a new 32-byte job id. Do not replay a job that already settled.
+Open `worlds/kitchen.wbt`. The robot controller is `mission_control`. `butler_observe` only reads the scene and posts telemetry. Rooms 1204, 1205, and 1206 are who ordered. The robot does not drive into them.
 
-Open `worlds/kitchen.wbt`, not a hotel world. The robot controller is `mission_control`. A second supervisor, `butler_observe`, only reads the scene and posts to the local bridge. The robot does not drive into rooms 1204, 1205, or 1206. Those names are who ordered. Completion is the first jar on a table spot.
+Press Play with the settler and bridge already up. If the bridge has no paid goal, Play posts the kitchen order (honey jar, jam jar 1, jam jar 2 for room 1204). The hotel page can place that same order first; Play then uses the existing goal.
 
-## What is already set up
+The Webots controller talks to the settler the way peaq ROS talks to `peaqos_node`: job id and room only. Circle’s entity secret and the peaq controller key stay in the settler.
 
-These stay on the machine and out of git. Do not print the secret values.
+## What must already exist on this machine
 
-- Circle credentials live in gitignored `.env` at the Butler root. Copy from `.env.example`. `CIRCLE_ENV=production`. The peaq signer is an address. Its key lives in gitignored `config/peaqos_wallets.json`, the same local registry pattern as the peaq robotics stack.
-- The eight Arc Testnet wallets live in gitignored `config/wallets.json`. The guest has already approved ButlerEscrow to spend USDC.
-- ButlerEscrow is `0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD` on Arc Testnet, chain `5042002`. USDC is `0x3600000000000000000000000000000000000000`. Explorer: https://testnet.arcscan.app.
-- `servebot-1` is already activated on peaq mainnet, chain `3338`. Machine id `59328440066796600542199572455408389928436277639102769462180386810815539058720`. The hotel UI stores that same id as 32 bytes in `PEAQ_MACHINE_ID`. Machine page: https://machines.peaq.xyz/machine/59328440066796600542199572455408389928436277639102769462180386810815539058720.
-- The bridge reads gitignored `config/bridge.json`. Its shared secret is `change-me`. Pickup and delivery post to `http://127.0.0.1:8788`.
-- The hotel UI reads gitignored `apps/hotel-ui/.env.local`, which holds `BUTLER_SETTLER_URL=http://127.0.0.1:8788`.
+These stay out of git. Do not print secret values.
+
+| File | Role |
+| --- | --- |
+| `.env` | `CIRCLE_API_KEY`, `CIRCLE_ENTITY_SECRET`, `CIRCLE_ENV=production`, `BUTLER_SECRET=change-me`, settler bind `127.0.0.1:8788` |
+| `config/wallets.json` | Arc Testnet Circle wallet ids. Guest has already approved ButlerEscrow |
+| `config/peaqos_wallets.json` | Local peaq key registry. Signer `0x4360d54AdB797bf75013870de1AAD152839587D0` |
+| `config/bridge.json` | Bridge on `8787`, pickup/delivery URLs on `8788` |
+| `apps/hotel-ui/.env.local` | `BUTLER_SETTLER_URL=http://127.0.0.1:8788` and `PEAQ_MACHINE_ID` as 32 bytes |
+
+Copy from the matching `*.example` files if any of those are missing.
+
+Fixed addresses for this project:
+
+- Escrow `0xeEFF543d9312fAc816c0C8b0f37ddB4545bBBdaD` on Arc Testnet `5042002`. Explorer: https://testnet.arcscan.app
+- USDC `0x3600000000000000000000000000000000000000`
+- Machine decimal `63056357364750406110742192000069244844268702226710579694851149582072404420819`
+- Machine bytes32 `0x8b68a22dc5d3c9c64f444db3928d7ee5907c829a8e4419dbcc04d1103c9aa8d3`
+- Machine page: https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819
+- EventRegistry `0xA1e7F1d7B24dAb55Dc92491e6d9B89F6E925Ad1e` (Economics 2.0)
 
 ## Money each order needs
 
-The kitchen set is the honey jar, jam jar 1, and jam jar 2. It is 6.00 USDC, locked by the guest into escrow. On pickup of the honey jar the robot pays the vending counter 2.00 USDC from its own wallet. After that honey jar is on the first table spot, the settler releases the 6.00 as 4.80 to the operator, 0.60 to the manufacturer, and 0.60 to the robot reserve. peaq records 200 cents for the vending fee and 600 cents for the order. The two jam jars are the rest of the same run. They do not open a second payment.
+The kitchen set is 6.00 USDC from the guest into escrow. On honey-jar pickup the robot pays vending 2.00 from its own wallet. After that honey jar sits on the first table spot `(-0.38, -0.68)`, escrow releases 4.80 / 0.60 / 0.60 to operator / manufacturer / robot reserve. peaq records 200 cents on pickup and 600 cents on delivery. The two jam jars are the rest of the same run. They do not open a second payment.
 
-On Arc Testnet the native gas balance and the USDC balance are the same token. `eth_getBalance` shows it with 18 decimals. The ERC-20 transfer uses 6 decimals. A wallet that holds exactly 2.00 cannot send 2.00, because gas comes out of that same balance.
+On Arc Testnet native gas and USDC are the same token. `eth_getBalance` is 18 decimals. ERC-20 transfers use 6. A wallet that holds exactly 2.00 cannot send 2.00.
 
-Before you order, the guest needs at least about 6.20, the robot at least about 2.20, and the settler enough left for one contract call. The operator wallet is the refill source. Public faucet: https://faucet.circle.com (one drip per address, then a captcha). The Circle faucet API returns 403 for this key.
-
-Check native balances with a User-Agent of `butler-check/1.0`. Arc’s RPC rejects the request without it.
+Before a run, guest about 6.20, robot about 2.20, settler enough for one contract call. Operator is the refill source. Faucet: https://faucet.circle.com. Check Arc balances with User-Agent `butler-check/1.0`.
 
 - Guest `0x566c7344100b046e467eae9d1efb8bd5abf646a2`
 - Robot `0x9a8709845445661fd9b044bc907e38faf6d27168`
@@ -33,7 +45,30 @@ Check native balances with a User-Agent of `butler-check/1.0`. Arc’s RPC rejec
 - Settler `0x2838270efa7a1aa0196bb98a8f8230771aed3b80`
 - Vending `0x01ed2f186edab0b28dd796afe0762fac5a5b092d`
 
-## 1. Start the settler
+---
+
+## Stage 0 — files, not money
+
+Confirm the gitignored files exist. Do not open them in chat or commit them.
+
+```
+cd C:\Users\Omen\Desktop\Butler
+dir .env
+dir config\wallets.json
+dir config\peaqos_wallets.json
+dir config\bridge.json
+dir apps\hotel-ui\.env.local
+```
+
+Pass: all five exist.
+
+If `config/peaqos_wallets.json` is empty, put the controller hex in `PEAQ_CONTROLLER_PRIVATE_KEY` once, start the settler so it imports the address, then you can clear the env value. `defaults.machine_address` in `config/peaq.yaml` should be `0x4360d54AdB797bf75013870de1AAD152839587D0`.
+
+---
+
+## Stage 1 — settler is up
+
+`peaq-os-sdk` needs Python 3.10+. PATH `python` here is 3.9, so use the settler venv.
 
 ```
 cd C:\Users\Omen\Desktop\Butler
@@ -42,116 +77,188 @@ uv pip install --python packages\settler\.venv\Scripts\python.exe -r packages\se
 packages\settler\.venv\Scripts\python.exe packages\settler\run_settler.py
 ```
 
-`peaq-os-sdk` needs Python 3.10 or newer. The `python` on PATH here is 3.9, so the settler runs from `packages\settler\.venv`. The bridge can stay on 3.9.
+Leave this terminal open.
 
-Wait until the terminal says `butler settler http://127.0.0.1:8788`. This process is the only writer to Circle and peaq. Leave it open.
+Pass: the process prints `butler settler http://127.0.0.1:8788`.
 
-peaq writes go through `peaq-os-sdk`, the same client the robotics package uses. The settler looks up the signer by address in `config/peaqos_wallets.json`. Contract addresses and the RPC live in `config/peaq.example.yaml` (copy to `config/peaq.yaml` to override). Pickup and delivery HTTP bodies never include a key.
+```
+curl.exe http://127.0.0.1:8788/health
+```
 
-To seed the registry once, put the machine controller hex in `PEAQ_CONTROLLER_PRIVATE_KEY` and start the settler. It imports that key under the derived address and later calls only pass the address. After that import you can clear the env value and set `defaults.machine_address` in `config/peaq.yaml`. Without a registry entry, deposit still works and pickup or delivery fail on the peaq write. Circle still needs `CIRCLE_API_KEY` and `CIRCLE_ENTITY_SECRET`. The signer must be the controller of machine `59328440066796600542199572455408389928436277639102769462180386810815539058720`. Creating a fresh wallet would be a different machine.
+Pass: `{"ok": true}`.
 
-## 2. Start the bridge
+---
+
+## Stage 2 — bridge is up
+
+New terminal:
 
 ```
 cd C:\Users\Omen\Desktop\Butler\packages\bridge
 python run_bridge.py
 ```
 
-Python 3.9 on this machine is enough for the bridge. Leave the terminal open.
+Leave it open. Wallets load once at start. Restart the bridge if you edited `config/wallets.json`.
 
-The bridge listens on `http://127.0.0.1:8787`. It is the only HTTP surface in front of the sim. It does not call Circle or peaq. It stores the current job, serves the robot’s goal, accepts telemetry, and calls the settler on pickup and delivery.
+Pass: it is listening. `GET /health` is 404. That is normal.
 
-`GET /health` returns 404. That is normal. `GET /fleet` with header `X-Butler-Secret: change-me` returns the robots. Until Webots is playing and `butler_observe` has published, `robots` is empty. `GET /robots/servebot-1/goal` needs no secret and returns the current job id and room, or `{}`.
+```
+curl.exe -H "X-Butler-Secret: change-me" http://127.0.0.1:8787/fleet
+curl.exe http://127.0.0.1:8787/robots/servebot-1/goal
+```
 
-Wallets are loaded once at process start. If you edit `config/wallets.json`, restart the bridge.
+Pass: fleet JSON comes back (`robots` may still be empty). Goal is `{}` until an order exists.
 
-No Cloudflare tunnel is required. The settler posts jobs to `127.0.0.1:8787`.
+---
 
-## 3. Start the hotel page
+## Stage 3 — hotel page (optional)
+
+You can skip this stage. Play will post the same order. Use the page if you want to see the guest UI.
+
+New terminal:
 
 ```
 cd C:\Users\Omen\Desktop\Butler\apps\hotel-ui
 pnpm dev
 ```
 
-This serves `http://localhost:3001`. The page lists the honey jar, jam jar 1, and jam jar 2, and the button is “Order the jars.” Rooms are 1204, 1205, and 1206. Anything other than that set returns 400. The room is who ordered.
+Pass: `http://localhost:3001` lists honey jar, jam jar 1, jam jar 2. Button is “Order the jars.” Rooms 1204, 1205, 1206. Do not click yet unless you want the hotel to create the job before Play.
 
-The order route creates `jobId` as `0x` plus 32 random bytes, because escrow deposit and release take `bytes32`. It sends `machineId` from `PEAQ_MACHINE_ID` when that value is 32 bytes. It posts to the settler `/order`. The page loads `.env.local` only at process start, so restart the hotel UI after changing it. A missing settler returns 503.
+Restart this process after changing `.env.local`. Missing settler returns 503.
 
-Leave the page open. Do not click Order yet.
+---
 
-## 4. Open the kitchen world, and leave it paused
+## Stage 4 — kitchen world, still paused
 
-Open `C:\Users\Omen\Desktop\Butler\worlds\kitchen.wbt` in Webots R2025a. Select `servebot-1`. Its controller must be `mission_control`, and the supervisor checkbox must be on. `butler_observe` is already in the world as a second robot. `mcp_robot` on `servebot-1` means the mission is not running.
+Open `C:\Users\Omen\Desktop\Butler\worlds\kitchen.wbt` in Webots R2025a.
 
-Do not press Play yet if this is a fresh launch. `mission_control` waits until the bridge goal has a job id, then maps if needed, picks the honey jar, then the two jam jars, and places them on the table. Pressing Play with no goal leaves the robot waiting. No USDC moves until that goal exists and the honey jar is actually picked up.
+Select `servebot-1`. Controller must be `mission_control`. Supervisor checkbox on. `butler_observe` is a second robot in the world. If `servebot-1` is `mcp_robot`, the mission will not run.
 
-If another Webots is already listening on port 1234, this world comes up on 1235 and the extern controllers can fail to attach. Close the extra instance, or start this world with `--port=1236`.
+If another Webots already owns port 1234, this world binds 1235 and extern controllers can fail. Close the extra instance, or use `--port=1236`.
 
-If `servebot-1` is already running from an earlier order and the fleet event is idle, you can leave it playing only after you have a new job id on the bridge. A new job id is what the next pickup and table place will settle. Do not replay a job that already settled.
+If a previous fast-mode run exploded the TIAGo pose, reload the world file before Play.
 
-## 5. Place the order
+Pass: kitchen visible, robot on the floor, three jars on the counter, world still paused.
 
-On `http://localhost:3001`, choose room 1204 and order the jars. The button can sit while Circle accepts the deposit. Success on the page is `Order sent. Job 0x….` Copy that job id.
+---
 
-What that click starts:
+## Stage 5 — Play starts the paid order (Circle deposit)
 
-- The hotel route posts `jobId`, `room`, `item`, and `machineId` to the settler.
-- Escrow deposit calls `deposit(bytes32,bytes32,uint256)` from the guest Circle wallet for 6000000 base units, which is 6.00 USDC. Circle accepts slightly before the chain receipt is final. The guest must still have allowance and balance.
-- The settler POSTs that job id, `servebot-1`, and the room to `http://127.0.0.1:8787/jobs`. The bridge answers 201 and stores the goal.
+Press Play. Watch the **Webots console** and the **settler terminal**.
 
-Confirm the goal before you press Play:
+If no goal was on the bridge, pass lines look like:
 
 ```
-GET http://127.0.0.1:8787/robots/servebot-1/goal
+[kitchen] Play: posting order 0x…
+[kitchen] locking 6.00 USDC for room-1204
+[kitchen] Circle deposit <uuid> arc https://testnet.arcscan.app/tx/0x…
+[kitchen] paid goal is on the bridge
+servebot-1 starting kitchen order 0x…
 ```
 
-The `jobId` must be the one the page just printed, and `room` must be `room-1204`. If the goal is still empty, the settler did not finish posting the job. Check the settler terminal.
+If the hotel already ordered, you see `[kitchen] using paid goal 0x…` instead of Play posting.
 
-## 6. Press Play
+Copy the `0x` job id (66 characters).
 
-Press Play only after the goal matches the new job. `mission_control` reads that goal and then starts the jar tree. The Webots console prints `servebot-1 waiting for honey jar...` until the goal exists, then `servebot-1 starting kitchen order`. `butler_observe` prints pickup and delivery with the jar names and posts telemetry every eight steps. Pickup is the honey jar leaving the counter with the robot. Delivery is that honey jar resting on the first table spot `(-0.38, -0.68)`. The tree then continues with jam jar 1 and jam jar 2. Those later places do not open a second payment. Wait until the robot is idle, then send a new job id, before you order again.
+```
+curl.exe http://127.0.0.1:8787/robots/servebot-1/goal
+curl.exe http://127.0.0.1:8788/jobs/0xYOUR_JOB_ID
+```
 
-Fleet telemetry, with header `X-Butler-Secret: change-me`, is the proof the trip is real. You should see `event` move to `pickup` with a jar name in `carried`, then `delivery` with that jar on a table spot. The robot does not go to `(-5.95, …)`.
+Pass:
 
-The bridge waits 8 seconds on a `delivery` event before it calls the settler. It will not call delivery until pickup has already been sent for that job id.
+- Goal `jobId` matches, `room` is `room-1204` (or the room you ordered from the page).
+- Settler job lines include the Circle deposit id and the Arcscan link.
+- Guest USDC dropped by 6.00 plus gas. Circle transaction reaches COMPLETE. Arc hash (when present) opens at `https://testnet.arcscan.app/tx/<hash>`.
 
-## 7. What pickup and settle do
+The robot may map first. That is still the same job. Do not press Play again.
 
-When the jar is with the robot, the bridge POSTs `/pickup` to the settler. That does two things:
+---
 
-- Pay vending sends 2.00 USDC from the robot wallet to the vending address.
-- Record pickup revenue calls peaq `submitEvent` for machine `servebot-1`, value 200, currency USD. The timestamp sent on chain is the local clock minus 30 seconds, because peaq rejects a timestamp ahead of the block. Arc’s chain id is not an allowed event source, so `sourceChainId` stays 0 and the Arc hash is carried in the note.
+## Stage 6 — honey jar pickup (Circle vending + peaq 200)
 
-After the 8 second dwell on `delivery`, the bridge POSTs `/delivery` to the settler. A normal table place is `failure: false`.
+Wait until the gripper has the honey jar and the jar has left the counter.
 
-- Escrow release is sent by the Circle settler wallet. `release` splits the 6.00 as 4.80 / 0.60 / 0.60.
-- Record delivery revenue writes value 600 on the same machine.
+Webots / `butler_observe` prints a pickup with `honey jar`. Fleet:
 
-The settler terminal prints Circle transaction ids and peaq hashes. The bridge waits up to 120 seconds for each call.
+```
+curl.exe -H "X-Butler-Secret: change-me" http://127.0.0.1:8787/fleet
+```
 
-## 8. Confirm the money and the record
+Pass: `event` is `pickup`, `carried` includes honey jar. The robot is not at `(-5.95, …)`.
 
-Escrow `jobs(jobId)` should show amount 6.00, released true, refunded false.
+Then the settler / Webots console:
 
-Circle transactions should reach COMPLETE. Their Arc hashes open at `https://testnet.arcscan.app/tx/<hash>`.
+```
+[kitchen] Circle vending 2.00 <uuid>
+[kitchen] peaq pickup revenue 0x…
+```
 
-peaq hashes open at `https://peaq.subscan.io/tx/<hash>`. Use `/tx/`, not `/evmtx/`.
+Pass:
 
-A finished run has one Arc deposit, one Arc vending payment, one Arc release, and two peaq revenue transactions. The first jar is on the table. The robot may still be placing the remaining jam jars. Those are not a second paid job.
+- Robot wallet down about 2.00 plus gas. Vending up about 2.00.
+- peaq hash opens at `https://peaq.subscan.io/tx/<hash>` (use `/tx/`, not `/evmtx/`).
+- Machine page can show the new revenue event.
 
-## If a step fails
+If Circle vending works and peaq fails, the registry has no controller key or the signer is not this machine’s controller. Deposit already happened; do not replay that job id.
+
+---
+
+## Stage 7 — honey jar on the first table spot (Circle release + peaq 600)
+
+Delivery is the honey jar resting on `(-0.38, -0.68)`. The bridge waits 8 seconds of wall clock after that telemetry, and it will not call delivery until pickup already ran for this job id.
+
+Pass after the dwell:
+
+```
+[kitchen] Circle release <uuid>
+[kitchen] peaq delivery revenue 0x…
+```
+
+Fleet `event` is `delivery` with the honey jar on a table spot.
+
+Escrow `jobs(jobId)` on Arc: amount 6.00, released true, refunded false. Split 4.80 / 0.60 / 0.60.
+
+The tree then places jam jar 1 and jam jar 2. Those places do not start another payment. Wait for `DONE` in the Webots console before a new order.
+
+---
+
+## Stage 8 — finished job
+
+A complete paid run has:
+
+1. One Arc deposit (6.00 lock)
+2. One Arc vending payment (2.00)
+3. One Arc release (6.00 split)
+4. Two peaq revenue txs (200 then 600)
+5. Honey jar on the first table spot
+
+`GET /jobs/0xYOUR_JOB_ID` on the settler should list all five console lines. Circle txs COMPLETE. Both peaq hashes on Subscan.
+
+---
+
+## Hotel-first variant
+
+Same stages 0–4. On the hotel page choose room 1204 and order the jars. Success text is `Order sent. Job 0x….` Then confirm goal before or while Play is running. Play must not post a second order while that goal is still on the bridge.
+
+---
+
+## If a stage fails
 
 | What you see | What it means |
 | --- | --- |
-| Hotel page 503 | The settler is not running on `8788`. Start `packages/settler`. |
+| Settler never prints the listen line | Python is 3.9, venv missing, or `.env` failed to load. Use `packages\settler\.venv`. |
+| `curl` health on 8788 fails | Settler is not running, or another process owns the port. |
+| Hotel page 503 | Settler is not on `8788`. |
 | Hotel page 502 | Circle deposit failed, or the bridge rejected `/jobs`. Read the settler terminal. |
-| Deposit succeeds, robot never stores a goal | The settler could not POST to `127.0.0.1:8787`. Start the bridge. |
-| Robot grabs before any USDC moves | Play was pressed before a paid goal was on the bridge. Reset the world, order again, then Play. |
-| Vending transfer fails with insufficient native token | The robot holds 2.00 or less. Refill it from the operator so it can pay 2.00 plus gas. |
-| Guest deposit reverts | The guest is short of 6.00 plus gas, or the USDC allowance for the escrow is spent. |
-| Pickup Circle works, peaq fails | The local wallet registry has no controller key, or the signer address is not the machine controller. |
-| Settle never starts | `delivery` was not held for 8 seconds, or pickup never fired for this job. |
-| Revenue reverts | Value must be cents (200 on pickup, 600 on delivery) and the timestamp must be at or before the peaq block. The settler already sends the clock minus 30 seconds. |
-| Soup, or any item other than the three jars | The hotel route returns 400. The order is honey jar, jam jar 1, and jam jar 2. |
-| Unknown room | The bridge returns 409. The page only offers 1204, 1205, and 1206. |
+| Play: order failed | Settler or Circle down, or guest short of 6.00 plus gas. |
+| Deposit succeeds, goal stays `{}` | Settler could not POST `127.0.0.1:8787`. Start the bridge. |
+| `[butler_observe] bridge post failed` | Bridge down, or the world was in a bad pose. Reload `kitchen.wbt`. |
+| Vending transfer fails, insufficient native token | Robot holds 2.00 or less. Refill from the operator. |
+| Guest deposit reverts | Guest short of 6.00 plus gas, or USDC allowance for the escrow is spent. |
+| Pickup Circle works, peaq fails | No controller key in `peaqos_wallets.json`, or signer is not this machine controller. |
+| Settle never starts | Delivery was not held 8 seconds, or pickup never fired for this job. |
+| Revenue reverts | Value must be cents (200 / 600). Timestamp must not be ahead of the peaq block. The settler already sends clock minus 30 seconds. |
+| Soup or any other item | Hotel route 400. Order is the three jars. |
+| Unknown room | Bridge 409. Only 1204, 1205, 1206. |
+| Robot in pieces / flying | Fast mode exploded physics. Reload the world, real-time, Play once. |
