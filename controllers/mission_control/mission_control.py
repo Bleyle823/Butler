@@ -1,7 +1,22 @@
-"""main controller."""
+"""main controller.
 
-import py_trees
+On Play, starts a paid kitchen order if none is on the bridge, then runs
+the jar tree: honey jar, jam jar 1, jam jar 2 onto the three table spots.
+
+This process talks to the local settler the way peaq ROS callers talk to
+peaqos_node: job id and room only. Circle's entity secret and the peaq
+controller key stay in the settler.
+"""
+
+import json
+import os
+import threading
+import time
+import urllib.error
+import urllib.request
+
 import numpy as np
+import py_trees
 
 from controller import Robot, Supervisor
 
@@ -209,9 +224,131 @@ BT = Sequence("main", children=[
 BT.setup_with_descendants()
 #-----------------------------------------------------------------------------
 
+GOAL_URL = "http://127.0.0.1:8787/robots/servebot-1/goal"
+SETTLER_URL = "http://127.0.0.1:8788"
+KITCHEN_ITEMS = ["honey jar", "jam jar 1", "jam jar 2"]
+
+
+def paid_kitchen_job():
+    try:
+        with urllib.request.urlopen(GOAL_URL, timeout=0.2) as response:
+            body = json.loads(response.read().decode("utf-8") or "{}")
+    except Exception:
+        return ""
+    job_id = str(body.get("jobId") or "")
+    if job_id.startswith("0x") and len(job_id) == 66:
+        return job_id
+    return ""
+
+
+def new_job_id():
+    return "0x" + os.urandom(32).hex()
+
+
+class KitchenOrder:
+    def __init__(self):
+        self.lock = threading.Lock()
+        self.job_id = ""
+        self.printed = 0
+        self.error = ""
+
+    def set_job(self, job_id):
+        with self.lock:
+            if job_id:
+                self.job_id = job_id
+
+    def start(self):
+        existing = paid_kitchen_job()
+        if existing:
+            self.set_job(existing)
+            print("[kitchen] using paid goal %s" % existing, flush=True)
+        else:
+            job_id = new_job_id()
+            self.set_job(job_id)
+            print("[kitchen] Play: posting order %s" % job_id, flush=True)
+            worker = threading.Thread(target=self._post_order, args=(job_id,), daemon=True)
+            worker.start()
+        poller = threading.Thread(target=self._poll_loop, daemon=True)
+        poller.start()
+
+    def _poll_loop(self):
+        while True:
+            self.print_new_lines()
+            time.sleep(1.0)
+
+    def _post_order(self, job_id):
+        body = json.dumps({
+            "jobId": job_id,
+            "room": "room-1204",
+            "items": KITCHEN_ITEMS,
+        }).encode("utf-8")
+        request = urllib.request.Request(
+            SETTLER_URL + "/order",
+            data=body,
+            method="POST",
+            headers={"Content-Type": "application/json"},
+        )
+        try:
+            with urllib.request.urlopen(request, timeout=180) as response:
+                payload = json.loads(response.read().decode("utf-8") or "{}")
+            posted = str(payload.get("jobId") or job_id)
+            self.set_job(posted)
+        except urllib.error.HTTPError as error:
+            detail = error.read().decode("utf-8")
+            with self.lock:
+                self.error = detail or ("HTTP %s" % error.code)
+        except Exception as error:
+            with self.lock:
+                self.error = str(error)
+
+    def print_new_lines(self):
+        with self.lock:
+            job_id = self.job_id
+            error = self.error
+            self.error = ""
+        if error:
+            print("[kitchen] order failed: %s" % error, flush=True)
+        if not job_id:
+            return
+        try:
+            with urllib.request.urlopen(SETTLER_URL + "/jobs/" + job_id, timeout=0.4) as response:
+                body = json.loads(response.read().decode("utf-8") or "{}")
+        except Exception:
+            return
+        lines = body.get("lines") or []
+        with self.lock:
+            start = self.printed
+            self.printed = len(lines)
+        for line in lines[start:]:
+            print("[kitchen] %s" % line, flush=True)
+
+
+order = KitchenOrder()
+order.start()
+print("servebot-1 waiting for honey jar, jam jar 1, and jam jar 2", flush=True)
+while robot.step(timestep) != -1:
+    paid = paid_kitchen_job()
+    if paid:
+        order.set_job(paid)
+        print("servebot-1 starting kitchen order %s" % paid, flush=True)
+        break
+
+def hold_still():
+    for name in ("wheel_left_joint", "wheel_right_joint"):
+        motor = robot.getDevice(name)
+        if motor is None:
+            continue
+        motor.setPosition(float("inf"))
+        motor.setVelocity(0.0)
+
+
 #RUN BT
-while robot.step(timestep) != 1:
+while robot.step(timestep) != -1:
     BT.tick_once()
     if BT.status != py_trees.common.Status.RUNNING:
+        order.print_new_lines()
         print("DONE")
+        hold_still()
+        while robot.step(timestep) != -1:
+            hold_still()
         break

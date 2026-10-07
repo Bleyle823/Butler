@@ -1,17 +1,12 @@
 import { randomBytes } from "node:crypto";
 
 export async function POST(request: Request): Promise<Response> {
-  const webhook = process.env.KEEPERHUB_DISPATCH_WEBHOOK || "";
-  if (!webhook) {
-    return Response.json(
-      { error: "KEEPERHUB_DISPATCH_WEBHOOK is not set. Import the dispatch workflow and paste its webhook URL." },
-      { status: 503 }
-    );
-  }
+  const settler = process.env.BUTLER_SETTLER_URL || "http://127.0.0.1:8788";
 
-  let body: { room?: string; item?: string };
+  const kitchen = ["honey jar", "jam jar 1", "jam jar 2"];
+  let body: { room?: string; items?: string[] };
   try {
-    body = (await request.json()) as { room?: string; item?: string };
+    body = (await request.json()) as { room?: string; items?: string[] };
   } catch {
     return Response.json({ error: "Invalid JSON" }, { status: 400 });
   }
@@ -20,8 +15,12 @@ export async function POST(request: Request): Promise<Response> {
   if (!["room-1204", "room-1205", "room-1206"].includes(room)) {
     return Response.json({ error: "Unknown room" }, { status: 400 });
   }
-  if (body.item !== "pizza") {
-    return Response.json({ error: "Only pizza is on the menu" }, { status: 400 });
+  const items = Array.isArray(body.items) ? body.items : [];
+  if (items.length !== kitchen.length || items.some((name, index) => name !== kitchen[index])) {
+    return Response.json(
+      { error: "Order is honey jar, jam jar 1, and jam jar 2" },
+      { status: 400 }
+    );
   }
 
   const jobId = `0x${randomBytes(32).toString("hex")}`;
@@ -29,27 +28,41 @@ export async function POST(request: Request): Promise<Response> {
   const machineId = /^0x[0-9a-fA-F]{64}$/.test(configuredMachine)
     ? configuredMachine
     : `0x${"0".repeat(64)}`;
-  const webhookKey = process.env.KEEPERHUB_WEBHOOK_KEY || "";
-  const upstream = await fetch(webhook, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      ...(webhookKey ? { Authorization: `Bearer ${webhookKey}` } : {}),
-    },
-    body: JSON.stringify({
-      jobId,
-      room,
-      item: "pizza",
-      machineId,
-    }),
-  });
-
-  if (!upstream.ok) {
+  const secret = process.env.BUTLER_SECRET || "change-me";
+  let upstream: Response;
+  try {
+    upstream = await fetch(`${settler.replace(/\/$/, "")}/order`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Butler-Secret": secret,
+      },
+      body: JSON.stringify({
+        jobId,
+        room,
+        items: kitchen,
+        machineId,
+      }),
+    });
+  } catch {
     return Response.json(
-      { error: `Dispatch webhook returned ${upstream.status}` },
-      { status: 502 }
+      { error: "Settler is not answering. Start packages/settler first." },
+      { status: 503 }
     );
   }
 
-  return Response.json({ jobId, room });
+  if (!upstream.ok) {
+    let detail = `Settler returned ${upstream.status}`;
+    try {
+      const failed = (await upstream.json()) as { error?: string };
+      if (failed.error) {
+        detail = failed.error;
+      }
+    } catch {
+      detail = `Settler returned ${upstream.status}`;
+    }
+    return Response.json({ error: detail }, { status: 502 });
+  }
+
+  return Response.json({ jobId, room, items: kitchen });
 }

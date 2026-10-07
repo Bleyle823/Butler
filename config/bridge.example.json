@@ -2,9 +2,9 @@
   "host": "127.0.0.1",
   "port": 8787,
   "secret": "change-me",
-  "keeperhub": {
-    "pickup_webhook": "",
-    "delivery_webhook": ""
+  "settler": {
+    "pickup_url": "http://127.0.0.1:8788/pickup",
+    "delivery_url": "http://127.0.0.1:8788/delivery"
   },
   "rooms": {
     "room-1204": { "x": -5.95, "y": -3.25 },

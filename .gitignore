@@ -2,14 +2,29 @@
 .env
 .env.*
 !.env.example
+packages/settler/node_modules/
+packages/settler/.venv/
 config/wallets.json
 config/bridge.json
+config/peaq.yaml
+config/peaqos_wallets.json
+.peaqos/
 *.pem
 *.key
 recovery.json
 **/*entity*secret*
 **/*turnkey*
 **/*webhook*secret*
+
+# Tests stay on the machine
+**/tests/
+**/test/
+**/*.test.ts
+**/*.test.js
+**/test.ts
+**/test.js
+**/test_*.py
+**/*_test.py
 
 # Editor
 .vscode/

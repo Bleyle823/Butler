@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 const ROOMS = ["room-1204", "room-1205", "room-1206"];
+const ITEMS = ["honey jar", "jam jar 1", "jam jar 2"];
 
 export default function OrderPage(): React.ReactElement {
   const [room, setRoom] = useState("room-1204");
@@ -17,7 +18,7 @@ export default function OrderPage(): React.ReactElement {
       const response = await fetch("/api/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ room, item: "pizza" }),
+        body: JSON.stringify({ room, items: ITEMS }),
       });
       const body = (await response.json()) as { error?: string; jobId?: string };
       if (!response.ok) {
@@ -34,10 +35,19 @@ export default function OrderPage(): React.ReactElement {
 
   return (
     <main>
-      <h1>Room service</h1>
-      <p>Pizza is 6.00 USDC. The robot moves only after the order is accepted.</p>
+      <h1>Kitchen order</h1>
+      <p>
+        servebot-1 brings the honey jar, then jam jar 1 and jam jar 2, onto the kitchen table.
+        The set is 6.00 USDC. The room is who ordered. The robot starts that run only after
+        the deposit is on the bridge.
+      </p>
+      <ul>
+        {ITEMS.map((name) => (
+          <li key={name}>{name}</li>
+        ))}
+      </ul>
       <form onSubmit={submit}>
-        <label htmlFor="room">Room</label>
+        <label htmlFor="room">Who ordered</label>
         <div>
           <select id="room" value={room} onChange={(event) => setRoom(event.target.value)}>
             {ROOMS.map((name) => (
@@ -48,7 +58,7 @@ export default function OrderPage(): React.ReactElement {
           </select>
         </div>
         <button disabled={pending} type="submit">
-          {pending ? "Sending" : "Order pizza"}
+          {pending ? "Sending" : "Order the jars"}
         </button>
       </form>
       {message ? <p>{message}</p> : null}

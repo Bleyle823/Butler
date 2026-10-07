@@ -233,7 +233,6 @@ class route(Behaviour):
             print("No path exists!")
             return Status.FAILURE
             
-        #route finder using Greedy-Dijkstra Hybrid-----------------------------------------------
         (currentdist,node) = heappop(self.queue) #pop(0) uses first in first out
         self.visited.add(node)
         for (costnton,neighbor) in getNeighbors(node,self.map_file):
@@ -245,10 +244,9 @@ class route(Behaviour):
                     heappush(self.queue,(newcost,neighbor))
                     self.parent[neighbor] = node
                     if neighbor == self.goal:
-                        print("Router has found a path using Greedy-Dijkstra Hybrid....")
+                        print("path found", flush=True)
                         return Status.SUCCESS
         return Status.RUNNING
-        #-------------------------------------------------------------------------------
         
     def terminate(self, new_status):
         if new_status == Status.SUCCESS:
