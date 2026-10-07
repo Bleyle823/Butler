@@ -42,8 +42,8 @@ def post(body):
         try:
             with urllib.request.urlopen(request, timeout=0.05) as response:
                 response.read()
-        except Exception:
-            pass
+        except Exception as error:
+            print(f"[butler_observe] bridge post failed: {error}", flush=True)
         finally:
             with _post_lock:
                 _post_busy = False
@@ -88,6 +88,7 @@ serve = None
 jars = {}
 starts = {}
 step_count = 0
+last_event = None
 
 while robot.step(timestep) != -1:
     step_count += 1
@@ -125,6 +126,11 @@ while robot.step(timestep) != -1:
     else:
         event = ""
 
+    if event != last_event:
+        shown = carried or delivered
+        print(f"[butler_observe] {event or 'idle'} {shown}", flush=True)
+        last_event = event
+
     if step_count % 8 != 0:
         continue
 
@@ -133,5 +139,6 @@ while robot.step(timestep) != -1:
         "pose": [pose[0], pose[1], pose[2], yaw_of(serve)],
         "battery": 1.0,
         "event": event,
-        "carried": carried or delivered,
+        "carried": carried,
+        "delivered": delivered,
     })

@@ -1,7 +1,14 @@
-"""main controller."""
+"""main controller.
+
+Waits for a paid kitchen goal, then runs the existing jar tree:
+honey jar, jam jar 1, jam jar 2 onto the three table spots.
+This process does not call Circle or peaq.
+"""
 
 import py_trees
 import numpy as np
+import json
+import urllib.request
 
 from controller import Robot, Supervisor
 
@@ -209,8 +216,30 @@ BT = Sequence("main", children=[
 BT.setup_with_descendants()
 #-----------------------------------------------------------------------------
 
+GOAL_URL = "http://127.0.0.1:8787/robots/servebot-1/goal"
+
+
+def paid_kitchen_job():
+    try:
+        with urllib.request.urlopen(GOAL_URL, timeout=0.2) as response:
+            body = json.loads(response.read().decode("utf-8") or "{}")
+    except Exception:
+        return ""
+    job_id = str(body.get("jobId") or "")
+    if job_id.startswith("0x") and len(job_id) == 66:
+        return job_id
+    return ""
+
+
+print("servebot-1 waiting for honey jar, jam jar 1, and jam jar 2", flush=True)
+while robot.step(timestep) != -1:
+    job_id = paid_kitchen_job()
+    if job_id:
+        print(f"servebot-1 starting kitchen order {job_id}", flush=True)
+        break
+
 #RUN BT
-while robot.step(timestep) != 1:
+while robot.step(timestep) != -1:
     BT.tick_once()
     if BT.status != py_trees.common.Status.RUNNING:
         print("DONE")
