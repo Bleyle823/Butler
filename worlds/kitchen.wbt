@@ -6345,3 +6345,10 @@ Robot {
   controller "butler_observe"
   supervisor TRUE
 }
+
+Robot {
+  translation 0 0 -10
+  name "mcp_bridge"
+  controller "mcp_bridge"
+  supervisor TRUE
+}
