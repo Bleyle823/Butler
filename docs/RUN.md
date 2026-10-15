@@ -4,7 +4,7 @@ Follow these stages in order. Do not skip a pass check. One robot, one paid job 
 
 Open `worlds/kitchen.wbt`. The robot controller is `mission_control`. `butler_observe` only reads the scene and posts telemetry. Rooms 1204, 1205, and 1206 are who ordered. The robot does not drive into them.
 
-Press Play with the settler and bridge already up. If the bridge has no paid goal, Play posts the kitchen order (honey jar, jam jar 1, jam jar 2 for room 1204). The hotel page can place that same order first; Play then uses the existing goal.
+Press Play with the settler and bridge already up. If the bridge has no paid goal, Play posts the kitchen order (heineken beer, beverage can, water bottle for room 1204). The hotel page can place that same order first; Play then uses the existing goal.
 
 The Webots controller talks to the settler the way peaq ROS talks to `peaqos_node`: job id and room only. Circle’s entity secret and the peaq controller key stay in the settler.
 
@@ -33,7 +33,7 @@ Fixed addresses for this project:
 
 ## Money each order needs
 
-The kitchen set is 6.00 USDC from the guest into escrow. On honey-jar pickup the robot pays vending 2.00 from its own wallet. After that honey jar sits on the first table spot `(-0.38, -0.68)`, escrow releases 4.80 / 0.60 / 0.60 to operator / manufacturer / robot reserve. peaq records 200 cents on pickup and 600 cents on delivery. The two jam jars are the rest of the same run. They do not open a second payment.
+The kitchen set is 6.00 USDC from the guest into escrow. On heineken pickup the robot pays vending 2.00 from its own wallet. After that bottle sits on the first table spot `(-0.38, -0.68)`, escrow releases 4.80 / 0.60 / 0.60 to operator / manufacturer / robot reserve. peaq records 200 cents on pickup and 600 cents on delivery. The can and water bottle are the rest of the same run. They do not open a second payment.
 
 On Arc Testnet native gas and USDC are the same token. `eth_getBalance` is 18 decimals. ERC-20 transfers use 6. A wallet that holds exactly 2.00 cannot send 2.00.
 
@@ -122,7 +122,7 @@ cd C:\Users\Omen\Desktop\Butler\apps\hotel-ui
 pnpm dev
 ```
 
-Pass: `http://localhost:3001` lists honey jar, jam jar 1, jam jar 2. Button is “Order the jars.” Rooms 1204, 1205, 1206. Do not click yet unless you want the hotel to create the job before Play.
+Pass: `http://localhost:3001` lists heineken beer, beverage can, water bottle. Button is “Order the drinks.” Rooms 1204, 1205, 1206. Do not click yet unless you want the hotel to create the job before Play.
 
 Restart this process after changing `.env.local`. Missing settler returns 503.
 
@@ -138,7 +138,7 @@ If another Webots already owns port 1234, this world binds 1235 and extern contr
 
 If a previous fast-mode run exploded the TIAGo pose, reload the world file before Play.
 
-Pass: kitchen visible, robot on the floor, three jars on the counter, world still paused.
+Pass: kitchen visible, robot on the floor, heineken, can, and water bottle on the counter, world still paused.
 
 ---
 
@@ -175,17 +175,17 @@ The robot may map first. That is still the same job. Do not press Play again.
 
 ---
 
-## Stage 6 — honey jar pickup (Circle vending + peaq 200)
+## Stage 6 — heineken beer pickup (Circle vending + peaq 200)
 
-Wait until the gripper has the honey jar and the jar has left the counter.
+Wait until the gripper has the heineken beer and the bottle has left the counter.
 
-Webots / `butler_observe` prints a pickup with `honey jar`. Fleet:
+Webots / `butler_observe` prints a pickup with `heineken beer`. Fleet:
 
 ```
 curl.exe -H "X-Butler-Secret: change-me" http://127.0.0.1:8787/fleet
 ```
 
-Pass: `event` is `pickup`, `carried` includes honey jar. The robot is not at `(-5.95, …)`.
+Pass: `event` is `pickup`, `carried` includes heineken beer. The robot is not at `(-5.95, …)`.
 
 Then the settler / Webots console:
 
@@ -204,9 +204,9 @@ If Circle vending works and peaq fails, the registry has no controller key or th
 
 ---
 
-## Stage 7 — honey jar on the first table spot (Circle release + peaq 600)
+## Stage 7 — heineken beer on the first table spot (Circle release + peaq 600)
 
-Delivery is the honey jar resting on `(-0.38, -0.68)`. The bridge waits 8 seconds of wall clock after that telemetry, and it will not call delivery until pickup already ran for this job id.
+Delivery is the heineken beer resting on `(-0.38, -0.68)`. The bridge waits 8 seconds of wall clock after that telemetry, and it will not call delivery until pickup already ran for this job id.
 
 Pass after the dwell:
 
@@ -215,11 +215,11 @@ Pass after the dwell:
 [kitchen] peaq delivery revenue 0x…
 ```
 
-Fleet `event` is `delivery` with the honey jar on a table spot.
+Fleet `event` is `delivery` with the heineken beer on a table spot.
 
 Escrow `jobs(jobId)` on Arc: amount 6.00, released true, refunded false. Split 4.80 / 0.60 / 0.60.
 
-The tree then places jam jar 1 and jam jar 2. Those places do not start another payment. Wait for `DONE` in the Webots console before a new order.
+The tree then places the beverage can and the water bottle. Those places do not start another payment. Wait for `DONE` in the Webots console before a new order.
 
 ---
 
@@ -231,7 +231,7 @@ A complete paid run has:
 2. One Arc vending payment (2.00)
 3. One Arc release (6.00 split)
 4. Two peaq revenue txs (200 then 600)
-5. Honey jar on the first table spot
+5. Heineken beer on the first table spot
 
 `GET /jobs/0xYOUR_JOB_ID` on the settler should list all five console lines. Circle txs COMPLETE. Both peaq hashes on Subscan.
 
@@ -239,7 +239,7 @@ A complete paid run has:
 
 ## Hotel-first variant
 
-Same stages 0–4. On the hotel page choose room 1204 and order the jars. Success text is `Order sent. Job 0x….` Then confirm goal before or while Play is running. Play must not post a second order while that goal is still on the bridge.
+Same stages 0–4. On the hotel page choose room 1204 and order the drinks. Success text is `Order sent. Job 0x….` Then confirm goal before or while Play is running. Play must not post a second order while that goal is still on the bridge.
 
 ---
 
@@ -259,6 +259,6 @@ Same stages 0–4. On the hotel page choose room 1204 and order the jars. Succes
 | Pickup Circle works, peaq fails | No controller key in `peaqos_wallets.json`, or signer is not this machine controller. |
 | Settle never starts | Delivery was not held 8 seconds, or pickup never fired for this job. |
 | Revenue reverts | Value must be cents (200 / 600). Timestamp must not be ahead of the peaq block. The settler already sends clock minus 30 seconds. |
-| Soup or any other item | Hotel route 400. Order is the three jars. |
+| Soup or any other item | Hotel route 400. Order is the three drinks. |
 | Unknown room | Bridge 409. Only 1204, 1205, 1206. |
 | Robot in pieces / flying | Fast mode exploded physics. Reload the world, real-time, Play once. |

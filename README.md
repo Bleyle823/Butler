@@ -48,7 +48,7 @@ Operator steps live in [`docs/RUN.md`](docs/RUN.md).
 
 ## The robot
 
-`servebot-1` is a TIAGo with a seven-joint arm and gripper. `mission_control` runs the jar tree. `butler_observe` reads the scene and posts pose, pickup, and delivery. It serves rooms 1204, 1205, and 1206 and does not drive into them. The paid set is the honey jar, jam jar 1, and jam jar 2. One job. Press Play posts that order to the settler if none is waiting.
+`servebot-1` is a TIAGo with a seven-joint arm and gripper. `mission_control` runs the drink tree. `butler_observe` reads the scene and posts pose, pickup, and delivery. It serves rooms 1204, 1205, and 1206 and does not drive into them. The paid set is the heineken beer, beverage can, and water bottle. One job. Press Play posts that order to the settler if none is waiting.
 
 Webots controller Python is 3.9. `peaq-os-sdk` needs 3.10 or newer, so the SDK stays in the settler. The peaq controller key stays in a local address-keyed wallet file.
 
@@ -75,7 +75,7 @@ Webots controller Python is 3.9. `peaq-os-sdk` needs 3.10 or newer, so the SDK s
 - Manufacturer: `0xC26ce44fC41BB13503d20945653767abcbd17f7E`
 - Settler: `0x2838270efa7a1aa0196bb98a8f8230771aed3b80`
 
-The guest locks 6.00 USDC before the robot starts. Pickup of the honey jar pays vending 2.00 from the robot wallet. Delivery of that jar releases escrow as 4.80 to the operator, 0.60 to the manufacturer, and 0.60 to the robot reserve. peaq records 200 cents on pickup and 600 cents on delivery. The two jam jars finish the same job.
+The guest locks 6.00 USDC before the robot starts. Pickup of the heineken beer pays vending 2.00 from the robot wallet. Delivery of that bottle releases escrow as 4.80 to the operator, 0.60 to the manufacturer, and 0.60 to the robot reserve. peaq records 200 cents on pickup and 600 cents on delivery. The can and water bottle finish the same job.
 
 ## A finished run
 

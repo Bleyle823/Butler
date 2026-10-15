@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const ROOMS = ["room-1204", "room-1205", "room-1206"];
-const ITEMS = ["honey jar", "jam jar 1", "jam jar 2"];
+const ITEMS = ["heineken beer", "beverage can", "water bottle"];
 
 export default function OrderPage(): React.ReactElement {
   const [room, setRoom] = useState("room-1204");
@@ -37,7 +37,7 @@ export default function OrderPage(): React.ReactElement {
     <main>
       <h1>Kitchen order</h1>
       <p>
-        servebot-1 brings the honey jar, then jam jar 1 and jam jar 2, onto the kitchen table.
+        servebot-1 brings the heineken beer, then the beverage can and the water bottle, onto the kitchen table.
         The set is 6.00 USDC. The room is who ordered. The robot starts that run only after
         the deposit is on the bridge.
       </p>
@@ -58,7 +58,7 @@ export default function OrderPage(): React.ReactElement {
           </select>
         </div>
         <button disabled={pending} type="submit">
-          {pending ? "Sending" : "Order the jars"}
+          {pending ? "Sending" : "Order the drinks"}
         </button>
       </form>
       {message ? <p>{message}</p> : null}

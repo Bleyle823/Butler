@@ -1,7 +1,7 @@
 """main controller.
 
 On Play, starts a paid kitchen order if none is on the bridge, then runs
-the jar tree: honey jar, jam jar 1, jam jar 2 onto the three table spots.
+the item tree: heineken beer, beverage can, water bottle onto the three table spots.
 
 This process talks to the local settler the way peaq ROS callers talk to
 peaqos_node: job id and room only. Circle's entity secret and the peaq
@@ -141,21 +141,21 @@ BT = Sequence("main", children=[
                 move("Move around the table",blackboard)
                 ])],memory=True),
                 
-            #find and pick up the first jar (honey)
+            #find and pick up the first item (heineken)
             route("compute path to counter",blackboard,grab_position),
             move("move to counter",blackboard),
-            search("look for honey", blackboard, ["honey jar","jam jar"]),
-            change_height_to("adjust height",blackboard,object_name="honey jar"),
-            rotate_to_face("honey jar",blackboard,object_name="honey jar"),
+            search("look for drinks", blackboard, ["heineken beer","beverage can","water bottle"]),
+            change_height_to("adjust height",blackboard,object_name="heineken beer"),
+            rotate_to_face("heineken beer",blackboard,object_name="heineken beer"),
             arm_extend_position("arm grab ready", blackboard),
             open_gripper("open grip", blackboard),
-            get_in_position("approach honey",blackboard,object_name="honey jar"),
-            grab_item("grab honey jar",blackboard),
-            lift_arm("pick up honey jar",blackboard),
+            get_in_position("approach heineken",blackboard,object_name="heineken beer"),
+            grab_item("grab heineken beer",blackboard),
+            lift_arm("pick up heineken beer",blackboard),
             back_up("pull back", blackboard),
             back_up("pull back", blackboard),
             
-            #place the honey on the table
+            #place the heineken on the table
             route("compute path to spot 1",blackboard,drop_positions[0]),
             move("move to spot 1",blackboard),
             rotate_to_face("spot 1",blackboard,zone=0),
@@ -166,18 +166,17 @@ BT = Sequence("main", children=[
             back_up("pull back", blackboard),
             lift_arm("move out of way",blackboard),
             
-            #go back and grab jar 2, then put it on the table at spot 2
+            #go back and grab the can, then put it on the table at spot 2
             route("compute path to counter",blackboard,grab_position),
             move("move to counter",blackboard),
             
-            #search("look for jam", blackboard, "jam jar"),
-            change_height_to("adjust height",blackboard,object_name="jam jar"),
+            change_height_to("adjust height",blackboard,object_name="beverage can"),
             arm_travel_position("get ready to move",blackboard),
-            rotate_to_face("jam 1",blackboard,object_name="jam jar"),
+            rotate_to_face("can",blackboard,object_name="beverage can"),
             arm_extend_position("arm place ready", blackboard),
-            get_in_position("approach jam 1",blackboard,object_name="jam jar"),
-            grab_item("grab jam",blackboard),
-            lift_arm("pick up jam",blackboard),
+            get_in_position("approach can",blackboard,object_name="beverage can"),
+            grab_item("grab can",blackboard),
+            lift_arm("pick up can",blackboard),
             back_up("pull back", blackboard),
             back_up("pull back", blackboard),
             
@@ -191,17 +190,17 @@ BT = Sequence("main", children=[
             back_up("pull back", blackboard),
             lift_arm("move out of way",blackboard),
             
-            #go back and grab jar 3, then put it on the table at spot 3
+            #go back and grab the water bottle, then put it on the table at spot 3
             route("compute path to counter",blackboard,grab_position),
             move("move to counter",blackboard),
             
-            change_height_to("adjust height",blackboard,object_name="jam jar"),
+            change_height_to("adjust height",blackboard,object_name="water bottle"),
             arm_travel_position("get ready to move",blackboard),
-            rotate_to_face("jam 2",blackboard,object_name="jam jar"),
+            rotate_to_face("water",blackboard,object_name="water bottle"),
             arm_extend_position("arm place ready", blackboard),
-            get_in_position("approach jam 2",blackboard,object_name="jam jar"),
-            grab_item("grab jam",blackboard),
-            lift_arm("pick up jam",blackboard),
+            get_in_position("approach water",blackboard,object_name="water bottle"),
+            grab_item("grab water",blackboard),
+            lift_arm("pick up water",blackboard),
             back_up("pull back", blackboard),
             back_up("pull back", blackboard),
             
@@ -226,7 +225,7 @@ BT.setup_with_descendants()
 
 GOAL_URL = "http://127.0.0.1:8787/robots/servebot-1/goal"
 SETTLER_URL = "http://127.0.0.1:8788"
-KITCHEN_ITEMS = ["honey jar", "jam jar 1", "jam jar 2"]
+KITCHEN_ITEMS = ["heineken beer", "beverage can", "water bottle"]
 
 
 def paid_kitchen_job():
@@ -325,7 +324,7 @@ class KitchenOrder:
 
 order = KitchenOrder()
 order.start()
-print("servebot-1 waiting for honey jar, jam jar 1, and jam jar 2", flush=True)
+print("servebot-1 waiting for heineken beer, beverage can, and water bottle", flush=True)
 while robot.step(timestep) != -1:
     paid = paid_kitchen_job()
     if paid:

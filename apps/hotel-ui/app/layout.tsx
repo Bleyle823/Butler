@@ -1,6 +1,6 @@
 export const metadata = {
   title: "Kitchen order",
-  description: "Order the honey jar and both jam jars. servebot-1 sets them on the kitchen table.",
+  description: "Order the heineken beer, beverage can, and water bottle. servebot-1 sets them on the kitchen table.",
 };
 
 export default function RootLayout({
