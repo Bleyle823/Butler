@@ -8,7 +8,9 @@ On Arc, USDC is both the money and the gas, so the machine settles in dollars wi
 
 ## Video
 
-_Add a recording of one full paid run here._
+<video src="proposals/videos/one-delivery-order-to-table.mp4" controls width="100%"></video>
+
+_One simulated delivery run (5×). Source: TIAGo object manipulation demo._
 
 ## Screenshots
 
