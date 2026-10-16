@@ -3,7 +3,7 @@ import { randomBytes } from "node:crypto";
 export async function POST(request: Request): Promise<Response> {
   const settler = process.env.BUTLER_SETTLER_URL || "http://127.0.0.1:8788";
 
-  const kitchen = ["honey jar", "jam jar 1", "jam jar 2"];
+  const kitchen = ["heineken beer", "beverage can", "water bottle"];
   let body: { room?: string; items?: string[] };
   try {
     body = (await request.json()) as { room?: string; items?: string[] };
@@ -18,7 +18,7 @@ export async function POST(request: Request): Promise<Response> {
   const items = Array.isArray(body.items) ? body.items : [];
   if (items.length !== kitchen.length || items.some((name, index) => name !== kitchen[index])) {
     return Response.json(
-      { error: "Order is honey jar, jam jar 1, and jam jar 2" },
+      { error: "Order is heineken beer, beverage can, and water bottle" },
       { status: 400 }
     );
   }

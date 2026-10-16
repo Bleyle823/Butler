@@ -1,6 +1,6 @@
 # Kitchen payments
 
-The kitchen simulation is the working robot. Butler supplied the name `servebot-1` and the payment stack. The arm, gripper, jars, and `mission_control` behavior tree stay as they are.
+The kitchen simulation is the working robot. Butler supplied the name `servebot-1` and the payment stack. The arm, gripper, drinks, and `mission_control` behavior tree stay as they are.
 
 ## Architecture rules
 
@@ -9,7 +9,7 @@ The kitchen simulation is the working robot. Butler supplied the name `servebot-
 3. peaq never talks to Webots. peaq has no robot URL. The settler is the only writer on peaq and the only process that holds Circle’s entity secret.
 4. The robot never holds Circle’s entity secret or peaq’s controller key. Callers pass a job id and room. The peaq key stays in the settler’s address-keyed wallet registry.
 
-`mission_control` starts a kitchen order on Play if the bridge has no paid goal, then places the honey jar, jam jar 1, and jam jar 2 on the kitchen table. The Webots console prints settler lines as Circle and peaq settle.
+`mission_control` starts a kitchen order on Play if the bridge has no paid goal, then places the heineken beer, beverage can, and water bottle on the kitchen table. The Webots console prints settler lines as Circle and peaq settle.
 
 ## Stack
 

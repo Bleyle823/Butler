@@ -19,6 +19,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parents[3]
 _LOCAL_CONFIG = ROOT / "config" / "bridge.json"
 DEFAULT_CONFIG = _LOCAL_CONFIG if _LOCAL_CONFIG.exists() else ROOT / "config" / "bridge.example.json"
+KITCHEN_ITEMS = ["heineken beer", "beverage can", "water bottle"]
+PROOF_ITEM = "heineken beer"
 
 
 def load_json(path: Path) -> dict[str, Any]:
@@ -134,7 +136,7 @@ class Bridge:
                 "robot": robot,
                 "room": room,
                 "status": "assigned",
-                "items": body.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+                "items": body.get("items") or list(KITCHEN_ITEMS),
                 "peaqMachineId": body.get("peaqMachineId") or self.ledger.actor(robot).get("peaqMachineId"),
                 "circleWalletId": body.get("circleWalletId") or self.ledger.actor(robot).get("circleWalletId"),
                 "guestWalletId": body.get("guestWalletId") or self.ledger.actor("guest-bob").get("circleWalletId"),
@@ -143,7 +145,7 @@ class Bridge:
             self.ledger.goals[robot] = {
                 "jobId": job_id,
                 "room": room,
-                "items": body.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+                "items": body.get("items") or list(KITCHEN_ITEMS),
             }
             self.ledger.sent[job_id] = set()
         return 201, {"jobId": job_id, "robot": robot, "room": room}
@@ -176,7 +178,7 @@ class Bridge:
         return {
             "jobId": goal["jobId"],
             "room": goal["room"],
-            "items": goal.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+            "items": goal.get("items") or list(KITCHEN_ITEMS),
         }
 
     def telemetry(self, body: dict[str, Any]) -> None:
@@ -218,7 +220,7 @@ class Bridge:
         job_id = job["jobId"]
         if "pickup" in self.ledger.sent.get(job_id, set()):
             return
-        if event != "pickup" or "honey jar" not in self._names(carried):
+        if event != "pickup" or PROOF_ITEM not in self._names(carried):
             return
         job["status"] = "delivering"
         self.ledger.sent.setdefault(job_id, set()).add("pickup")
@@ -226,8 +228,8 @@ class Bridge:
             "jobId": job_id,
             "robot": job["robot"],
             "event": "pickup",
-            "object": "honey jar",
-            "items": job.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+            "object": PROOF_ITEM,
+            "items": job.get("items") or list(KITCHEN_ITEMS),
             "peaqMachineId": job.get("peaqMachineId") or "",
             "circleWalletId": job.get("circleWalletId") or "",
             "vendingWalletId": job.get("vendingWalletId") or "",
@@ -250,13 +252,13 @@ class Bridge:
         job_id = job["jobId"]
         if "delivery" in self.ledger.sent.get(job_id, set()):
             return
-        # A new job must pick up the honey jar before it can settle.
+        # A new job must pick up the heineken beer before it can settle.
         if "pickup" not in self.ledger.sent.get(job_id, set()):
             self.ledger.dwell_since.pop(job_id, None)
             return
         now = time.monotonic()
         on_table = self._names(delivered) or (self._names(carried) if event == "delivery" else set())
-        if event != "delivery" or "honey jar" not in on_table:
+        if event != "delivery" or PROOF_ITEM not in on_table:
             self.ledger.dwell_since.pop(job_id, None)
             return
         started = self.ledger.dwell_since.get(job_id)
@@ -272,8 +274,8 @@ class Bridge:
             "jobId": job_id,
             "robot": job["robot"],
             "event": "delivery",
-            "object": "honey jar",
-            "items": job.get("items") or ["honey jar", "jam jar 1", "jam jar 2"],
+            "object": PROOF_ITEM,
+            "items": job.get("items") or list(KITCHEN_ITEMS),
             "dwellSec": round(dwell, 3),
             "pose": pose,
             "failure": False,

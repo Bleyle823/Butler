@@ -1,7 +1,7 @@
 """Read the kitchen scene and post servebot-1 telemetry.
 
 This controller never sets a motor position and never moves a node.
-mission_control still picks up the jars and places them on the table.
+mission_control still picks up the drinks and places them on the table.
 """
 
 import json
@@ -11,7 +11,7 @@ import urllib.request
 from controller import Supervisor
 
 ROBOT_NAME = "servebot-1"
-JARS = ("honey jar", "jam jar 1", "jam jar 2")
+JARS = ("heineken beer", "beverage can", "water bottle")
 DROP_ZONES = ((-0.38, -0.68), (-0.55, -1.39), (-0.54, -2.17))
 DROP_RADIUS = 0.28
 CARRY_RADIUS = 0.55

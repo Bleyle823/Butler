@@ -16,7 +16,7 @@ from economy import actor, deposit, machine_id_bytes32, on_delivery, on_pickup
 from peaq_client import PeaqMachine
 
 ROOT = Path(__file__).resolve().parents[2]
-KITCHEN_ITEMS = ["honey jar", "jam jar 1", "jam jar 2"]
+KITCHEN_ITEMS = ["heineken beer", "beverage can", "water bottle"]
 
 
 def load_env(path: Path) -> dict[str, str]:
@@ -119,7 +119,7 @@ class Settler:
             return 400, {"error": "Unknown room"}
         items = [str(name) for name in (body.get("items") or [])]
         if items != KITCHEN_ITEMS:
-            return 400, {"error": "Order is honey jar, jam jar 1, and jam jar 2"}
+            return 400, {"error": "Order is heineken beer, beverage can, and water bottle"}
         if not job_id:
             job_id = new_job_id()
         if not job_id.startswith("0x") or len(job_id) != 66:
