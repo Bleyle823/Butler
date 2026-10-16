@@ -119,8 +119,24 @@ Intern, National ICT Innovation and Integration Centre, 2024 (three months)
 
 ## Sources
 
-- Ministry of Tourism and Wildlife, 2 April 2026: about KSh 0.5 trillion in earnings in 2025; about 7.9 million tourists.
-- Invest Kenya: more than 900 accredited hotels and more than 45,000 rooms.
-- World Travel and Tourism Council, 2026: about 1.8 million travel and tourism jobs in Kenya in 2025.
-- Kenya News Agency and Capital FM, 27 September 2026: Cabinet Secretary Rebecca Miano, World Tourism Day, University of Eldoret.
-- NI3C, innovationcentre.go.ke: collect, test, and share ICT for education; incubation of innovations from learning institutions.
+### Kenya hospitality and policy
+
+- Ministry of Tourism and Wildlife, press release, 2 April 2026 — about KSh 0.5 trillion in 2025 tourism earnings: [PDF (Magical Kenya)](https://magicalkenya.com/wp-content/uploads/2026/04/KENYAS-TOURISM-SECTOR-ACHIEVES-STRONG-GROWTH-IN-2025-RECORDING-Ksh.-0.5-TRILLION-IN-EARNINGS_final-1.pdf); [Ministry downloads](https://www.tourism.go.ke/downloads/).
+- The Standard, 3 April 2026 — record earnings and about 7.9 million travellers: [Tourism earnings hit record Sh500 billion](https://www.standardmedia.co.ke/business/article/2001544519/tourism-earnings-hit-record-sh500-billion-as-arrivals-near-8m).
+- Invest Kenya — more than 900 accredited hotels, 45k+ rooms: [Tourism — InvestKenya](https://www.investkenya.go.ke/tourism/).
+- World Travel and Tourism Council, 2026 — about 1.8 million travel and tourism jobs in Kenya in 2025: [WTTC news release](https://wttc.org/news/kenya-boosts-africas-tourism-growth-emerging-as-a-leading-sustainable-tourism-powerhouse).
+- The Star, 5 February 2026 — CS Rebecca Miano, World Governments Summit (Dubai): [CS Miano pushes for AI tech-driven tourism](https://www.the-star.co.ke/sasa/technology/2026-02-05-cs-miano-pushes-for-ai-tech-driven-tourism).
+
+### NI3C
+
+- National ICT Innovation and Integration Centre — mandate to collect, test, and share ICT innovations for education; incubation: [Mandate](https://www.innovationcentre.go.ke/mandate); [Opportunities](https://www.innovationcentre.go.ke/opportunities); [Contact](https://www.innovationcentre.go.ke/contact-us).
+
+### Butler stack (peaq, Circle, Arc)
+
+- **peaq:** [Economics 2.0 (docs)](https://docs.peaq.xyz/peaqos/concepts/economics-2-0); [servebot-1 (Butler demo)](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819).
+- **Circle:** [Dev-controlled wallets](https://developers.circle.com/wallets/dev-controlled).
+- **Arc:** [Arc chain overview](https://docs.arc.io/arc-chain); [Stablecoin-native model](https://docs.arc.io/arc/concepts/stablecoin-native-model).
+
+### Programme
+
+- **Canteen / Tameion:** [About Canteen](https://thecanteenapp.com/about/); [Tameion Agents Hackathon](https://tameion.thecanteenapp.com/).

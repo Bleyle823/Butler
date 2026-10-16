@@ -127,7 +127,20 @@ Africa Nazarene University
 
 ## Sources
 
-- Ministry of Tourism and Wildlife, press release, 2 April 2026: about KSh 0.5 trillion in tourism earnings in 2025; about 7.9 million tourists, of whom 2.7 million were international and 5.2 million were domestic.
-- Invest Kenya, tourism sector snapshot: more than 900 accredited hotels, more than 45,000 rooms, bed capacity up about 7.7 percent in 2024.
-- World Travel and Tourism Council, 2026 Economic Impact Research: travel and tourism supported about 1.8 million jobs in Kenya in 2025, about 8.3 percent of employment.
-- Kenya News Agency and Capital FM, 27 September 2026: Cabinet Secretary Rebecca Miano at World Tourism Day, University of Eldoret.
+### Kenya hospitality and policy
+
+- Ministry of Tourism and Wildlife, 2 April 2026 — KSh 0.5 trillion in 2025 earnings: [PDF](https://magicalkenya.com/wp-content/uploads/2026/04/KENYAS-TOURISM-SECTOR-ACHIEVES-STRONG-GROWTH-IN-2025-RECORDING-Ksh.-0.5-TRILLION-IN-EARNINGS_final-1.pdf).
+- The Standard, 3 April 2026 — about 7.9 million travellers (2.7M international, 5.2M domestic): [article](https://www.standardmedia.co.ke/business/article/2001544519/tourism-earnings-hit-record-sh500-billion-as-arrivals-near-8m).
+- Invest Kenya — 900+ accredited hotels, 45k+ rooms, ~7.7% bed-capacity growth in 2024: [Tourism snapshot](https://www.investkenya.go.ke/tourism/).
+- WTTC, 2026 Economic Impact Research — ~1.8 million jobs (~8.3% employment): [WTTC release](https://wttc.org/news/kenya-boosts-africas-tourism-growth-emerging-as-a-leading-sustainable-tourism-powerhouse).
+- The Star, 5 February 2026 — CS Rebecca Miano, World Governments Summit: [AI and tourism value chain](https://www.the-star.co.ke/sasa/technology/2026-02-05-cs-miano-pushes-for-ai-tech-driven-tourism).
+
+### Butler stack (peaq, Circle, Arc)
+
+- **peaq:** [Economics 2.0 (docs)](https://docs.peaq.xyz/peaqos/concepts/economics-2-0); [servebot-1 machine page](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819).
+- **Circle:** [Developer-controlled wallets](https://developers.circle.com/wallets/dev-controlled).
+- **Arc:** [Arc chain](https://docs.arc.io/arc-chain); [USDC as native gas](https://docs.arc.io/arc/concepts/stablecoin-native-model).
+
+### Programme
+
+- **Canteen / Tameion Agents Hackathon:** [tameion.thecanteenapp.com](https://tameion.thecanteenapp.com/); [About Canteen](https://thecanteenapp.com/about/).

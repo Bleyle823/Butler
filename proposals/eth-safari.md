@@ -106,9 +106,23 @@ ETHSafari community member
 
 ## Sources
 
-- Ministry of Tourism and Wildlife, 2 April 2026: about KSh 0.5 trillion in 2025 earnings; about 7.9 million tourists.
-- Invest Kenya: more than 900 accredited hotels and more than 45,000 rooms.
-- World Travel and Tourism Council, 2026: about 1.8 million jobs and about 8.3 percent of employment.
-- Kenya News Agency and Capital FM, 27 September 2026: Cabinet Secretary Rebecca Miano, World Tourism Day.
-- The Star, 5 February 2026: Cabinet Secretary Miano, World Governments Summit.
-- ETHSafari, public notice, August 2026: the 2026 edition was postponed. This letter waits on the next dates.
+### Kenya hospitality and policy
+
+- Ministry of Tourism and Wildlife, 2 April 2026: [PDF press release](https://magicalkenya.com/wp-content/uploads/2026/04/KENYAS-TOURISM-SECTOR-ACHIEVES-STRONG-GROWTH-IN-2025-RECORDING-Ksh.-0.5-TRILLION-IN-EARNINGS_final-1.pdf); [The Standard on 7.9M travellers](https://www.standardmedia.co.ke/business/article/2001544519/tourism-earnings-hit-record-sh500-billion-as-arrivals-near-8m).
+- Invest Kenya: [900+ hotels, 45k+ rooms](https://www.investkenya.go.ke/tourism/).
+- WTTC, 2026: [1.8M jobs, 8.3% employment](https://wttc.org/news/kenya-boosts-africas-tourism-growth-emerging-as-a-leading-sustainable-tourism-powerhouse).
+- The Star, 5 February 2026: [CS Miano, World Governments Summit](https://www.the-star.co.ke/sasa/technology/2026-02-05-cs-miano-pushes-for-ai-tech-driven-tourism).
+
+### ETHSafari
+
+- [ethsafari.xyz](https://ethsafari.xyz/); [About](https://ethsafari.xyz/about/). August 2026: organisers [postponed ETHSafari 2026](https://www.linkedin.com/posts/women-in-blockchain-africa_activity-7498056779575078912-zSXO); this letter waits on the next confirmed dates.
+
+### Butler stack (peaq, Circle, Arc)
+
+- **peaq:** [Economics 2.0](https://docs.peaq.xyz/peaqos/concepts/economics-2-0); [servebot-1](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819).
+- **Circle:** [Dev-controlled wallets](https://developers.circle.com/wallets/dev-controlled).
+- **Arc:** [Arc docs](https://docs.arc.io/arc-chain); [USDC on Arc](https://docs.arc.io/arc/concepts/stablecoin-native-model).
+
+### Programme
+
+- **Canteen / Tameion:** [Tameion Agents Hackathon · Canteen × Circle](https://tameion.thecanteenapp.com/); [About Canteen](https://thecanteenapp.com/about/) (arjun@thecanteenapp.com).

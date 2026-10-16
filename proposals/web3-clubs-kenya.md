@@ -12,11 +12,21 @@
 
 Dear Web3 Clubs,
 
-I am a member of Web3 Clubs. I come to the lab from time to time for the sessions and the talks. I am writing from inside the club to ask for **only a short letter of recognition** stating that **Butler** is a project by a member that uses a public record for a real hotel job. The letter should be one I can share with the hackathon programme organisers at **Canteen** (**arjun@thecanteenapp.com**). Please issue it on club letterhead from an **official email** with **arjun@thecanteenapp.com copied**.
+I am a member of Web3 Clubs. I come to the lab from time to time for the sessions and the talks. I am writing from inside the club to ask for **only a short letter of recognition** stating that **Butler** is a project by a member: a hospitality humanoid that carries out a hotel delivery job and leaves a **public, checkable record** that the work happened and that settlement followed the proof. The letter should be one I can share with the hackathon programme organisers at **Canteen** (**arjun@thecanteenapp.com**). Please issue it on club letterhead from an **official email** with **arjun@thecanteenapp.com copied**.
 
-Butler is a service robot for a hotel. A guest orders food or a drink. The robot collects it and leaves it at the room. The guest's digital dollars are held until the order is on the table. The kitchen is paid at pickup. The rest is released at delivery. The robot has a public identity, so the job names a machine.
+**Butler** is a physical-AI build for Kenyan hospitality. In the demonstration, **servebot-1**—a mobile manipulator with an arm and gripper, modelled on a PAL TIAGo service robot—works in a simulated hotel kitchen: a guest orders food or a drink, the robot collects it at the counter, carries it to the guest floor, and sets it down. That is the job hotels repeat every day. What makes Butler a Web3 project is what happens beside the arm.
 
-The first building is a hotel. The same rule, pay when the work is proved, can later cover other repeated tasks. Today the hotel is a computer simulation.
+**peaq** gives the robot a public machine identity and writes **pickup** and **delivery** to an open work record when those moments occur, so a guest, a hotel, or a partner who was not in the corridor can still verify which machine did the job.
+
+**Circle** is the payments and custody layer. Butler uses **Circle developer-controlled wallets** so the guest, the robot, the kitchen counter, and the operator each have a wallet Circle can sign for programmatically—without putting Circle’s entity secret or signing keys on the robot or in the Webots controller. A small local **settler** service holds those secrets and calls Circle when telemetry says pickup or delivery happened. That is how a machine becomes a **payer** (paying the kitchen at pickup from the robot wallet) and a **payee** (receiving a share when escrow releases), while custody stays with infrastructure a hotel operator can reason about, not with firmware on the arm.
+
+**Arc** is the settlement chain. On Arc Testnet in the demo, value moves in **USDC**—digital dollars—through a **programmable escrow** contract: the guest’s funds are locked before the robot starts, then released in a defined split when delivery is proved. Arc is built so **USDC is both the payment and the gas**: the robot wallet settles in dollars without a separate volatile token for fees, which matters for a service robot that must keep a small operating balance above each transfer. peaq answers *who did the work and when*; Circle and Arc answer *who held the dollars, who got paid, and under what rule*.
+
+Keys stay off the robot; the settler signs for Circle and peaq the way production fleets keep payment logic off the device.
+
+In Kenya this pattern is useful because hospitality is already a major employer and a major export story—hundreds of accredited hotels, tens of thousands of rooms, and a tourism sector that supports well over a million jobs—while much of the work inside a property is still learned by watching someone carry a tray. Travellers book on a phone; operators are under pressure to show digital service without losing trust at the door. Butler does not ask a guest to learn a wallet to order a drink in the demo; it shows that **when a humanoid (or any service robot) finishes a repeatable hotel task, dollars can wait for proof, pay the kitchen when the item leaves the counter, and split the rest when the tray arrives**, with **peaq** as the durable receipt and **Arc / USDC** as the settlement rail. That is a classroom-sized story today and a pilot-sized story tomorrow if a willing hotel agrees.
+
+The first building is a hotel. The same rule—pay when the work is proved—can later cover other repeated tasks in that building and in others. Today the hotel is a computer simulation; the onchain machine identity, the written pickup and delivery events, and a test kitchen payment on Arc are already real on test networks.
 
 ## Why the record matters
 
@@ -29,7 +39,7 @@ The aims are a demo a non-technical guest can follow, a record that names the ro
 ## What the demo holds
 
 1. **Identity.** The robot, servebot-1, has a public identity on peaq. A job belongs to that machine.
-2. **Money that waits.** The guest's digital dollars, through Circle on a test network called Arc, are held until delivery. Pickup pays the kitchen from the robot's own balance. Delivery releases the rest: operator, maker, and a reserve for the robot. A hotel guest pays in ordinary money. The wallet sits with the demonstration.
+2. **Money that waits (Circle on Arc).** **Circle** provisions and signs **developer-controlled wallets** for the guest, robot, kitchen, and operator; the settler—not the robot—holds custody and triggers transfers. **Arc** (testnet in the demo) settles in **USDC**: guest funds lock in **escrow** before motion, pickup pays vending from the robot wallet, delivery releases the remainder to operator, maker, and robot reserve. A real hotel guest would still pay in ordinary money; wallets sit with the demonstration.
 3. **Proof.** Pickup and delivery are written to the public record when they happen. A pickup and a delivery are already written. A test payment to the kitchen counter has gone through. The guest's full hold, from lock to release, is still being completed on the test network.
 4. **The arm stays in charge of the arm.** The robot runs the delivery. A payment problem holds the next order. The record does not drive the robot.
 
@@ -107,7 +117,21 @@ Web3 Clubs member
 
 ## Sources
 
-- Ministry of Tourism and Wildlife, 2 April 2026: about KSh 0.5 trillion in 2025 earnings; about 7.9 million tourists.
-- Invest Kenya: more than 900 accredited hotels and more than 45,000 rooms.
-- World Travel and Tourism Council, 2026: about 1.8 million travel and tourism jobs in Kenya in 2025.
-- The Star, 5 February 2026: Cabinet Secretary Rebecca Miano, World Governments Summit, on technology and income that reaches the people doing the work.
+### Kenya hospitality and policy
+
+- Ministry of Tourism and Wildlife, press release, 2 April 2026 — about KSh 0.5 trillion in 2025 tourism earnings: [PDF (Magical Kenya)](https://magicalkenya.com/wp-content/uploads/2026/04/KENYAS-TOURISM-SECTOR-ACHIEVES-STRONG-GROWTH-IN-2025-RECORDING-Ksh.-0.5-TRILLION-IN-EARNINGS_final-1.pdf); [Ministry downloads](https://www.tourism.go.ke/downloads/).
+- The Standard, 3 April 2026 — record earnings and about 7.9 million travellers (2.7M international, 5.2M domestic): [Tourism earnings hit record Sh500 billion](https://www.standardmedia.co.ke/business/article/2001544519/tourism-earnings-hit-record-sh500-billion-as-arrivals-near-8m).
+- Invest Kenya — tourism sector snapshot: more than 900 accredited hotels, 45k+ rooms, 7.7% bed-capacity growth in 2024: [Tourism — InvestKenya](https://www.investkenya.go.ke/tourism/).
+- World Travel and Tourism Council, 2026 Economic Impact Research — about 1.8 million travel and tourism jobs in Kenya in 2025 (~8.3% of employment): [WTTC news release](https://wttc.org/news/kenya-boosts-africas-tourism-growth-emerging-as-a-leading-sustainable-tourism-powerhouse); [Kenya EIR (Research Hub)](https://researchhub.wttc.org/product/kenya-economic-impact-report).
+- The Star, 5 February 2026 — Tourism CS Rebecca Miano at the World Governments Summit (Dubai) on AI, smart data, and local communities as primary beneficiaries of the tourism value chain: [CS Miano pushes for AI tech-driven tourism](https://www.the-star.co.ke/sasa/technology/2026-02-05-cs-miano-pushes-for-ai-tech-driven-tourism). See also [Capital FM summary](https://capitalfm.africa/miano-kenya-leveraging-ai-to-lead-next-era-of-global-tourism/).
+
+### Butler stack (peaq, Circle, Arc)
+
+- **peaq** — machine identity and public work record (Economics 2.0 on mainnet): [Economics 2.0 (docs)](https://docs.peaq.xyz/peaqos/concepts/economics-2-0); [Machine Explorer](https://machines.peaq.xyz/economics); [servebot-1 machine page](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819) (Butler demo).
+- **Circle** — developer-controlled wallets and programmatic USDC transfers (custody off the robot): [Dev-controlled wallets](https://developers.circle.com/wallets/dev-controlled); [Create a dev-controlled wallet (quickstart)](https://developers.circle.com/wallets/dev-controlled/create-your-first-wallet).
+- **Arc** — Circle’s stablecoin-native L1; USDC as gas; Butler demo on Arc Testnet (chain `5042002`): [Arc chain overview](https://docs.arc.io/arc-chain); [Stablecoin-native model](https://docs.arc.io/arc/concepts/stablecoin-native-model); [USDC contract addresses](https://docs.arc.io/arc/references/contract-addresses); [Arc Testnet faucet](https://faucet.circle.com).
+
+### Programme and community
+
+- **Canteen** — hosts the Tameion Agents Hackathon; programme contact **arjun@thecanteenapp.com**: [About Canteen](https://thecanteenapp.com/about/); [Tameion Agents Hackathon · Canteen × Circle](https://tameion.thecanteenapp.com/); [Arc community event page](https://community.arc.io/public/events/tameion-agents-hackathon-jb1w9clwx7).
+- **Web3 Clubs Kenya** — member community and Nairobi exploration lab: [web3clubs.xyz](https://web3clubs.xyz/); [LinkedIn](https://www.linkedin.com/company/web3developerclubs).
