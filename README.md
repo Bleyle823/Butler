@@ -2,8 +2,13 @@
 
 **The robot that gets paid when the work is done.**
 
-Physical AI hospitality demo for the **[Tameion Agents Hackathon](https://tameion.thecanteenapp.com/)** (Canteen × Circle): a **TIAGo** humanoid (**servebot-1**) runs kitchen delivery in **Webots**; **Circle** holds **USDC** in escrow on **Arc**; **peaq** records machine identity and proof of work.
+Butler is a hotel service robot with a financial layer built in.
 
+A guest orders a coffee. Butler collects it from the kitchen counter and brings it to the room. The moment the order goes in, the guest’s USDC is locked in escrow, where it stays until delivery is confirmed onchain. Once confirmed, the payment is released.
+
+Butler also holds a public identity on the peaq network, so the record names the exact machine that did the work: one specific robot with a verifiable identity.
+
+Everything runs on its own. Payment settles automatically, the record writes itself, and the receipt is public for anyone to see. The robot delivered, and the robot got paid
 | | |
 |---|---|
 | **Builder** | Bleyle Osewe · [Bennybleylle09@gmail.com](mailto:Bennybleylle09@gmail.com) · 0705297628 |
@@ -12,12 +17,6 @@ Physical AI hospitality demo for the **[Tameion Agents Hackathon](https://tameio
 | **Long-form pitch** | [`docs/Butler_Investor_Pitch.md`](docs/Butler_Investor_Pitch.md) |
 
 ---
-
-## One-minute story
-
-A guest orders drinks. **6.00 USDC** locks on **Arc Testnet** before the robot moves. **servebot-1** picks up at the kitchen; the vending counter is paid from the robot’s Circle wallet on **pickup**. When telemetry shows delivery, escrow **releases** to operator, manufacturer, and robot reserve. **peaq mainnet** logs pickup and delivery against **servebot-1**’s machine id.
-
-No front desk. No invoice. Dollars move because the work happened—and anyone can verify it.
 
 ---
 
