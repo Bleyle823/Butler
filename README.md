@@ -37,9 +37,11 @@ Partners on the landing page: **peaq · Circle · Arc · Webots · Web3 Clubs Ke
 
 ## Video
 
-**Kitchen simulation** (hero on the landing site — `servebot-1` in `kitchen.wbt`):
+**Kitchen simulation** (`kitchen - Trim.mp4` — `servebot-1` in Webots `kitchen.wbt`, also the landing hero):
 
 <video src="apps/landing/public/assets/kitchen-trim.mp4" controls width="100%"></video>
+
+[`apps/landing/public/assets/kitchen-trim.mp4`](apps/landing/public/assets/kitchen-trim.mp4)
 
 **Full delivery loop** (order → table, 5×):
 
@@ -50,6 +52,18 @@ _Alternate export for Notion: [`proposals/videos/one-delivery-order-to-table-not
 ---
 
 ## Screenshots
+
+### Live Webots run (settlement in the console)
+
+Drinks on the kitchen table after delivery, with Circle / Arc / peaq lines in the Webots console:
+
+![servebot-1 delivery complete — drinks on table, Circle and peaq hashes in console](proposals/images/webots-delivery-complete.png)
+
+`servebot-1` at the counter during the run (occupancy map, head camera, peaq mark on the base):
+
+![servebot-1 in the kitchen — path and recognition overlays](proposals/images/webots-kitchen-run.png)
+
+### Robot and scene
 
 | Scene | Image |
 |-------|--------|
