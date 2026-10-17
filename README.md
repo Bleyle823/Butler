@@ -33,11 +33,7 @@ Partners on the landing page: **peaq · Circle · Arc · Webots · Web3 Clubs Ke
 
 **Kitchen simulation** — `servebot-1` in Webots `kitchen.wbt` (same run as the landing hero):
 
-![Kitchen simulation — servebot-1 delivery](proposals/videos/kitchen-sim.mp4)
-
-**Full delivery loop** (order → table, 5×):
-
-![Full delivery loop](proposals/videos/one-delivery-order-to-table.mp4)
+https://github.com/user-attachments/assets/bf5c0f22-95cb-4b4d-a137-0712223ad7fe
 
 ---
 
