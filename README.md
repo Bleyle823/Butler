@@ -31,17 +31,13 @@ Partners on the landing page: **peaq · Circle · Arc · Webots · Web3 Clubs Ke
 
 ## Video
 
-**Kitchen simulation** (`kitchen - Trim.mp4` — `servebot-1` in Webots `kitchen.wbt`, also the landing hero):
+**Kitchen simulation** — `servebot-1` in Webots `kitchen.wbt` (same run as the landing hero):
 
-<video src="apps/landing/public/assets/kitchen-trim.mp4" controls width="100%"></video>
-
-[`apps/landing/public/assets/kitchen-trim.mp4`](apps/landing/public/assets/kitchen-trim.mp4)
+![Kitchen simulation — servebot-1 delivery](proposals/videos/kitchen-sim.mp4)
 
 **Full delivery loop** (order → table, 5×):
 
-<video src="proposals/videos/one-delivery-order-to-table.mp4" controls width="100%"></video>
-
-_Alternate export for Notion: [`proposals/videos/one-delivery-order-to-table-notion.mp4`](proposals/videos/one-delivery-order-to-table-notion.mp4)._
+![Full delivery loop](proposals/videos/one-delivery-order-to-table.mp4)
 
 ---
 
