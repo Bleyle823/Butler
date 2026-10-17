@@ -1,23 +1,23 @@
-import { brainwaveSymbol, check } from "../assets";
-import { collabApps, collabContent, collabText } from "../constants";
+import { butlerSymbol, check } from "../assets";
+import { collabApps, collabContent, machineUrl } from "../constants";
 import Button from "./Button";
 import Section from "./Section";
 import { LeftCurve, RightCurve } from "./design/Collaboration";
 
 const Collaboration = () => {
   return (
-    <Section crosses>
+    <Section crosses id="stack">
       <div className="container lg:flex">
         <div className="max-w-[25rem]">
           <h2 className="h2 mb-4 md:mb-8">
-            AI Chat App for seamless collaboration
+            The settler moves the money. The robot moves the tray.
           </h2>
 
           <ul className="max-w-[22rem] mb-10 md:mb-14">
             {collabContent.map((item) => (
               <li className="mb-3 py-3" key={item.id}>
                 <div className="flex items-center">
-                  <img src={check} width={24} height={24} alt="check" />
+                  <img src={check} width={24} height={24} alt="" />
                   <h6 className="body-2 ml-5">{item.title}</h6>
                 </div>
                 {item.text && (
@@ -27,12 +27,13 @@ const Collaboration = () => {
             ))}
           </ul>
 
-          <Button>Try it now</Button>
+          <Button href={machineUrl}>servebot-1 on peaq</Button>
         </div>
 
         <div className="lg:ml-auto xl:w-[38rem] mt-4">
           <p className="body-2 mb-8 text-n-4 md:mb-16 lg:mb-32 lg:w-[22rem] lg:mx-auto">
-            {collabText}
+            hotel-ui posts the order. Webots proves pickup and delivery. Circle
+            signs on Arc. peaq keeps the work record.
           </p>
 
           <div className="relative left-1/2 flex w-[22rem] aspect-square border border-n-6 rounded-full -translate-x-1/2 scale:75 md:scale-100">
@@ -40,7 +41,7 @@ const Collaboration = () => {
               <div className="w-[6rem] aspect-square m-auto p-[0.2rem] bg-edge rounded-full">
                 <div className="flex items-center justify-center w-full h-full bg-n-8 rounded-full">
                   <img
-                    src={brainwaveSymbol}
+                    src={butlerSymbol}
                     width={48}
                     height={48}
                     alt="Butler"
@@ -53,21 +54,19 @@ const Collaboration = () => {
               {collabApps.map((app, index) => (
                 <li
                   key={app.id}
-                  className={`absolute top-0 left-1/2 h-1/2 -ml-[1.6rem] origin-bottom rotate-${
-                    index * 45
-                  }`}
+                  className="absolute top-0 left-1/2 h-1/2 -ml-[1.6rem] origin-bottom"
+                  style={{ transform: `rotate(${index * 90}deg)` }}
                 >
                   <div
-                    className={`relative -top-[1.6rem] flex w-[3.2rem] h-[3.2rem] bg-n-7 border border-n-1/15 rounded-xl -rotate-${
-                      index * 45
-                    }`}
+                    className="relative -top-[1.6rem] flex w-[3.2rem] h-[3.2rem] items-center justify-center bg-white border border-n-1/15 rounded-xl p-1.5"
+                    style={{ transform: `rotate(-${index * 90}deg)` }}
                   >
                     <img
-                      className="m-auto"
-                      width={app.width}
-                      height={app.height}
+                      src={app.logo}
                       alt={app.title}
-                      src={app.icon}
+                      className="h-full w-full object-contain"
+                      width={32}
+                      height={32}
                     />
                   </div>
                 </li>

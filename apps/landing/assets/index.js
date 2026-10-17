@@ -1,7 +1,6 @@
-const brainwave = "/assets/brainwave.svg";
+const butlerSymbol = "/assets/butler-symbol.svg";
 const check = "/assets/check.svg";
-const brainwaveSymbol = "/assets/brainwave-symbol.svg";
-const brainwaveWhiteSymbol = "/assets/brainwave-symbol-white.svg";
+const butlerSymbolWhite = "/assets/butler-symbol-white.svg";
 const play = "/assets/play.svg";
 const gradient = "/assets/gradient.png";
 const smallSphere = "/assets/4-small.png";
@@ -23,6 +22,7 @@ const background = "/assets/background.jpg";
 
 const curve = "/assets/hero/curve.png";
 const robot = "/assets/hero/robot.jpg";
+const kitchenTrim = "/assets/kitchen-trim.mp4";
 const heroBackground = "/assets/hero/hero-background.jpg";
 
 const curve1 = "/assets/collaboration/curve-1.svg";
@@ -37,7 +37,13 @@ const raindrop = "/assets/collaboration/raindrop.png";
 const slack = "/assets/collaboration/slack.png";
 
 const service1 = "/assets/services/service-1.png";
+const tiagoPlatform = "/assets/tiago-platform.png";
 const service2 = "/assets/services/service-2.png";
+const tiagoHead = "/assets/tiago-head.jpg";
+const tiagoHospitality = "/assets/tiago-hospitality.jpg";
+const tiagoKitchen = "/assets/tiago-kitchen.jpg";
+const tiagoPortrait = "/assets/tiago-portrait.jpg";
+const tiagoFleet = "/assets/tiago-fleet.jpg";
 const service3 = "/assets/services/service-3.png";
 
 const lines = "/assets/pricing/lines.svg";
@@ -76,12 +82,11 @@ const telegram = "/assets/socials/telegram.svg";
 const twitter = "/assets/socials/twitter.svg";
 
 export {
-  brainwave,
+  butlerSymbol,
   check,
   check2,
   loading1,
-  brainwaveSymbol,
-  brainwaveWhiteSymbol,
+  butlerSymbolWhite,
   play,
   gradient,
   smallSphere,
@@ -100,6 +105,7 @@ export {
   background,
   curve,
   robot,
+  kitchenTrim,
   heroBackground,
   curve1,
   curve2,
@@ -112,7 +118,13 @@ export {
   raindrop,
   slack,
   service1,
+  tiagoPlatform,
   service2,
+  tiagoHead,
+  tiagoHospitality,
+  tiagoKitchen,
+  tiagoPortrait,
+  tiagoFleet,
   service3,
   lines,
   stars,

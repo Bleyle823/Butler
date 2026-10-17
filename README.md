@@ -8,7 +8,8 @@ A guest orders a coffee. Butler collects it from the kitchen counter and brings 
 
 Butler also holds a public identity on the peaq network, so the record names the exact machine that did the work: one specific robot with a verifiable identity.
 
-Everything runs on its own. Payment settles automatically, the record writes itself, and the receipt is public for anyone to see. The robot delivered, and the robot got paid
+Everything runs on its own. Payment settles automatically, the record writes itself, and the receipt is public for anyone to see. The robot delivered, and the robot got paid.
+
 | | |
 |---|---|
 | **Builder** | Bleyle Osewe · [Bennybleylle09@gmail.com](mailto:Bennybleylle09@gmail.com) · 0705297628 |
@@ -18,27 +19,49 @@ Everything runs on its own. Payment settles automatically, the record writes its
 
 ---
 
+## One-minute story
+
+The demo bundle is **heineken beer, beverage can, and water bottle** for **6.00 USDC**. **Circle** holds the USDC; **Arc** escrow locks it on order and releases when delivery is confirmed onchain. **peaq** names the exact machine on a public record.
+
+**servebot-1** (PAL **TIAGo** in Webots) runs `mission_control`; the kitchen is paid **2.00 USDC** on heineken pickup; the rest splits on delivery. No front desk. No invoice.
+
+| Surface | URL |
+|---------|-----|
+| **Landing** (this story on the web) | [`apps/landing`](apps/landing) → http://localhost:3002 |
+| **Guest order** | [`apps/hotel-ui`](apps/hotel-ui) → http://localhost:3001 |
+| **Spoken demo script** | [`docs/DEMO_TELEPROMPT.md`](docs/DEMO_TELEPROMPT.md) |
+
+Partners on the landing page: **peaq · Circle · Arc · Webots · Web3 Clubs Kenya**.
+
 ---
 
 ## Video
 
+**Kitchen simulation** (hero on the landing site — `servebot-1` in `kitchen.wbt`):
+
+<video src="apps/landing/public/assets/kitchen-trim.mp4" controls width="100%"></video>
+
+**Full delivery loop** (order → table, 5×):
+
 <video src="proposals/videos/one-delivery-order-to-table.mp4" controls width="100%"></video>
 
-_One simulated delivery run (5×). Source: TIAGo object manipulation demo._
+_Alternate export for Notion: [`proposals/videos/one-delivery-order-to-table-notion.mp4`](proposals/videos/one-delivery-order-to-table-notion.mp4)._
 
 ---
 
 ## Screenshots
 
-_Add paths as you capture them._
+| Scene | Image |
+|-------|--------|
+| Kitchen pickup | ![TIAGo kitchen drawer](apps/landing/public/assets/tiago-kitchen.jpg) |
+| Platform · servebot-1 | ![TIAGo platform diagram](apps/landing/public/assets/tiago-platform.png) |
+| Head cameras (pickup / delivery proof) | ![TIAGo head](apps/landing/public/assets/tiago-head.jpg) |
+| Hospitality counter | ![TIAGo hospitality](apps/landing/public/assets/tiago-hospitality.jpg) |
+| Fleet / workshop | ![TIAGo fleet](apps/landing/public/assets/tiago-fleet.jpg) |
+| Machine identity (expansion panel) | ![TIAGo portrait](apps/landing/public/assets/tiago-portrait.jpg) |
+| Hackathon / venue | [`proposals/images/servebot-kitchen-simulation.jpg`](proposals/images/servebot-kitchen-simulation.jpg) · [`simulated-hotel-kitchen.jpg`](proposals/images/simulated-hotel-kitchen.jpg) |
 
-| | |
-|---|---|
-| Kitchen world | _placeholder_ |
-| servebot-1 at counter | _placeholder_ |
-| Order on kitchen table | _placeholder_ |
-| Webots console (Circle + peaq lines) | _placeholder_ |
-| [hotel-ui](apps/hotel-ui) order screen | _placeholder_ |
+Run **[hotel-ui](apps/hotel-ui)** locally for the guest order screen; Webots console shows Circle + peaq settler lines during Play.
 
 ---
 
@@ -47,7 +70,7 @@ _Add paths as you capture them._
 - **Guest:** Hard to see that delivery happened and that payment matched the job.
 - **Hotel:** Manual trails between kitchen, room, and staff.
 - **Robot / RaaS:** Flat leases hide premium skills; pay-per-task is hard to enforce.
-- **Kenya hospitality:** ~KSh 0.5T tourism earnings (2025), 900+ accredited hotels, 45k+ rooms, ~1.8M travel/tourism jobs—a high-frequency delivery environment with mostly manual settlement.
+- **Kenya hospitality:** ~**7.9 million** visitors in 2025, about **$3.8B**, **1,000+** accredited hotels—a high-frequency delivery environment with mostly manual settlement.
 
 ---
 
@@ -93,11 +116,13 @@ Arc mainnet has processed **tens of millions of transactions per month** since l
 - **Guest UI** [`apps/hotel-ui`](apps/hotel-ui) (port **3001**) · **Landing** [`apps/landing`](apps/landing) (port **3002**)
 - Settlement gated on **pickup** and **delivery** proof
 
-Operator runbook: **[`docs/RUN.md`](docs/RUN.md)** · Architecture rules: **[`AGENTS.md`](AGENTS.md)**
+Operator runbook: **[`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)** (start here) · Payment stages: **[`docs/RUN.md`](docs/RUN.md)** · Architecture rules: **[`AGENTS.md`](AGENTS.md)**
 
 ---
 
 ## Architecture
+
+**The settler moves the money. The robot moves the tray.** The settler holds Circle’s entity secret and the peaq controller key; **servebot-1** only sends a job id and a room.
 
 ```
 apps/hotel-ui (:3001)  ──POST /api/order──▶  packages/settler (:8788)
@@ -118,18 +143,81 @@ Webots: mission_control (servebot-1)
 
 ---
 
+## peaq and Arc: roles and how they work together
+
+Butler uses **two chains for two jobs**. **Arc** (via Circle) moves **USDC**. **peaq** (mainnet) names the **machine** and keeps a **public work record** that links back to those payments. Neither chain replaces the other.
+
+### What peaq is (in general)
+
+[peaq](https://www.peaq.network/) is a network for the **machine economy**: robots and devices as identifiable, auditable participants—not only human wallets.
+
+**peaqOS** is the stack on peaq (contracts + SDK/CLI) for things like:
+
+- **Machine identity** — a stable machine id, DID/Machine NFT, and a **controller** address allowed to act for that machine
+- **Events** — onchain records of work and revenue (Economics 2.0 uses contracts such as the **EventRegistry**)
+- **Reputation / MCR** — third parties can inspect a machine’s history (e.g. [Machine Explorer](https://machines.peaq.xyz))
+
+**Machine registration** means onboarding a real or logical machine on peaq: you get a **machine id** (decimal + `bytes32` form), assign a **controller** wallet, and can then **submit events** (here: **revenue events**) that accumulate on the public record. Registration is done with **peaq-os-cli** / **peaq-os-sdk** against peaq mainnet—not inside Webots.
+
+Docs: [Economics 2.0](https://docs.peaq.xyz/peaqos/concepts/economics-2-0). Butler config: [`config/peaq.yaml`](config/peaq.yaml).
+
+### What Arc is (in this project)
+
+[Arc](https://www.arc.io/) is Circle’s **stablecoin-native** L1: **USDC** is used for transfers and gas. Butler runs on **Arc Testnet** (`5042002`) with Circle **developer-controlled wallets** and a Foundry **escrow** contract. The settler (`packages/settler`) is the only component that signs Circle/Arc transactions.
+
+### Split of responsibility
+
+| Question | Answered on | Butler mechanism |
+|----------|-------------|------------------|
+| How much USDC moved, and when? | **Arc** | Escrow `deposit`, robot → vending `transfer`, escrow `release` |
+| Which machine owns this job? | **Both** | `machine_bytes32` on Arc deposit; same id on peaq revenue events |
+| Did servebot-1 complete pickup / delivery? | **Simulation → settler** | `butler_observe` → bridge → settler; payments and peaq writes run only after those steps |
+| Can a guest, hotel, or auditor verify without trusting us? | **peaq + explorers** | Machine page + Subscan txs; metadata points at Circle/Arc ids |
+
+### End-to-end flow (one delivery)
+
+1. **Order** — Guest or Play creates a `jobId`. Settler calls escrow **`deposit(jobId, machine_bytes32, 6.00 USDC)`** on Arc. The lock is tied to **servebot-1**’s machine id from the start.
+2. **Pickup** — Telemetry from Webots confirms the heineken beer left the counter. Settler pays vending **2.00 USDC** from the robot’s Circle wallet on Arc, then calls **`submit_revenue`** on peaq (e.g. **200** cents) with metadata like `arc:<Circle transaction id>`.
+3. **Delivery** — Telemetry confirms the bottle on the table (after dwell). Settler **`release(jobId)`** on Arc (split to operator, manufacturer, robot reserve), then another peaq **revenue event** (e.g. **600** cents) linked to the release’s Circle id.
+
+Implementation: [`packages/settler/economy.py`](packages/settler/economy.py) (`deposit`, `on_pickup`, `on_delivery`) and [`packages/settler/peaq_client.py`](packages/settler/peaq_client.py) (`submit_revenue` via `peaq-os-sdk`).
+
+```
+  Guest USDC                    peaq mainnet (servebot-1)
+       │                              │
+       ▼                              │
+  Arc escrow ──machine_bytes32────────┼──► identity + revenue events
+       │                              │         (pickup / delivery)
+       ├──► vending (pickup) ──────────┼──► event + arc:Circle_tx
+       └──► release (delivery) ──────┴──► event + arc:Circle_tx
+```
+
+### How peaq and Arc are linked
+
+- **At deposit:** Arc escrow stores **`jobId` + `machine_bytes32`**, so funds are bound to **servebot-1**, not an anonymous wallet.
+- **After each Arc step:** peaq revenue event **metadata** includes **`arc:<Circle transaction id>`** so readers can jump from peaq ([Subscan](https://peaq.subscan.io)) to Arc ([testnet.arcscan.app](https://testnet.arcscan.app)).
+- **Keys and SDKs:** The robot process never holds Circle’s entity secret or the peaq controller key. Only **`packages/settler`** talks to Circle and peaq—same pattern as peaq’s ROS robots calling **`peaqos_node`** on the host with a machine id, while keys stay in a local registry ([`config/peaqos_wallets.json`](config/peaqos_wallets.json)).
+
+### One-line summary
+
+**Arc settles USDC when delivery is proved; peaq records that servebot-1 did the work and ties each step to the matching payment.**
+
+Registered machine (live): [servebot-1 on Machine Explorer](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819). Onchain details below in **The machine (peaq)** and **The money (Arc Testnet)**.
+
+---
+
 ## The robot
 
 | | |
 |---|---|
 | Name | `servebot-1` |
-| Platform | PAL TIAGo, 7-DOF arm + gripper |
+| Platform | PAL **TIAGo** — omnidirectional base, arm, interchangeable grippers (Robotiq 2F-85 / 140), NVIDIA Jetson TX2, head cameras, expansion panel, tablet |
 | Controller | `mission_control` (drink behavior tree) |
 | Observer | `butler_observe` (pose, pickup, delivery → bridge) |
 | Guest rooms | **1204, 1205, 1206** (who ordered; robot does not drive into rooms) |
 | Demo order | heineken beer, beverage can, water bottle (**6.00 USDC**) |
 
-Press **Play** posts `/order` to the settler if no paid goal exists; hotel-ui can order first.
+Stereo head cameras are how pickup and delivery are proved in simulation. Press **Play** posts `/order` to the settler if no paid goal exists; **Place order** on the landing page or hotel-ui can order first.
 
 ---
 
@@ -171,19 +259,27 @@ On Arc Testnet, **gas and USDC share one token**; leave headroom above exact tra
 
 ---
 
-## Example run (on record)
+## Proof (recorded job — same as landing **#proof**)
 
-Job `0xdccdc144afa9ac17fdc72e44127b2e788734b3b38740f5b3d1ae7d347b77ff46`.
+Job **`0x59b29db1805714cf06d906b76237df8c092321ab67ccd0ba0a72f99d2a2b4780`** (room-1204). Open [servebot-1 on peaq](https://machines.peaq.xyz/machine/63056357364750406110742192000069244844268702226710579694851149582072404420819), then each hash.
 
-| Step | Circle id | Arc |
-| --- | --- | --- |
-| Deposit 6.00 | `f150bf2e-53e4-5c01-ba07-4476f92ad54d` | No Arc hash. Circle state `FAILED` (`INSUFFICIENT_TOKEN`). |
-| Vending 2.00 | `82652451-d1a6-5bc3-81fb-30903cf5f92e` | [0x5130…8ed43](https://testnet.arcscan.app/tx/0x513091d549e7aac239a502781b73400e5d183f1dd78921ede314c60f6308ed43) |
-| Release | `4f4753ee-ee8c-5134-8d15-930c1afb1e70` | No Arc hash. Circle state `FAILED` (`ESTIMATION_ERROR`). |
+| Step | Amount | Links |
+|------|--------|--------|
+| **Lock** | 6.00 USDC | [Arc deposit](https://testnet.arcscan.app/tx/0x4285f5e6c7f30b6617722ada5f5f0f10980561f6ac79e5010a264ec494e5ef40) |
+| **Kitchen** | 2.00 USDC | [Arc vending](https://testnet.arcscan.app/tx/0x513784057a66b3179a7d8279a875b6964f664f8650ec88eb0f4185c018c528c8) · [peaq pickup](https://peaq.subscan.io/tx/0x61877b9401345c2151d70adc593c98a2b09cc713cca46de7900b943c94827f24) |
+| **Release** | 4.80 / 0.60 / 0.60 | [Arc release](https://testnet.arcscan.app/tx/0x1f34793b8a0cc2a1b15d77a8068efe45ede13163bd162fee10ea4033277ba927) · [peaq delivery](https://peaq.subscan.io/tx/0x404ca080f07f35a8d3a1a7cd6316f38d29295ab267102173d4a6670faedc6cfc) |
 
-**peaq pickup:** [0x7131…f21a](https://peaq.subscan.io/tx/0x7131f9366ff7c0516c8b8c911cf74090a6bb7ae7e1c5b296a433d537f434f21a)
+### Tameion agent checklist (Butler mapping)
 
-**peaq delivery:** [0x629c…23d0](https://peaq.subscan.io/tx/0x629c774c2d85a390e4fcf2b4889582ec2d37ecdd7934d2c34f31043537e923d0)
+| Need | How Butler does it |
+|------|---------------------|
+| Hold USDC | Circle wallet on the settler, escrow on Arc |
+| Budget in the contract | Release only after proved delivery |
+| Pay the kitchen | 2.00 USDC on heineken pickup |
+| Write the decision | peaq revenue events + Arc tx hashes |
+| Escalate | Failure stops the next order |
+
+_Failed runs (e.g. guest underfunded escrow) are documented in [`docs/RUN.md`](docs/RUN.md); the settler now rejects failed Circle deposits before posting a paid goal._
 
 ---
 
@@ -191,7 +287,7 @@ Job `0xdccdc144afa9ac17fdc72e44127b2e788734b3b38740f5b3d1ae7d347b77ff46`.
 
 This guide is for someone cloning the repo for the first time. You will run **four background services** (settler, bridge, optional UIs) and then **Webots** with the kitchen world.
 
-**End-to-end payment checklist (stages, curl checks, failure table):** [`docs/RUN.md`](docs/RUN.md)
+**Manual run guide:** [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md) · **Payment stages (curl):** [`docs/RUN.md`](docs/RUN.md)
 
 ### What you are running
 
@@ -367,7 +463,7 @@ pnpm install
 pnpm dev
 ```
 
-Open **http://localhost:3002** → **Get started** links to hotel-ui.
+Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Problem · Stack · Proof · Roadmap · Builder).
 
 ---
 
@@ -447,8 +543,11 @@ Open **http://localhost:3002** → **Get started** links to hotel-ui.
 | `apps/hotel-ui` | Guest order UI + `/api/order` |
 | `apps/landing` | Marketing site → hotel-ui |
 | `docs/RUN.md` | End-to-end operator checklist |
+| `docs/MANUAL_RUN_GUIDE.md` | First-time local run (terminals + Webots) |
+| `docs/DEMO_TELEPROMPT.md` | Spoken demo with every tx hash and link |
 | `docs/Butler_Investor_Pitch.md` | Investor / hackathon narrative |
 | `docs/NOTION_Project_Details.md` | Notion sync source |
+| `apps/landing/public/assets/` | Hero video + TIAGo photos used on the site |
 
 `packages/circle-plugin` and `packages/peaqos-plugin` are reference copies; **KeeperHub is not in the run path.**
 
@@ -458,10 +557,10 @@ Open **http://localhost:3002** → **Get started** links to hotel-ui.
 
 | Phase | Goal |
 |-------|------|
-| **0 — Hackathon** | Full Arc testnet lock → release; public txs + live demo |
-| **1 — Pilot** | Web3 Clubs **robotics lab**; physical robot; hotel manager demos |
-| **2 — Product** | 2–3 Nairobi hotels; pay-per-skill pricing |
-| **3 — Scale** | East Africa hospitality + other embodied-AI venues |
+| **0 — Hackathon** (done) | Simulation, public hashes, hotel-ui + landing |
+| **1 — Pilot** | Web3 Clubs Kenya lab, physical hardware, Arc mainnet, hotel managers |
+| **2 — Product** | 2–3 Nairobi hotels; pay-per-skill (**2.00** standard · **4.00** premium · **1.50** fleet); one settler, many robots |
+| **3 — Scale** | East Africa, then any repeated machine task with a valuable receipt |
 
 ---
 
@@ -479,7 +578,7 @@ Open **http://localhost:3002** → **Get started** links to hotel-ui.
 
 Formal recognition for Tameion; lab and **robotics space** for pilot; support beyond hackathon. Programme contact for letters: **arjun@thecanteenapp.com**. [web3clubs.xyz](https://web3clubs.xyz) · @Web3Clubs
 
-_Add partner quotes in this section as they arrive._
+> “Butler is a Web3 Clubs project. The club intends to offer support beyond the hackathon. The club’s lab — including its dedicated robotics space — is available to Butler for pilot operations.” — Web3 Clubs Kenya, October 2026
 
 ---
 
@@ -487,9 +586,9 @@ _Add partner quotes in this section as they arrive._
 
 | Metric | Value |
 |--------|--------|
-| peaq pickup + delivery txs | On chain (see above) |
-| Arc vending payment | Confirmed testnet tx |
-| Full escrow release | In progress |
+| Recorded job | `0x59b29…b4780` — lock, kitchen, release on Arc + peaq |
+| peaq pickup + delivery | [pickup](https://peaq.subscan.io/tx/0x61877b9401345c2151d70adc593c98a2b09cc713cca46de7900b943c94827f24) · [delivery](https://peaq.subscan.io/tx/0x404ca080f07f35a8d3a1a7cd6316f38d29295ab267102173d4a6670faedc6cfc) |
+| Arc deposit + release | [deposit](https://testnet.arcscan.app/tx/0x4285f5e6c7f30b6617722ada5f5f0f10980561f6ac79e5010a264ec494e5ef40) · [release](https://testnet.arcscan.app/tx/0x1f34793b8a0cc2a1b15d77a8068efe45ede13163bd162fee10ea4033277ba927) |
 | Pilot venue | Web3 Clubs lab (target) |
 
 ---
@@ -502,6 +601,7 @@ _Add partner quotes in this section as they arrive._
 
 ## Links
 
+- [Repository](https://github.com/Bleyle823/Butler)
 - [Tameion Hackathon](https://tameion.thecanteenapp.com/)
 - [peaq Economics 2.0](https://docs.peaq.xyz/peaqos/concepts/economics-2-0)
 - [Circle dev-controlled wallets](https://developers.circle.com/wallets/dev-controlled)

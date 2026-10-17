@@ -9,7 +9,7 @@ import { Gradient } from "./design/Roadmap";
 const Roadmap = () => (
   <Section className="overflow-hidden" id="roadmap">
     <div className="container md:pb-10">
-      <Heading tag="Ready to get started" title="What we’re working on" />
+      <Heading tag="From one simulated tray" title="What comes after the hashes" />
 
       <div className="relative grid gap-6 md:grid-cols-2 md:gap-4 md:pb-[7rem]">
         {roadmap.map((item) => {
@@ -48,14 +48,17 @@ const Roadmap = () => (
                     </div>
                   </div>
 
-                  <div className="mb-10 -my-10 -mx-15">
+                  <div className="relative mb-10 -my-10 -mx-15">
                     <img
-                      className="w-full"
+                      className="w-full h-[16rem] md:h-[18rem] object-cover"
                       src={item.imageUrl}
                       width={628}
                       height={426}
-                      alt={item.title}
+                      alt={item.caption}
                     />
+                    <p className="absolute bottom-0 left-0 right-0 bg-n-8/80 px-6 py-3 body-2 text-n-1">
+                      {item.caption}
+                    </p>
                   </div>
                   <h4 className="h4 mb-4">{item.title}</h4>
                   <p className="body-2 text-n-4">{item.text}</p>
@@ -69,7 +72,7 @@ const Roadmap = () => (
       </div>
 
       <div className="flex justify-center mt-12 md:mt-15 xl:mt-20">
-        <Button href="/roadmap">Our roadmap</Button>
+        <Button href="#proof">See the hashes</Button>
       </div>
     </div>
   </Section>
