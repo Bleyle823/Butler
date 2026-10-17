@@ -2,6 +2,7 @@
 
 import ButtonGradient from "../assets/svg/ButtonGradient";
 import Benefits from "../components/Benefits";
+import Builder from "../components/Builder";
 import Collaboration from "../components/Collaboration";
 import Footer from "../components/Footer";
 import Header from "../components/Header";
@@ -21,6 +22,7 @@ export default function Page() {
         <Services />
         <Pricing />
         <Roadmap />
+        <Builder />
         <Footer />
       </div>
 

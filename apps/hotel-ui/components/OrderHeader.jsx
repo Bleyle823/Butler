@@ -1,4 +1,4 @@
-import { brainwave } from "../assets";
+import Logo from "./Logo";
 import { landingUrl } from "../constants";
 import Button from "./Button";
 
@@ -8,8 +8,8 @@ const OrderHeader = () => {
       className="fixed top-0 left-0 w-full z-50 border-b border-n-6 bg-n-8/90 backdrop-blur-sm"
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4 lg:h-[5.25rem]">
-        <a className="block w-[12rem] xl:mr-8" href={landingUrl}>
-          <img src={brainwave} width={190} height={40} alt="Butler" />
+        <a className="block xl:mr-8" href={landingUrl}>
+          <Logo />
         </a>
 
         <nav className="hidden lg:flex lg:mx-auto">

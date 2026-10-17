@@ -1,7 +1,7 @@
 import Section from "./Section";
 import Heading from "./Heading";
-import { service1, service2, service3, check } from "../assets";
-import { brainwaveServices, brainwaveServicesIcons } from "../constants";
+import { tiagoHead, tiagoHospitality, tiagoPlatform } from "../assets";
+import { machineUrl, specLines } from "../constants";
 import {
   PhotoChatMessage,
   Gradient,
@@ -13,63 +13,60 @@ import Generating from "./Generating";
 
 const Services = () => {
   return (
-    <Section id="how-to-use">
+    <Section id="demo">
       <div className="container">
         <Heading
-          title="Generative AI made for creators."
-          text="Butler unlocks the potential of AI-powered applications"
+          title="servebot-1, in the kitchen."
+          text="Webots R2025a. Rooms 1204, 1205, and 1206. The robot does not enter them."
         />
 
         <div className="relative">
-          <div className="relative z-1 flex items-center h-[39rem] mb-5 p-8 border border-edge/40 rounded-3xl overflow-hidden lg:p-20 xl:h-[46rem]">
-            <div className="absolute top-0 left-0 w-full h-full pointer-events-none md:w-3/5 xl:w-auto">
-              <img
-                className="w-full h-full object-cover md:object-right"
-                width={800}
-                alt="Smartest AI"
-                height={730}
-                src={service1}
-              />
-            </div>
+          <div className="relative z-1 flex items-center h-[39rem] mb-5 border border-edge/40 rounded-3xl overflow-hidden bg-[#f0eeea] xl:h-[46rem]">
+            <img
+              className="absolute inset-0 w-full h-full object-contain object-center p-4 md:p-8 lg:p-10"
+              width={1200}
+              height={800}
+              alt="PAL Robotics TIAGo — servebot-1 platform"
+              src={tiagoPlatform}
+            />
 
-            <div className="relative z-1 max-w-[17rem] ml-auto">
-              <h4 className="h4 mb-4">Smartest AI</h4>
-              <p className="body-2 mb-[3rem] text-n-3">
-                Butler unlocks the potential of AI-powered applications
-              </p>
-              <ul className="body-2">
-                {brainwaveServices.map((item, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start py-4 border-t border-n-6"
-                  >
-                    <img width={24} height={24} src={check} />
-                    <p className="ml-4">{item}</p>
-                  </li>
+            <div className="absolute left-4 right-4 bottom-20 z-1 max-w-xl rounded-2xl bg-n-8/90 p-4 backdrop-blur lg:left-8 lg:bottom-24">
+              <h4 className="h5 mb-2">servebot-1 · TIAGo</h4>
+              <ul className="body-2 text-n-3">
+                {specLines.map((line) => (
+                  <li key={line}>{line}</li>
                 ))}
               </ul>
+              <a
+                className="mt-3 inline-block font-code text-xs uppercase tracking-wider text-n-1 underline"
+                href={machineUrl}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Machine NFT on peaq
+              </a>
             </div>
 
-            <Generating className="absolute left-4 right-4 bottom-4 border-edge/30 border lg:left-1/2 lg-right-auto lg:bottom-8 lg:-translate-x-1/2" />
+            <Generating className="absolute left-4 right-4 bottom-4 z-1 border-edge/30 border lg:left-1/2 lg:right-auto lg:bottom-8 lg:-translate-x-1/2" />
           </div>
 
           <div className="relative z-1 grid gap-5 lg:grid-cols-2">
             <div className="relative min-h-[39rem] border border-edge/40 rounded-3xl overflow-hidden">
               <div className="absolute inset-0">
                 <img
-                  src={service2}
+                  src={tiagoHead}
                   className="h-full w-full object-cover"
                   width={630}
                   height={750}
-                  alt="robot"
+                  alt="TIAGo stereo cameras — how pickup and delivery are seen"
                 />
               </div>
 
               <div className="absolute inset-0 flex flex-col justify-end p-8 bg-gradient-to-b from-n-8/0 to-n-8/90 lg:p-15">
-                <h4 className="h4 mb-4">Photo editing</h4>
+                <h4 className="h4 mb-4">Sees the counter and the table</h4>
                 <p className="body-2 mb-[3rem] text-n-3">
-                  Automatically enhance your photos using our AI app&apos;s
-                  photo editing feature. Try it now!
+                  The head cameras are how the simulation knows the heineken
+                  left the counter and later rested on the table.
                 </p>
               </div>
 
@@ -78,43 +75,20 @@ const Services = () => {
 
             <div className="p-4 bg-n-7 rounded-3xl overflow-hidden lg:min-h-[46rem]">
               <div className="py-12 px-4 xl:px-8">
-                <h4 className="h4 mb-4">Video generation</h4>
-                <p className="body-2 mb-[2rem] text-n-3">
-                  The world’s most powerful AI photo and video art generation
-                  engine. What will you create?
+                <h4 className="h4 mb-4">The job in the real world</h4>
+                <p className="body-2 text-n-3">
+                  A person, a cup, a robot at a service counter. The simulation
+                  is the same task: collect, carry, set down, then get paid.
                 </p>
-
-                <ul className="flex items-center justify-between">
-                  {brainwaveServicesIcons.map((item, index) => (
-                    <li
-                      key={index}
-                      className={`rounded-2xl flex items-center justify-center ${
-                        index === 2
-                          ? "w-[3rem] h-[3rem] p-0.25 bg-edge md:w-[4.5rem] md:h-[4.5rem]"
-                          : "flex w-10 h-10 bg-n-6 md:w-15 md:h-15"
-                      }`}
-                    >
-                      <div
-                        className={
-                          index === 2
-                            ? "flex items-center justify-center w-full h-full bg-n-7 rounded-[1rem]"
-                            : ""
-                        }
-                      >
-                        <img src={item} width={24} height={24} alt={item} />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
               </div>
 
               <div className="relative h-[20rem] bg-n-8 rounded-xl overflow-hidden md:h-[25rem]">
                 <img
-                  src={service3}
+                  src={tiagoHospitality}
                   className="w-full h-full object-cover"
                   width={520}
                   height={400}
-                  alt="Scary robot"
+                  alt="TIAGo handing a cup across a hospitality counter"
                 />
 
                 <VideoChatMessage />

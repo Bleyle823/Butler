@@ -15,7 +15,7 @@ const Benefits = () => {
       <div className="container relative z-2">
         <Heading
           className="md:max-w-md lg:max-w-2xl"
-          title="Chat Smarter, Not Harder with Butler"
+          title="A lease does not know how many trays went out"
         />
 
         <div className="flex flex-wrap gap-10 mb-10">
@@ -45,7 +45,7 @@ const Benefits = () => {
                       src={item.imageUrl}
                       width={380}
                       height={362}
-                      alt={item.title}
+                      alt={item.imageAlt || item.title}
                       className="w-full h-full object-cover"
                     />
                   </div>

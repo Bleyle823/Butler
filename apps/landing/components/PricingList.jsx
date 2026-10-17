@@ -1,6 +1,5 @@
 import { check } from "../assets";
 import { pricing } from "../constants";
-import Button from "./Button";
 
 const PricingList = () => {
   return (
@@ -16,32 +15,32 @@ const PricingList = () => {
             {item.description}
           </p>
 
-          <div className="flex items-center h-[5.5rem] mb-6">
-            {item.price && (
-              <>
-                <div className="h3">$</div>
-                <div className="text-[5.5rem] leading-none font-bold">
-                  {item.price}
-                </div>
-              </>
-            )}
+          <div className="flex items-end h-[5.5rem] mb-6">
+            <div className="text-[4rem] leading-none font-bold">{item.amount}</div>
+            <div className="h5 ml-2 mb-2">{item.unit}</div>
           </div>
 
-          <Button
-            className="w-full mb-6"
-            href={item.price ? "/pricing" : "mailto:contact@jsmastery.pro"}
-            white={!!item.price}
-          >
-            {item.price ? "Get started" : "Contact us"}
-          </Button>
+          <div className="flex flex-col gap-3 mb-6">
+            {item.links.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                className="font-code text-xs font-bold uppercase tracking-wider text-n-1 underline"
+              >
+                {link.label}
+              </a>
+            ))}
+          </div>
 
           <ul>
-            {item.features.map((feature, index) => (
+            {item.features.map((feature) => (
               <li
-                key={index}
+                key={feature}
                 className="flex items-start py-5 border-t border-n-6"
               >
-                <img src={check} width={24} height={24} alt="Check" />
+                <img src={check} width={24} height={24} alt="" />
                 <p className="body-2 ml-4">{feature}</p>
               </li>
             ))}

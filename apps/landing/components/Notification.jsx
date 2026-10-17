@@ -1,4 +1,4 @@
-import { notification1 } from "../assets";
+import { tiagoPortrait } from "../assets";
 import { notificationImages } from "../constants";
 
 const Notification = ({ className, title }) => {
@@ -9,11 +9,11 @@ const Notification = ({ className, title }) => {
       } flex items-center p-4 pr-6 bg-n-7/90 backdrop-blur border border-edge/30 rounded-2xl gap-5`}
     >
       <img
-        src={notification1}
+        src={tiagoPortrait}
         width={62}
         height={62}
-        alt="image"
-        className="rounded-xl"
+        alt="servebot-1"
+        className="rounded-xl object-cover"
       />
 
       <div className="flex-1">
@@ -28,10 +28,10 @@ const Notification = ({ className, title }) => {
               >
                 <img
                   src={item}
-                  className="w-full"
+                  className="w-full h-full object-cover"
                   width={20}
                   height={20}
-                  alt={item}
+                  alt=""
                 />
               </li>
             ))}
