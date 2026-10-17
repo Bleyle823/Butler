@@ -58,12 +58,16 @@ const Collaboration = () => {
                   style={{ transform: `rotate(${index * 90}deg)` }}
                 >
                   <div
-                    className="relative -top-[1.6rem] flex w-[3.2rem] h-[3.2rem] items-center justify-center bg-n-7 border border-n-1/15 rounded-xl"
+                    className="relative -top-[1.6rem] flex w-[3.2rem] h-[3.2rem] items-center justify-center bg-white border border-n-1/15 rounded-xl p-1.5"
                     style={{ transform: `rotate(-${index * 90}deg)` }}
                   >
-                    <span className="font-code text-[0.6rem] uppercase tracking-wider text-n-1">
-                      {app.title}
-                    </span>
+                    <img
+                      src={app.logo}
+                      alt={app.title}
+                      className="h-full w-full object-contain"
+                      width={32}
+                      height={32}
+                    />
                   </div>
                 </li>
               ))}

@@ -30,15 +30,17 @@ const Services = () => {
               src={tiagoPlatform}
             />
 
-            <div className="absolute left-4 right-4 bottom-20 z-1 max-w-xl rounded-2xl bg-n-8/90 p-4 backdrop-blur lg:left-8 lg:bottom-24">
-              <h4 className="h5 mb-2">servebot-1 · TIAGo</h4>
-              <ul className="body-2 text-n-3">
+            <div className="absolute left-4 right-4 bottom-20 z-1 max-w-sm rounded-xl bg-n-8/90 p-3 backdrop-blur lg:left-8 lg:bottom-24">
+              <h4 className="mb-1.5 text-base font-semibold leading-snug md:text-lg">
+                servebot-1 · TIAGo
+              </h4>
+              <ul className="space-y-0.5 text-xs leading-5 text-n-3 md:text-sm md:leading-6">
                 {specLines.map((line) => (
                   <li key={line}>{line}</li>
                 ))}
               </ul>
               <a
-                className="mt-3 inline-block font-code text-xs uppercase tracking-wider text-n-1 underline"
+                className="mt-2 inline-block font-code text-[0.65rem] uppercase tracking-wider text-n-1 underline"
                 href={machineUrl}
                 target="_blank"
                 rel="noreferrer"

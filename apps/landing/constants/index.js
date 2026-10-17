@@ -41,7 +41,13 @@ export const heroIcons = [homeSmile, file02, searchMd, plusSquare];
 
 export const notificationImages = [tiagoHead, tiagoHospitality, tiagoKitchen];
 
-export const partners = ["peaq", "Circle", "Arc", "Webots", "Web3 Clubs Kenya"];
+export const partnerBrands = [
+  { name: "peaq", logo: "/assets/partners/peaq.png" },
+  { name: "Circle", logo: "/assets/partners/circle.png" },
+  { name: "Arc", logo: "/assets/partners/arc.png" },
+  { name: "Webots", logo: "/assets/partners/webots.png" },
+  { name: "Web3 Clubs Kenya", logo: null },
+];
 
 export const specLines = [
   "Omnidirectional base",
@@ -70,10 +76,10 @@ export const collabContent = [
 ];
 
 export const collabApps = [
-  { id: "0", title: "peaq" },
-  { id: "1", title: "Circle" },
-  { id: "2", title: "Arc" },
-  { id: "3", title: "Webots" },
+  { id: "0", title: "peaq", logo: "/assets/partners/peaq.png" },
+  { id: "1", title: "Circle", logo: "/assets/partners/circle.png" },
+  { id: "2", title: "Arc", logo: "/assets/partners/arc.png" },
+  { id: "3", title: "Webots", logo: "/assets/partners/webots.png" },
 ];
 
 export const pricing = [
