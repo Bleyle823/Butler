@@ -100,12 +100,6 @@ Arc mainnet has processed **tens of millions of transactions per month** since l
 
 ---
 
-## Physical AI & pay-per-skill
-
-**Physical AI** = systems that perceive, reason, and act in the world (not chat-only). Hospitality **delivery robots** are a leading service-robot category. **peaqOS** in **LG CLOiSim** (2026) showed pay-per-skill hotel room service with onchain settlement; Butler uses the same idea—**peaq identity + Circle/Arc money**—on **TIAGo / Webots** in Kenya.
-
----
-
 ## What shipped
 
 - **servebot-1** — PAL TIAGo in Webots R2025a (`worlds/kitchen.wbt`)
@@ -124,15 +118,18 @@ Operator runbook: **[`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)** · 
 
 **The settler moves the money. The robot moves the tray.** The settler holds Circle’s entity secret and the peaq controller key; **servebot-1** only sends a job id and a room.
 
-```
-apps/hotel-ui (:3001)  ──POST /api/order──▶  packages/settler (:8788)
-       │                                        ├── Circle (USDC, Arc)
-       │                                        └── peaq mainnet (events)
-       │
-apps/landing (:3002) ──links to hotel-ui
-
-Webots: mission_control (servebot-1)
-         butler_observe ──▶ packages/bridge (:8787) ──▶ settler
+```mermaid
+flowchart LR
+  landing["apps/landing :3002"] -->|"Place order"| hotelUi["apps/hotel-ui :3001"]
+  hotelUi -->|"POST /api/order"| settler["packages/settler :8788"]
+  subgraph webots [Webots kitchen.wbt]
+    mission["mission_control servebot-1"]
+    observe["butler_observe"]
+  end
+  observe --> bridge["packages/bridge :8787"]
+  bridge -->|"pickup and delivery"| settler
+  settler --> circle["Circle USDC on Arc"]
+  settler --> peaq["peaq mainnet events"]
 ```
 
 **Rules:**
@@ -182,14 +179,25 @@ Docs: [Economics 2.0](https://docs.peaq.xyz/peaqos/concepts/economics-2-0). Butl
 
 Implementation: [`packages/settler/economy.py`](packages/settler/economy.py) (`deposit`, `on_pickup`, `on_delivery`) and [`packages/settler/peaq_client.py`](packages/settler/peaq_client.py) (`submit_revenue` via `peaq-os-sdk`).
 
-```
-  Guest USDC                    peaq mainnet (servebot-1)
-       │                              │
-       ▼                              │
-  Arc escrow ──machine_bytes32────────┼──► identity + revenue events
-       │                              │         (pickup / delivery)
-       ├──► vending (pickup) ──────────┼──► event + arc:Circle_tx
-       └──► release (delivery) ──────┴──► event + arc:Circle_tx
+```mermaid
+flowchart TB
+  guest["Guest USDC"]
+  subgraph arc [Arc]
+    escrow["Escrow deposit: jobId and machine_bytes32"]
+    vending["Vending 2.00 USDC on pickup"]
+    release["Release on delivery"]
+  end
+  subgraph peaqNet [peaq mainnet]
+    identity["servebot-1 identity"]
+    pickupEvent["Pickup revenue event"]
+    deliveryEvent["Delivery revenue event"]
+  end
+  guest --> escrow
+  escrow -->|"bound at deposit"| identity
+  escrow --> vending
+  vending -->|"arc:Circle tx"| pickupEvent
+  escrow --> release
+  release -->|"arc:Circle tx"| deliveryEvent
 ```
 
 ### How peaq and Arc are linked
@@ -610,4 +618,4 @@ In April 2026 I presented Maritime Anomaly System at the 3rd Mashariki Cooperati
 
 ## License
 
-_Add license if/when you publish one._
+Licensed under the **Apache License 2.0**. See [LICENSE](LICENSE).
