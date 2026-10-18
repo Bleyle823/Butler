@@ -23,7 +23,7 @@ Butler is a hotel service humanoid with payment built in. A guest orders a coffe
 |---------|-----|
 | **Landing** (this story on the web) | [`apps/landing`](apps/landing) → http://localhost:3002 |
 | **Guest order** | [`apps/hotel-ui`](apps/hotel-ui) → http://localhost:3001 |
-| **Spoken demo script** | [`docs/DEMO_TELEPROMPT.md`](docs/DEMO_TELEPROMPT.md) |
+| **How to run it** | [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md) |
 
 Partners on the landing page: **peaq · Circle · Arc · Webots · Web3 Clubs Kenya**.
 
@@ -116,7 +116,7 @@ Arc mainnet has processed **tens of millions of transactions per month** since l
 - **Guest UI** [`apps/hotel-ui`](apps/hotel-ui) (port **3001**) · **Landing** [`apps/landing`](apps/landing) (port **3002**)
 - Settlement gated on **pickup** and **delivery** proof
 
-Operator runbook: **[`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)** (start here) · Payment stages: **[`docs/RUN.md`](docs/RUN.md)** · Architecture rules: **[`AGENTS.md`](AGENTS.md)**
+Operator runbook: **[`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)** · Architecture rules: **[`AGENTS.md`](AGENTS.md)**
 
 ---
 
@@ -255,7 +255,7 @@ Stereo head cameras are how pickup and delivery are proved in simulation. Press 
 
 **Flow:** Guest locks **6.00 USDC**. Heineken pickup → vending **2.00** from robot wallet. Delivery → escrow **4.80 / 0.60 / 0.60** (operator / manufacturer / robot reserve). peaq records **200** cents on pickup, **600** on delivery for that bottle leg; can and water complete the same job.
 
-On Arc Testnet, **gas and USDC share one token**; leave headroom above exact transfer amounts ([`docs/RUN.md`](docs/RUN.md)). Faucet: https://faucet.circle.com
+On Arc Testnet, **gas and USDC share one token**; leave headroom above exact transfer amounts ([`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)). Faucet: https://faucet.circle.com
 
 ---
 
@@ -279,7 +279,7 @@ Job **`0x59b29db1805714cf06d906b76237df8c092321ab67ccd0ba0a72f99d2a2b4780`** (ro
 | Write the decision | peaq revenue events + Arc tx hashes |
 | Escalate | Failure stops the next order |
 
-_Failed runs (e.g. guest underfunded escrow) are documented in [`docs/RUN.md`](docs/RUN.md); the settler now rejects failed Circle deposits before posting a paid goal._
+_Failed runs (e.g. guest underfunded escrow) are covered in [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md); the settler now rejects failed Circle deposits before posting a paid goal._
 
 ---
 
@@ -287,7 +287,7 @@ _Failed runs (e.g. guest underfunded escrow) are documented in [`docs/RUN.md`](d
 
 This guide is for someone cloning the repo for the first time. You will run **four background services** (settler, bridge, optional UIs) and then **Webots** with the kitchen world.
 
-**Manual run guide:** [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md) · **Payment stages (curl):** [`docs/RUN.md`](docs/RUN.md)
+**Manual run guide:** [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md)
 
 ### What you are running
 
@@ -339,7 +339,7 @@ One paid job at a time. Wait until the robot finishes (`DONE` in the Webots cons
 **Tips**
 
 - Use **real-time** simulation mode before pressing Play (not fast mode if the robot pose looks unstable).
-- If another Webots instance is open, port **1234** may be busy; close extra instances or see [`docs/RUN.md`](docs/RUN.md) for alternate ports.
+- If another Webots instance is open, port **1234** may be busy; close extra instances or see [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md).
 - If the TIAGo pose looks broken after a bad run, **reload** `kitchen.wbt` before Play.
 
 ---
@@ -499,7 +499,7 @@ Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Pr
 
 - Arc: guest **6.00 USDC** lock, robot **2.00** to vending on heineken pickup, escrow **release** on delivery.
 - peaq: **pickup** and **delivery** revenue events for `servebot-1`.
-- Details and curl checks: [`docs/RUN.md`](docs/RUN.md) Stages 5–8.
+- Details: [`docs/MANUAL_RUN_GUIDE.md`](docs/MANUAL_RUN_GUIDE.md).
 
 ---
 
@@ -542,11 +542,8 @@ Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Pr
 | `packages/bridge` | Local goal + event bus |
 | `apps/hotel-ui` | Guest order UI + `/api/order` |
 | `apps/landing` | Marketing site → hotel-ui |
-| `docs/RUN.md` | End-to-end operator checklist |
 | `docs/MANUAL_RUN_GUIDE.md` | First-time local run (terminals + Webots) |
-| `docs/DEMO_TELEPROMPT.md` | Spoken demo with every tx hash and link |
 | `docs/Butler_Investor_Pitch.md` | Investor / hackathon narrative |
-| `docs/NOTION_Project_Details.md` | Notion sync source |
 | `apps/landing/public/assets/` | Hero video + TIAGo photos used on the site |
 
 `packages/circle-plugin` and `packages/peaqos-plugin` are reference copies; **KeeperHub is not in the run path.**
@@ -573,6 +570,18 @@ Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Pr
 - **ETH Safari** — hackathon prizes including **MetaMask prize**
 - **NI3C** (Ministry of Education) — prior **internship**; ongoing talks with Head of Centre for project support
 - **ANU** — discussions with Head of Department, Education
+
+### Why I'm the right person to push this forward
+
+In April 2026 I presented Maritime Anomaly System at the 3rd Mashariki Cooperation Conference in Diani, hosted by the National Intelligence Service.
+
+![Presentation to Hon. Onesimus Kipchumba Murkomen and Mr. Noordin Mohamed Haji](proposals/images/presentation-murkomen-noordin.jpg)
+
+*Presenting the project to Hon. Onesimus Kipchumba Murkomen, Cabinet Secretary for Interior and National Administration, and Mr. Noordin Mohamed Haji, Director-General of the National Intelligence Service.*
+
+![Presentation to His Excellency Dr. William Samoei Ruto](proposals/images/presentation-ruto.jpg)
+
+*Presenting the project to His Excellency Dr. William Samoei Ruto, C.G.H., President of the Republic of Kenya.*
 
 ### Web3 Clubs Kenya
 
