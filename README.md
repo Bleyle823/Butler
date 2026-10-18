@@ -12,7 +12,7 @@ Everything runs on its own. Payment settles automatically, the record writes its
 
 | | |
 |---|---|
-| **Builder** | Bleyle Osewe · [Bennybleylle09@gmail.com](mailto:Bennybleylle09@gmail.com) · 0705297628 |
+| **Builder** | Bleyle Osewe · [Bennybleylle09@gmail.com](mailto:Bennybleylle09@gmail.com) |
 | **Community** | [Web3 Clubs Kenya](https://web3clubs.xyz) |
 | **Notion** | [Project Details](https://www.notion.so/Project-Details-3fbe6f3c0667802ca6e1f4060b445d87) |
 | **Long-form pitch** | [`docs/Butler_Investor_Pitch.md`](docs/Butler_Investor_Pitch.md) |
@@ -589,12 +589,6 @@ In April 2026 I presented Maritime Anomaly System at the 3rd Mashariki Cooperati
 
 *Presenting the project to His Excellency Dr. William Samoei Ruto, C.G.H., President of the Republic of Kenya.*
 
-### Web3 Clubs Kenya
-
-Formal recognition for Tameion; lab and **robotics space** for pilot; support beyond hackathon. Programme contact for letters: **arjun@thecanteenapp.com**. [web3clubs.xyz](https://web3clubs.xyz) · @Web3Clubs
-
-> “Butler is a Web3 Clubs project. The club intends to offer support beyond the hackathon. The club’s lab — including its dedicated robotics space — is available to Butler for pilot operations.” — Web3 Clubs Kenya, October 2026
-
 ---
 
 ## Traction (update as you go)
@@ -605,12 +599,6 @@ Formal recognition for Tameion; lab and **robotics space** for pilot; support be
 | peaq pickup + delivery | [pickup](https://peaq.subscan.io/tx/0x61877b9401345c2151d70adc593c98a2b09cc713cca46de7900b943c94827f24) · [delivery](https://peaq.subscan.io/tx/0x404ca080f07f35a8d3a1a7cd6316f38d29295ab267102173d4a6670faedc6cfc) |
 | Arc deposit + release | [deposit](https://testnet.arcscan.app/tx/0x4285f5e6c7f30b6617722ada5f5f0f10980561f6ac79e5010a264ec494e5ef40) · [release](https://testnet.arcscan.app/tx/0x1f34793b8a0cc2a1b15d77a8068efe45ede13163bd162fee10ea4033277ba927) |
 | Pilot venue | Web3 Clubs lab (target) |
-
----
-
-## Security
-
-**Never commit:** `.env`, Circle entity secrets, recovery files, Turnkey keys, webhook secrets, `config/wallets.json`, `config/bridge.json`, `config/peaqos_wallets.json`.
 
 ---
 
