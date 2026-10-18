@@ -10,7 +10,6 @@ Use this guide to run a full demo: guest order → robot delivery in Webots → 
 
 **Related docs**
 
-- Deep checklist with curl tests: [`RUN.md`](RUN.md)
 - First-time install (Webots download, clone): [`README.md`](../README.md#step-by-step-run-butler-locally)
 
 ---
@@ -61,7 +60,7 @@ Copy examples and fill in your values. All paths are from the **Butler** folder 
 
 In `config/bridge.json`, set `wallets_path` to `config/wallets.json` (not the `.example` file).
 
-`config/peaqos_wallets.json` is created when you first run the settler (or import a controller key once via `PEAQ_CONTROLLER_PRIVATE_KEY` in `.env` — see [`RUN.md`](RUN.md) Stage 0).
+`config/peaqos_wallets.json` is created when you first run the settler (or import a controller key once via `PEAQ_CONTROLLER_PRIVATE_KEY` in `.env`).
 
 **Windows — check all files exist:**
 
@@ -224,8 +223,6 @@ Do **not** press Play again mid-run.
 - Arc testnet: [testnet.arcscan.app](https://testnet.arcscan.app)
 - peaq txs: [peaq.subscan.io](https://peaq.subscan.io)
 
-For step-by-step curl verification, use [`RUN.md`](RUN.md) Stages 5–8.
-
 ---
 
 ## Part F — Stop and reset
@@ -248,11 +245,9 @@ For step-by-step curl verification, use [`RUN.md`](RUN.md) Stages 5–8.
 | `order failed` in Webots | Same as above; guest needs ~6.20 USDC on testnet |
 | Robot doesn’t move | **servebot-1** controller must be `mission_control`, supervisor on |
 | `bridge post failed` in Webots | Start bridge; reload `kitchen.wbt` |
-| Pickup pays but no peaq line | Check `config/peaqos_wallets.json` / controller key ([`RUN.md`](RUN.md)) |
+| Pickup pays but no peaq line | Check `config/peaqos_wallets.json` and the controller key |
 | Release never happens | Wait for beer on table ~8 seconds after delivery proof; pickup must have run first |
 | Robot exploded / flying | Reload world; use real-time; Play once |
-
-Full failure table: [`RUN.md`](RUN.md#if-a-stage-fails).
 
 ---
 

@@ -27,6 +27,34 @@ const Builder = () => {
           ))}
         </div>
 
+        <div className="mt-10 grid gap-6 md:grid-cols-2">
+          <figure>
+            <img
+              src="/assets/builder/presentation-murkomen-noordin.jpg"
+              alt="Presenting to Hon. Onesimus Kipchumba Murkomen and Mr. Noordin Mohamed Haji"
+              className="w-full rounded-3xl object-cover"
+            />
+            <figcaption className="mt-3 body-2 text-n-4">
+              Presenting the project to Hon. Onesimus Kipchumba Murkomen, Cabinet
+              Secretary for Interior and National Administration, and Mr. Noordin
+              Mohamed Haji, Director-General of the National Intelligence Service.
+              Mashariki Cooperation Conference, Diani, April 2026.
+            </figcaption>
+          </figure>
+          <figure>
+            <img
+              src="/assets/builder/presentation-ruto.jpg"
+              alt="Presenting to His Excellency Dr. William Samoei Ruto, President of the Republic of Kenya"
+              className="w-full rounded-3xl object-cover"
+            />
+            <figcaption className="mt-3 body-2 text-n-4">
+              Presenting the project to His Excellency Dr. William Samoei Ruto,
+              C.G.H., President of the Republic of Kenya. Mashariki Cooperation
+              Conference, Diani, April 2026.
+            </figcaption>
+          </figure>
+        </div>
+
         <blockquote className="max-w-3xl mx-auto mt-12 body-2 text-n-2">
           “Butler is a Web3 Clubs project. The club intends to offer support
           beyond the hackathon. The club’s lab — including its dedicated
