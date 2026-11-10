@@ -319,11 +319,14 @@ Caption: Web3 Clubs Kenya lab — the robotics space where the pilot will run.
 [Space for lab photo and address]
 ```
 
-Web3 Clubs Kenya has confirmed:
-- Butler is a recognised Web3 Clubs project
-- The club's lab — including its dedicated **robotics space** — is available to Butler for pilot operations
+Web3 Clubs Kenya has **formally committed** in a signed letter of support (16 October 2026):
+
+- Butler is a recognised Web3 Clubs project (member Bleyle Osewe)
+- The club intends **support beyond the hackathon** into pilot and product
+- The club's lab — including its dedicated **robotics space** — is available to Butler for Phase 1 build, test, demonstration, and iteration (not conditional on a future club vote)
 - The club is open to hosting live demo sessions in front of hotel managers and potential partners
-- Support continues beyond the hackathon
+
+Full letter: [`proposals/letters/web3-clubs-butler-incubation-letter.pdf`](../proposals/letters/web3-clubs-butler-incubation-letter.pdf) · [`proposals/web3-clubs-letter-of-support.md`](../proposals/web3-clubs-letter-of-support.md)
 
 **Pilot programme goals:**
 1. Move from Webots simulation to physical robot hardware in the Web3 Clubs lab
@@ -571,17 +574,19 @@ Other Web3 prizes: [list]
 
 ---
 
-### 13.4 Community Backing
+### 13.4 Official letter of support — incubation, lab, and technical backing
 
-Web3 Clubs Kenya has formally stated:
+Web3 Clubs Kenya issued **Letter of Recognition and Support for Butler Project** (16 October 2026), signed by **Ochieng Odhiambo**, Operations lead, Web3 Clubs Foundation Limited ([`proposals/letters/web3-clubs-butler-incubation-letter.pdf`](../proposals/letters/web3-clubs-butler-incubation-letter.pdf)).
 
-> *"Butler is a Web3 Clubs project. The club intends to offer support beyond the hackathon. The club's lab — including its dedicated robotics space — is available to Butler for pilot operations. Bleyle is the right person to carry this."*
+From **Our Commitment** (verbatim):
 
-> *"He and his two-person team took an AI drone project to a podium finish at the NIRU National AI Hackathon. He then presented that work before an audience that included the President of Kenya, the Cabinet Secretary for Interior, and the Director-General of the National Intelligence Service."*
+> *1. Butler is a Web3 Clubs project. Bleyle Osewe is a member in good standing. The project was developed in part through engagement with the community.*
 
-> *"He has also built at hackathons organized by ETH Safari and won prizes there, including the MetaMask prize. Butler is a harder problem than anything he has taken on so far, and he is further along than most."*
+> *2. The club intends to offer support beyond the hackathon. We see Butler as a project worth continuing into a pilot and, in time, a product.*
 
-— Web3 Clubs Kenya official letter of recognition, October 2026
+> *3. The club's lab is available to Butler for pilot operations. Bleyle and the Butler project are welcome to use the Web3 Clubs lab space to test, demonstrate, and iterate, including in front of hotel managers, potential partners, and any audience the Tameion programme may connect them with. The club also has a dedicated robotics space, so this offer is timely and fits the project well. We are open to hosting a live demo session at the lab.*
+
+The letter's item 4 on founder track record (NIRU, Mashariki, ETH Safari) is duplicated in **§13.2** and **§13.7** above; see the PDF for the full signed text.
 
 **Web3 Clubs Kenya:**
 Website: https://web3clubs.xyz | X: @Web3Clubs | LinkedIn: Web3Clubs
@@ -603,7 +608,7 @@ Progress has been **slower than a startup timeline would prefer** — which is n
 2. **Project fit:** Butler combines **robotics, simulation, and auditable digital payments** — a teachable stack for universities and TVET pathways the Ministry cares about.
 3. **Pilot narrative:** A Web3 Clubs lab pilot that Ministry-aligned institutions can observe de-risks adoption for schools and hospitality training programmes.
 
-*Until formal support is confirmed, Butler proceeds on Web3 Clubs lab capacity and private pilot conversations — without overstating government commitment.*
+*Web3 Clubs lab and club support are confirmed via the signed letter above. Ministry (NI3C) and ANU conversations remain ongoing — without overstating government commitment.*
 
 ---
 
@@ -627,7 +632,7 @@ ANU backing would strengthen the **pilot-to-product** path: trained operators, r
 | **Highest-stakes communication** | Mashariki Cooperation Conference — presented to the President, CS Interior, DG NIS |
 | **Web3 execution** | ETH Safari hackathons; **MetaMask prize**; active shipping record on GitHub |
 | **Public innovation institutions** | **NI3C internship** — navigation of Ministry of Education innovation structures |
-| **Community + lab** | Web3 Clubs Kenya recognition; robotics space for post-hackathon pilot |
+| **Community + lab** | Web3 Clubs Kenya official letter; committed robotics lab for Phase 1 build |
 | **University pathway** | ANU Education HOD discussions for structured support |
 | **Ecosystem alignment** | Butler already on **peaq mainnet** + **Circle/Arc testnet** — matches LG/peaq pay-per-skill direction |
 

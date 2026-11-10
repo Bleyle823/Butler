@@ -1,5 +1,7 @@
 # Request for recognition and support
 
+> **Fulfilled (16 October 2026).** Web3 Clubs Kenya issued a signed letter of recognition and support. Index: [`web3-clubs-letter-of-support.md`](web3-clubs-letter-of-support.md) · PDF: [`letters/web3-clubs-butler-incubation-letter.pdf`](letters/web3-clubs-butler-incubation-letter.pdf). The text below is the **original member request** kept for history.
+
 **To:** Web3 Clubs Kenya
 
 **From:** [Name], Bachelor of Business Information Technology (BBIT), Class of 2024, Africa Nazarene University; Web3 Clubs member

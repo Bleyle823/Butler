@@ -49,6 +49,18 @@ export const partnerBrands = [
   { name: "Web3 Clubs Kenya", logo: null },
 ];
 
+/** Verbatim excerpt + metadata from the signed Web3 Clubs letter (16 Oct 2026). */
+export const web3ClubsEndorsement = {
+  quote:
+    "The club intends to offer support beyond the hackathon. We see Butler as a project worth continuing into a pilot and, in time, a product. The club's lab is available to Butler for pilot operations. The club also has a dedicated robotics space, so this offer is timely and fits the project well.",
+  signatory: "Ochieng Odhiambo",
+  title: "Operations lead, Web3 Clubs Foundation Limited",
+  date: "16 October 2026",
+  letterUrl: "/assets/endorsements/web3-clubs-butler-incubation-letter.pdf",
+  repoLetterUrl:
+    "https://github.com/Bleyle823/Butler/blob/develop/proposals/letters/web3-clubs-butler-incubation-letter.pdf",
+};
+
 export const specLines = [
   "Omnidirectional base",
   "Arm and interchangeable grippers (Robotiq 2F-85 / 140)",
@@ -228,7 +240,7 @@ export const roadmap = [
   {
     id: "1",
     title: "Phase 1 — Pilot",
-    text: "Web3 Clubs Kenya lab, then a physical robot. Arc mainnet, a real USDC deposit, and three to five Nairobi hotel managers in the room.",
+    text: "Confirmed Web3 Clubs Kenya support — continued club backing, technical community resources, and the Nairobi lab's dedicated robotics space for the Phase 1 build. Then a physical robot, Arc mainnet, a real USDC deposit, and three to five Nairobi hotel managers in the room.",
     date: "3–6 months",
     status: "progress",
     imageUrl: tiagoHospitality,
@@ -266,5 +278,9 @@ export const builderFacts = [
   {
     title: "ETH Safari",
     text: "Shipped at ETH Safari hackathons and won prizes, including the MetaMask prize.",
+  },
+  {
+    title: "Web3 Clubs Kenya",
+    text: "Official letter of support — continued club backing, technical community resources, and committed robotics lab space for Butler's Phase 1 build.",
   },
 ];

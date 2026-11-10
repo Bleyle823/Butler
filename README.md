@@ -569,7 +569,7 @@ Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Pr
 | Phase | Goal |
 |-------|------|
 | **0 — Hackathon** (done) | Simulation, public hashes, hotel-ui + landing |
-| **1 — Pilot** | Web3 Clubs Kenya lab, physical hardware, Arc mainnet, hotel managers |
+| **1 — Pilot** | Web3 Clubs Kenya robotics lab (confirmed), physical hardware, Arc mainnet, hotel managers |
 | **2 — Product** | 2–3 Nairobi hotels; pay-per-skill (**2.00** standard · **4.00** premium · **1.50** fleet); one settler, many robots |
 | **3 — Scale** | East Africa, then any repeated machine task with a valuable receipt |
 
@@ -579,6 +579,7 @@ Open **http://localhost:3002** → **Place order** links to hotel-ui (Demo · Pr
 
 **Bleyle Osewe** — BBIT 2024, Africa Nazarene University · Web3 Clubs Kenya
 
+- **Web3 Clubs Kenya — official letter of support** (16 October 2026): continued club backing, technical community resources, and committed **robotics lab space** for Butler’s Phase 1 build · [PDF](proposals/letters/web3-clubs-butler-incubation-letter.pdf) · [index](proposals/web3-clubs-letter-of-support.md)
 - **NIRU National AI Hackathon** — podium / award, *Maritime Anomaly System* (physical AI drone)
 - **3rd Mashariki Cooperation Conference (Apr 2026)** — presented to H.E. President Ruto, CS Murkomen, DG NIS
 - **ETH Safari** — hackathon prizes including **MetaMask prize**
@@ -606,7 +607,8 @@ In April 2026 I presented Maritime Anomaly System at the 3rd Mashariki Cooperati
 | Recorded job | `0x59b29…b4780` — lock, kitchen, release on Arc + peaq |
 | peaq pickup + delivery | [pickup](https://peaq.subscan.io/tx/0x61877b9401345c2151d70adc593c98a2b09cc713cca46de7900b943c94827f24) · [delivery](https://peaq.subscan.io/tx/0x404ca080f07f35a8d3a1a7cd6316f38d29295ab267102173d4a6670faedc6cfc) |
 | Arc deposit + release | [deposit](https://testnet.arcscan.app/tx/0x4285f5e6c7f30b6617722ada5f5f0f10980561f6ac79e5010a264ec494e5ef40) · [release](https://testnet.arcscan.app/tx/0x1f34793b8a0cc2a1b15d77a8068efe45ede13163bd162fee10ea4033277ba927) |
-| Pilot venue | Web3 Clubs lab (target) |
+| Pilot venue | Confirmed — Web3 Clubs Kenya robotics lab |
+| Web3 Clubs support letter | [`proposals/letters/web3-clubs-butler-incubation-letter.pdf`](proposals/letters/web3-clubs-butler-incubation-letter.pdf) (16 Oct 2026) |
 
 ---
 

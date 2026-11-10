@@ -1,6 +1,6 @@
 import Section from "./Section";
 import Heading from "./Heading";
-import { builderFacts } from "../constants";
+import { builderFacts, web3ClubsEndorsement } from "../constants";
 
 const Builder = () => {
   return (
@@ -56,13 +56,22 @@ const Builder = () => {
         </div>
 
         <blockquote className="max-w-3xl mx-auto mt-12 body-2 text-n-2">
-          “Butler is a Web3 Clubs project. The club intends to offer support
-          beyond the hackathon. The club’s lab — including its dedicated
-          robotics space — is available to Butler for pilot operations.”
+          “{web3ClubsEndorsement.quote}”
           <footer className="mt-4 text-n-4">
-            Web3 Clubs Kenya, October 2026
+            {web3ClubsEndorsement.signatory}, {web3ClubsEndorsement.title} ·{" "}
+            {web3ClubsEndorsement.date}
           </footer>
         </blockquote>
+        <p className="max-w-3xl mx-auto mt-6 text-center">
+          <a
+            className="font-code text-xs uppercase tracking-wider underline text-n-3"
+            href={web3ClubsEndorsement.letterUrl}
+            target="_blank"
+            rel="noreferrer"
+          >
+            View signed letter (PDF)
+          </a>
+        </p>
 
         <ul className="flex flex-wrap justify-center gap-x-8 gap-y-3 mt-10 font-code text-xs uppercase tracking-wider">
           <li>
